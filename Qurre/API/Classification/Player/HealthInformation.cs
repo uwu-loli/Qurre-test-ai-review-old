@@ -9,10 +9,10 @@ namespace Qurre.API.Classification.Player;
 [PublicAPI]
 public sealed class HealthInformation
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
     internal float LocalMaxHp = -1;
 
-    internal HealthInformation(API.Player pl)
+    internal HealthInformation(Controllers.Player pl)
     {
         _player = pl;
     }
@@ -122,7 +122,7 @@ public sealed class HealthInformation
         return DealDamage(new UniversalDamageHandler(damage, deathReason));
     }
 
-    public bool Damage(float damage, DeathTranslation deathReason, API.Player attacker)
+    public bool Damage(float damage, DeathTranslation deathReason, Controllers.Player attacker)
     {
         return DealDamage(new ScpDamageHandler(attacker.ReferenceHub, damage, deathReason));
     }

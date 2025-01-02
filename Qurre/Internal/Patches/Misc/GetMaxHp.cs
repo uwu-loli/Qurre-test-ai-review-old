@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using PlayerStatsSystem;
 using Qurre.API;
+using Qurre.API.Controllers;
 
 namespace Qurre.Internal.Patches.Misc;
 

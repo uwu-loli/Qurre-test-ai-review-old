@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Qurre.API.Objects;
 
@@ -11,9 +10,9 @@ public enum EffectType : byte
     AmnesiaVision,
     AntiScp207,
     Asphyxiated,
-    [Obsolete("removed")] BecomingFlamingo,
+    BecomingFlamingo,
     Bleeding,
-    Blinded,
+    Blindness,
     BodyshotReduction,
     Burned,
     CardiacArrest,
@@ -48,7 +47,7 @@ public enum EffectType : byte
     SpawnProtected,
     Stained,
     Strangled,
-    [Obsolete("removed")] Snowed,
+    Snowed,
     Traumatized,
     Vitality
 }

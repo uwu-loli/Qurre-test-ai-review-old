@@ -4,6 +4,7 @@ using HarmonyLib;
 using MEC;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.World;
 using Respawning;
 
 namespace Qurre.Internal.Patches.Misc.Fixes;

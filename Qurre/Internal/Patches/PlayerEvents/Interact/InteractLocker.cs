@@ -5,8 +5,10 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using MapGeneration.Distributors;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
+using Locker = MapGeneration.Distributors.Locker;
 
 namespace Qurre.Internal.Patches.PlayerEvents.Interact;
 
@@ -30,10 +32,8 @@ internal static class InteractLocker
     {
         try
         {
-            if (colliderId >= instance.Chambers.Length)
+            if (!instance.Chambers.TryGet<LockerChamber>(colliderId, out LockerChamber chamber))
                 return;
-
-            LockerChamber? chamber = instance.Chambers[colliderId];
 
             if (!chamber.CanInteract)
                 return;
@@ -43,7 +43,7 @@ internal static class InteractLocker
             if (player is null)
                 return;
 
-            bool allow = ply.serverRoles.BypassMode || instance.CheckPerms(chamber.RequiredPermissions, ply);
+            bool allow = instance.CheckTogglePerms(colliderId, ply) || ply.serverRoles.BypassMode;
 
             API.Controllers.Locker locker = instance.GetLocker();
 

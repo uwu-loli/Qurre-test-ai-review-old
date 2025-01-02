@@ -28,9 +28,9 @@ internal static class InteractScp330
 
         int index = list.FindIndex(ins =>
                         ins.opcode == OpCodes.Call && ins.operand is MethodBase
-                            {
-                                Name: nameof(Scp330Bag.ServerProcessPickup)
-                            }) -
+                        {
+                            Name: nameof(Scp330Bag.ServerProcessPickup)
+                        }) -
                     3;
 
         if (index < 0)

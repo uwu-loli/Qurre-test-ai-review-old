@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using InventorySystem.Disarming;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 
 namespace Qurre.Internal.Patches.PlayerEvents.Socialization;

@@ -29,9 +29,9 @@ internal static class UseItem
 
         int cancelIndex = list.FindLastIndex(ins =>
                               ins.opcode == OpCodes.Callvirt && ins.operand is MethodBase
-                                  {
-                                      Name: nameof(UsableItem.OnUsingCancelled)
-                                  }) -
+                              {
+                                  Name: nameof(UsableItem.OnUsingCancelled)
+                              }) -
                           3;
 
         if (cancelIndex < 0)
@@ -73,9 +73,9 @@ internal static class UseItem
 
         int useIndex = list.FindLastIndex(ins =>
                            ins.opcode == OpCodes.Callvirt && ins.operand is MethodBase
-                               {
-                                   Name: nameof(UsableItem.OnUsingStarted)
-                               }) -
+                           {
+                               Name: nameof(UsableItem.OnUsingStarted)
+                           }) -
                        10;
 
         if (useIndex < 0)

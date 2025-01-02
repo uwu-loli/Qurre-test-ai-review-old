@@ -7,6 +7,7 @@ using InventorySystem.Items.Pickups;
 using Mirror;
 using NorthwoodLib.Pools;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using Scp914;
@@ -23,14 +24,13 @@ internal static class Upgrade
     private static IEnumerable<CodeInstruction> Call(IEnumerable<CodeInstruction> _)
     {
         yield return new CodeInstruction(OpCodes.Ldarg_0); // intake [Collider[]]
-        yield return new CodeInstruction(OpCodes.Ldarg_1); // moveVector [Vector3]
-        yield return new CodeInstruction(OpCodes.Ldarg_2); // mode [Scp914Mode]
-        yield return new CodeInstruction(OpCodes.Ldarg_3); // setting [Scp914KnobSetting]
+        yield return new CodeInstruction(OpCodes.Ldarg_1); // mode [Scp914Mode]
+        yield return new CodeInstruction(OpCodes.Ldarg_2); // setting [Scp914KnobSetting]
         yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Upgrade), nameof(Invoke)));
         yield return new CodeInstruction(OpCodes.Ret);
     }
 
-    private static void Invoke(Collider[] intake, Vector3 moveVector, Scp914Mode mode, Scp914KnobSetting setting)
+    private static void Invoke(Collider[] intake, Scp914Mode mode, Scp914KnobSetting setting)
     {
         if (!NetworkServer.active)
             throw new InvalidOperationException("Scp914Upgrade.Upgrade is a serverside-only script.");
@@ -39,7 +39,7 @@ internal static class Upgrade
         {
             var hashSet = HashSetPool<GameObject>.Shared.Rent();
 
-            Scp914UpgradeEvent ev = new([], [], moveVector, mode, setting);
+            Scp914UpgradeEvent ev = new([], [], mode, setting);
 
             foreach (Collider t in intake)
             {
@@ -68,7 +68,6 @@ internal static class Upgrade
             if (!ev.Allowed)
                 return;
 
-            moveVector = ev.Move;
             mode = ev.Mode;
             setting = ev.Setting;
 
@@ -77,9 +76,9 @@ internal static class Upgrade
             bool heldOnly = flag && (mode & Scp914Mode.Held) == Scp914Mode.Held;
 
             foreach (Player pl in ev.Players)
-                Scp914Upgrader.ProcessPlayer(pl.ReferenceHub, flag, heldOnly, moveVector, setting);
+                Scp914Upgrader.ProcessPlayer(pl.ReferenceHub, flag, heldOnly, setting);
             foreach (ItemPickupBase item in ev.Items)
-                Scp914Upgrader.ProcessPickup(item, upgradeDropped, moveVector, setting);
+                Scp914Upgrader.ProcessPickup(item, upgradeDropped, setting);
 
             HashSetPool<GameObject>.Shared.Return(hashSet);
         }

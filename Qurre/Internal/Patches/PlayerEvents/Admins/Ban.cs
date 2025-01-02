@@ -8,6 +8,7 @@ using CommandSystem;
 using Footprinting;
 using HarmonyLib;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using Qurre.Loader;

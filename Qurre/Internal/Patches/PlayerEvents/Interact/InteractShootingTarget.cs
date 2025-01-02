@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Emit;
-using AdminToys;
 using HarmonyLib;
 using Mirror;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
+using ShootingTarget = AdminToys.ShootingTarget;
 
 namespace Qurre.Internal.Patches.PlayerEvents.Interact;
 

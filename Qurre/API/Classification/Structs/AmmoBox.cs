@@ -7,9 +7,9 @@ namespace Qurre.API.Classification.Structs;
 [PublicAPI]
 public sealed class AmmoBox
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
-    internal AmmoBox(API.Player player)
+    internal AmmoBox(Controllers.Player player)
     {
         _player = player;
     }

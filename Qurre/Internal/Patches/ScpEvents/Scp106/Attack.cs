@@ -2,6 +2,7 @@
 using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp106;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 

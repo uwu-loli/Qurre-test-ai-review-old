@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using Interactables.Interobjects;
 using Qurre.API;
+using Qurre.API.World;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 

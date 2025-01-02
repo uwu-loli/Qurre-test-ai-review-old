@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using PlayerRoles.PlayableScps.Scp096;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Objects;
 
 // ReSharper disable once CheckNamespace
@@ -9,6 +10,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class Scp096SetStateEvent : IBaseEvent
 {
+    private const uint EventID = ScpEvents.Scp096SetState;
+
     internal Scp096SetStateEvent(Player pl, Scp096State state)
     {
         Player = pl;
@@ -34,12 +37,14 @@ public class Scp096SetStateEvent : IBaseEvent
     public Player Player { get; }
     public Scp096State State { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = ScpEvents.Scp096SetState;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class Scp096AddTargetEvent : IBaseEvent
 {
+    private const uint EventID = ScpEvents.Scp096AddTarget;
+
     internal Scp096AddTargetEvent(ReferenceHub scp, ReferenceHub target, bool isLooking)
     {
         Scp = scp.GetPlayer() ?? Server.Host;
@@ -52,5 +57,5 @@ public class Scp096AddTargetEvent : IBaseEvent
     public Player Target { get; }
     public bool IsLooking { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = ScpEvents.Scp096AddTarget;
+    public uint EventId { get; } = EventID;
 }

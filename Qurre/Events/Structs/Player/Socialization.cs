@@ -1,5 +1,5 @@
 ﻿using JetBrains.Annotations;
-using Qurre.API;
+using Qurre.API.Controllers;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;
@@ -7,6 +7,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class CuffEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Cuff;
+
     internal CuffEvent(Player target, Player cuffer)
     {
         Target = target;
@@ -17,12 +19,14 @@ public class CuffEvent : IBaseEvent
     public Player Target { get; }
     public Player Cuffer { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.Cuff;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class UnCuffEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.UnCuff;
+
     internal UnCuffEvent(Player target, Player cuffer)
     {
         Target = target;
@@ -33,12 +37,14 @@ public class UnCuffEvent : IBaseEvent
     public Player Target { get; }
     public Player Cuffer { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.UnCuff;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class ChangeSpectateEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.ChangeSpectate;
+
     internal ChangeSpectateEvent(Player player, Player? old, Player? @new)
     {
         Player = player;
@@ -49,5 +55,5 @@ public class ChangeSpectateEvent : IBaseEvent
     public Player Player { get; }
     public Player? Old { get; }
     public Player? New { get; }
-    public uint EventId { get; } = PlayerEvents.ChangeSpectate;
+    public uint EventId { get; } = EventID;
 }

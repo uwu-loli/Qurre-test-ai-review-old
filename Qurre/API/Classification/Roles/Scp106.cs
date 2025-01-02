@@ -8,9 +8,9 @@ namespace Qurre.API.Classification.Roles;
 [PublicAPI]
 public sealed class Scp106
 {
-    private readonly API.Player _pl;
+    private readonly Controllers.Player _pl;
 
-    internal Scp106(API.Player pl)
+    internal Scp106(Controllers.Player pl)
     {
         _pl = pl;
 

@@ -13,6 +13,7 @@ using Qurre.API.Addons.Models;
 using Qurre.API.Attributes;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Structs;
+using Qurre.API.World;
 using Qurre.Events;
 using Qurre.Internal.Patches.PlayerEvents.Admins;
 using Scp914;
@@ -33,8 +34,8 @@ internal static class Round
     [EventMethod(RoundEvents.Start)]
     private static void Started()
     {
-        API.Round.LocalStarted = true;
-        API.Round.LocalWaiting = false;
+        API.World.Round.LocalStarted = true;
+        API.World.Round.LocalWaiting = false;
     }
 
     [EventMethod(RoundEvents.Restart)]
@@ -42,10 +43,10 @@ internal static class Round
     {
         API.Audio.LocalHostAudioPlayer = null;
 
-        foreach (AudioPlayer? player in AudioPlayer.Players.ToList())
-            player.DestroyPlayer();
+        foreach (AudioPlayerBot player in AudioPlayerBot.Players.ToList())
+            player.DestroySelf();
 
-        AudioPlayer.Players.Clear();
+        BaseAudioPlayer.Players.Clear();
     }
 
     [EventMethod(RoundEvents.Waiting)]
@@ -53,20 +54,20 @@ internal static class Round
     {
         Server.WaitingRefresh();
 
-        API.Round.LocalStarted = false;
-        API.Round.ForceEnd = false;
-        API.Round.LocalWaiting = true;
-        API.Round.ActiveGenerators = 0;
+        API.World.Round.LocalStarted = false;
+        API.World.Round.ForceEnd = false;
+        API.World.Round.LocalWaiting = true;
+        API.World.Round.ActiveGenerators = 0;
 
         BcComponent.Refresh();
 
         Extensions.DamagesCached.Clear();
         Banned.Cached.Clear();
 
-        if (API.Round.CurrentRound == 0)
+        if (API.World.Round.CurrentRound == 0)
             Prefabs.InitLate();
 
-        API.Round.CurrentRound++;
+        API.World.Round.CurrentRound++;
 
         RoundSummary.RoundLock = false;
 
@@ -101,7 +102,7 @@ internal static class Round
             Map.WorkStations.Add(new WorkStation(station));
 
 
-        API.Controllers.Scp914.Controller = Object.FindObjectOfType<Scp914Controller>();
+        API.World.Scp914.Controller = Object.FindObjectOfType<Scp914Controller>();
 
 
         List<Door> updateDoors = [.. Map.Doors];
@@ -154,7 +155,7 @@ internal static class Round
         Map.Generators.Clear();
         Map.Lifts.Clear();
         Map.Lockers.Clear();
-        Map.Ragdolls.Clear();
+        Map.Corpses.Clear();
         Map.Rooms.Clear();
         Map.Sinkholes.Clear();
         Map.Teslas.Clear();

@@ -3,6 +3,7 @@ using System.Net;
 using JetBrains.Annotations;
 using LiteNetLib;
 using Qurre.API;
+using Qurre.API.Controllers;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;
@@ -10,6 +11,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class PreauthEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Preauth;
+
     internal PreauthEvent(string userid, IPAddress ip, CentralAuthPreauthFlags flags, string region,
         ConnectionRequest req)
     {
@@ -39,36 +42,42 @@ public class PreauthEvent : IBaseEvent
     public long RejectionExpiration { get; set; }
     public ushort RejectionRedirectPort { get; set; }
     public byte RejectionDelay { get; set; }
-    public uint EventId { get; } = PlayerEvents.Preauth;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class JoinEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Join;
+
     internal JoinEvent(Player player)
     {
         Player = player;
     }
 
     public Player Player { get; }
-    public uint EventId { get; } = PlayerEvents.Join;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class LeaveEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Leave;
+
     internal LeaveEvent(Player player)
     {
         Player = player;
     }
 
     public Player Player { get; }
-    public uint EventId { get; } = PlayerEvents.Leave;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class CheckReserveSlotEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.CheckReserveSlot;
+
     internal CheckReserveSlotEvent(string userid, bool allowed = true)
     {
         UserId = userid;
@@ -77,12 +86,14 @@ public class CheckReserveSlotEvent : IBaseEvent
 
     public string UserId { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.CheckReserveSlot;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class CheckWhiteListEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.CheckWhiteList;
+
     internal CheckWhiteListEvent(string userid, bool allowed = true)
     {
         UserId = userid;
@@ -91,5 +102,5 @@ public class CheckWhiteListEvent : IBaseEvent
 
     public string UserId { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.CheckWhiteList;
+    public uint EventId { get; } = EventID;
 }

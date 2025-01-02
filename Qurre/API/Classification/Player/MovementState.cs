@@ -9,9 +9,9 @@ namespace Qurre.API.Classification.Player;
 [PublicAPI]
 public sealed class MovementState
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
-    internal MovementState(API.Player pl)
+    internal MovementState(Controllers.Player pl)
     {
         _player = pl;
     }
@@ -46,7 +46,7 @@ public sealed class MovementState
                 }
 
                 _player.ReferenceHub.transform.localScale = value;
-                foreach (API.Player target in API.Player.List)
+                foreach (Controllers.Player target in Controllers.Player.List)
                     Network.SendSpawnMessage?.Invoke(null, [_player.ClassManager.netIdentity, target.Connection]);
             }
             catch (Exception ex)

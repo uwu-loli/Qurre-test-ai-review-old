@@ -20,6 +20,7 @@ using PlayerStatsSystem;
 using Qurre.API.Addons;
 using Qurre.API.Controllers;
 using Qurre.API.Objects;
+using Qurre.API.World;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using UnityEngine;
@@ -107,19 +108,19 @@ public static class Extensions
     #endregion
 
 
-    #region GetRagdoll
+    #region GetCorpse
 
-    public static Ragdoll GetRagdoll(this BasicRagdoll basic)
+    public static Corpse GetCorpse(this BasicRagdoll basic)
     {
         // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Ragdoll doll in Map.Ragdolls)
+        foreach (Corpse doll in Map.Corpses)
             if (doll.Base == basic)
                 return doll;
 
-        Ragdoll ragdoll = new(basic, basic.Info.OwnerHub.GetPlayer());
-        Map.Ragdolls.Add(ragdoll);
+        Corpse corpse = new(basic, basic.Info.OwnerHub.GetPlayer());
+        Map.Corpses.Add(corpse);
 
-        return ragdoll;
+        return corpse;
     }
 
     #endregion
@@ -659,13 +660,13 @@ public static class Extensions
                 or ItemType.KeycardO5 => ItemCategory.Keycard,
 
             ItemType.Radio => ItemCategory.Radio,
-            ItemType.MicroHID => ItemCategory.MicroHID,
+            ItemType.MicroHID or ItemType.ParticleDisruptor => ItemCategory.SpecialWeapon,
 
             ItemType.Medkit or ItemType.Adrenaline or ItemType.Painkillers => ItemCategory.Medical,
 
             ItemType.GunCOM15 or ItemType.GunE11SR or ItemType.GunCrossvec or ItemType.GunFSP9 or
                 ItemType.GunLogicer or ItemType.GunCOM18 or ItemType.GunRevolver or ItemType.GunAK or
-                ItemType.GunShotgun or ItemType.ParticleDisruptor or ItemType.GunCom45 or ItemType.Jailbird
+                ItemType.GunShotgun or ItemType.GunCom45 or ItemType.Jailbird
                 or ItemType.GunFRMG0 or ItemType.GunA7 => ItemCategory.Firearm,
 
             ItemType.GrenadeHE or ItemType.GrenadeFlash => ItemCategory.Grenade,
@@ -731,9 +732,9 @@ public static class Extensions
             EffectType.AmnesiaVision => typeof(AmnesiaVision),
             EffectType.AntiScp207 => typeof(AntiScp207),
             EffectType.Asphyxiated => typeof(Asphyxiated),
-            //EffectType.BecomingFlamingo => typeof(BecomingFlamingo),
+            EffectType.BecomingFlamingo => typeof(BecomingFlamingo),
             EffectType.Bleeding => typeof(Bleeding),
-            EffectType.Blinded => typeof(Blinded),
+            EffectType.Blindness => typeof(Blindness),
             EffectType.BodyshotReduction => typeof(BodyshotReduction),
             EffectType.Burned => typeof(Burned),
             EffectType.CardiacArrest => typeof(CardiacArrest),
@@ -768,7 +769,7 @@ public static class Extensions
             EffectType.SpawnProtected => typeof(SpawnProtected),
             EffectType.Stained => typeof(Stained),
             EffectType.Strangled => typeof(Strangled),
-            //EffectType.Snowed => typeof(Snowed),
+            EffectType.Snowed => typeof(Snowed),
             EffectType.Traumatized => typeof(Traumatized),
             EffectType.Vitality => typeof(Vitality),
 
@@ -784,9 +785,9 @@ public static class Extensions
             AmnesiaVision => EffectType.AmnesiaVision,
             AntiScp207 => EffectType.AntiScp207,
             Asphyxiated => EffectType.Asphyxiated,
-            //BecomingFlamingo => EffectType.BecomingFlamingo,
+            BecomingFlamingo => EffectType.BecomingFlamingo,
             Bleeding => EffectType.Bleeding,
-            Blinded => EffectType.Blinded,
+            Blindness => EffectType.Blindness,
             BodyshotReduction => EffectType.BodyshotReduction,
             Burned => EffectType.Burned,
             CardiacArrest => EffectType.CardiacArrest,
@@ -821,12 +822,50 @@ public static class Extensions
             SpawnProtected => EffectType.SpawnProtected,
             Stained => EffectType.Stained,
             Strangled => EffectType.Strangled,
-            //Snowed => EffectType.Snowed,
+            Snowed => EffectType.Snowed,
             Traumatized => EffectType.Traumatized,
             Vitality => EffectType.Vitality,
 
             _ => EffectType.None
         };
+    }
+
+    #endregion
+
+    #region Spawnpoints
+
+    public static Vector3 GetPosition(this RoleTypeId role)
+    {
+        return GetSpawnPoint(role).Position;
+    }
+
+    public static Transform GetSpawnTransform(this RoleTypeId role)
+    {
+        GameObject obj = new("SpawnPoint (Clone)")
+        {
+            transform =
+            {
+                position = GetSpawnPoint(role).Position
+            }
+        };
+        return obj.transform;
+    }
+
+    public static SpawnPoint GetSpawnPoint(this RoleTypeId role)
+    {
+        PlayerRoleBase? roleBase = Server.Host.ReferenceHub.roleManager.GetRoleBase(role);
+
+        if (roleBase is not IFpcRole fpc)
+            return new SpawnPoint(Vector3.zero, 0);
+
+        if (fpc.SpawnpointHandler is null)
+            return new SpawnPoint(Vector3.zero, 0);
+
+        // ReSharper disable once ConvertIfStatementToReturnStatement
+        if (!fpc.SpawnpointHandler.TryGetSpawnpoint(out Vector3 pos, out float horizontal))
+            return new SpawnPoint(Vector3.zero, 0);
+
+        return new SpawnPoint(pos, horizontal);
     }
 
     #endregion

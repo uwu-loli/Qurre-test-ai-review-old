@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
 using Qurre.API.Objects;
+using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -22,6 +23,8 @@ public class WorkStation
         if (Prefabs.WorkStation == null)
             throw new NullReferenceException(nameof(Prefabs.WorkStation));
 
+        Custom = true;
+
         Controller = Object.Instantiate(Prefabs.WorkStation, position, Quaternion.Euler(rotation));
 
         Controller.gameObject.transform.localScale = scale;
@@ -31,6 +34,8 @@ public class WorkStation
     }
 
     public WorkstationController Controller { get; }
+
+    public bool Custom { get; }
 
     public GameObject GameObject => Controller.gameObject;
     public Transform Transform => GameObject.transform;

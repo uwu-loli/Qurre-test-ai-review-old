@@ -6,6 +6,7 @@ using HarmonyLib;
 using InventorySystem.Items.Jailbird;
 using Mirror;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -65,7 +66,7 @@ internal static class JailbirdTrigger
             case JailbirdMessageType.ChargeStarted:
                 @base._charging = true;
                 @base._firstChargeFrame = true;
-                @base._chargeLoading = false;
+                @base._chargeLoadStopwatch.Reset();
                 @base._chargeAnyDetected = false;
                 @base._chargeResetTime = NetworkTime.time;
                 @base.SendRpc(JailbirdMessageType.ChargeStarted,

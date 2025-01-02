@@ -1,6 +1,7 @@
 ﻿using CustomPlayerEffects;
 using JetBrains.Annotations;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Objects;
 
 // ReSharper disable once CheckNamespace
@@ -9,6 +10,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class EffectEnabledEvent : IBaseEvent
 {
+    private const uint EventID = EffectEvents.Enabled;
+
     internal EffectEnabledEvent(Player player, StatusEffectBase effect)
     {
         Player = player;
@@ -21,12 +24,14 @@ public class EffectEnabledEvent : IBaseEvent
     public StatusEffectBase Effect { get; }
     public EffectType Type { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = EffectEvents.Enabled;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class EffectDisabledEvent : IBaseEvent
 {
+    private const uint EventID = EffectEvents.Disabled;
+
     internal EffectDisabledEvent(Player player, StatusEffectBase effect)
     {
         Player = player;
@@ -39,5 +44,5 @@ public class EffectDisabledEvent : IBaseEvent
     public StatusEffectBase Effect { get; }
     public EffectType Type { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = EffectEvents.Disabled;
+    public uint EventId { get; } = EventID;
 }

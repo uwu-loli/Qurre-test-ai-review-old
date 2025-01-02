@@ -2,6 +2,7 @@
 using InventorySystem.Items.ThrowableProjectiles;
 using JetBrains.Annotations;
 using Mirror;
+using Qurre.API.Controllers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -14,7 +15,7 @@ public sealed class GrenadeFrag : Throwable
 
     public GrenadeFrag(ThrowableItem itemBase, Player? owner = null) : base(itemBase)
     {
-        ExplosionGrenade grenade = (ExplosionGrenade)Base.Projectile;
+        ExplosionGrenade grenade = (ExplosionGrenade)GameBase.Projectile;
         MaxRadius = grenade._maxRadius;
         ScpMultiplier = grenade._scpDamageMultiplier;
         BurnDuration = grenade._burnedDuration;
@@ -39,7 +40,7 @@ public sealed class GrenadeFrag : Throwable
 
     public new void Spawn(Vector3 position, Quaternion rotation = default, Vector3 scale = default)
     {
-        ExplosionGrenade grenade = (ExplosionGrenade)Object.Instantiate(Base.Projectile, position, rotation);
+        ExplosionGrenade grenade = (ExplosionGrenade)Object.Instantiate(GameBase.Projectile, position, rotation);
         grenade.PreviousOwner = new Footprint(Owner.ReferenceHub);
         grenade._maxRadius = MaxRadius;
         grenade._scpDamageMultiplier = ScpMultiplier;

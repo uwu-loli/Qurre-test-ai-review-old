@@ -1,5 +1,5 @@
 ﻿using JetBrains.Annotations;
-using Qurre.API;
+using Qurre.API.Controllers;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;
@@ -7,6 +7,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class CheaterReportEvent : IBaseEvent
 {
+    private const uint EventID = ServerEvents.CheaterReport;
+
     internal CheaterReportEvent(Player issuer, Player target, string reason)
     {
         Issuer = issuer;
@@ -19,12 +21,14 @@ public class CheaterReportEvent : IBaseEvent
     public Player Target { get; }
     public string Reason { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = ServerEvents.CheaterReport;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class LocalReportEvent : IBaseEvent
 {
+    private const uint EventID = ServerEvents.LocalReport;
+
     internal LocalReportEvent(Player issuer, Player target, string reason)
     {
         Issuer = issuer;
@@ -37,5 +41,5 @@ public class LocalReportEvent : IBaseEvent
     public Player Target { get; }
     public string Reason { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = ServerEvents.LocalReport;
+    public uint EventId { get; } = EventID;
 }

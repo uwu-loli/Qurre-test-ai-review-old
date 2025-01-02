@@ -4,6 +4,7 @@ using HarmonyLib;
 using PlayerRoles.Ragdolls;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.World;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -21,8 +22,8 @@ internal static class DollPatch
             if (__result == null)
                 return;
 
-            Ragdoll ragdoll = new(__result, owner.GetPlayer());
-            Map.Ragdolls.Add(ragdoll);
+            Corpse corpse = new(__result, owner.GetPlayer());
+            Map.Corpses.Add(corpse);
         }
         catch (Exception e)
         {

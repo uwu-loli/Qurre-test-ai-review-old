@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using PlayerRoles;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using UnityEngine;

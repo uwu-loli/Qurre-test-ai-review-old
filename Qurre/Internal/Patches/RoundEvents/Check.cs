@@ -10,6 +10,7 @@ using MEC;
 using PlayerRoles;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.World;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using Qurre.Loader;
@@ -170,7 +171,7 @@ internal static class Check
             string text = $"Round finished! Anomalies: {scp} | Chaos: {list.chaos_insurgents} | " +
                           $"Facility Forces: {list.mtf_and_guards} | D escaped: {dBoys} | Scientists escaped: {scientists}";
             Console.AddLog(text, Color.gray);
-            ServerLogs.AddLog(ServerLogs.Modules.Logger, text, ServerLogs.ServerLogType.GameEvent);
+            ServerLogs.AddLog(ServerLogs.Modules.GameLogic, text, ServerLogs.ServerLogType.GameEvent);
 
             yield return Timing.WaitForSeconds(0.5f);
 
@@ -243,7 +244,7 @@ internal static class Check
 
             try
             {
-                foreach (Ragdoll? doll in Map.Ragdolls.ToArray())
+                foreach (Corpse? doll in Map.Corpses.ToArray())
                     try
                     {
                         doll.Destroy();

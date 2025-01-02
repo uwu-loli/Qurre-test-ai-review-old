@@ -76,6 +76,7 @@ public static class PlayerEvents //1xxx
     public const uint ReceiveEffect = 1903;
     public const uint UseHotkey = 1904;
     public const uint PressAlt = 1905;
+    public const uint Jump = 1906;
 
     public const uint DamageWindow = 1951;
     public const uint DamageShootingTarget = 1952;
@@ -92,8 +93,8 @@ public static class MapEvents //2xxx
     public const uint PlaceBlood = 2101;
     public const uint PlaceBulletHole = 2102;
     public const uint CreatePickup = 2103;
-    public const uint RagdollSpawn = 2104;
-    public const uint RagdollSpawned = 2105;
+    public const uint CorpseSpawn = 2104;
+    public const uint CorpseSpawned = 2105;
     public const uint GrenadeExploded = 2106;
 
     //2200+ ← Team Respawn
@@ -103,6 +104,7 @@ public static class MapEvents //2xxx
     //2300+ ← Objects
     public const uint TriggerTesla = 2301;
     public const uint WorkStationUpdate = 2302;
+    public const uint IntercomSetState = 2303;
 
     //2400+ ← Doors
     public const uint DamageDoor = 2501;

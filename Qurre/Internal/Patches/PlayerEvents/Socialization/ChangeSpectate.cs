@@ -2,6 +2,7 @@
 using HarmonyLib;
 using PlayerRoles.Spectating;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 

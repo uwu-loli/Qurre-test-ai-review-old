@@ -7,11 +7,11 @@ namespace Qurre.API.Classification.Player;
 [PublicAPI]
 public sealed class StatsInformation
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
     internal List<KillElement> LocalKills = [];
 
-    internal StatsInformation(API.Player pl)
+    internal StatsInformation(Controllers.Player pl)
     {
         _player = pl;
         DeathsCount = 0;

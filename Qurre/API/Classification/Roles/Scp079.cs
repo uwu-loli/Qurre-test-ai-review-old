@@ -3,15 +3,16 @@ using JetBrains.Annotations;
 using PlayerRoles.PlayableScps.Scp079;
 using PlayerRoles.Subroutines;
 using Qurre.API.Controllers;
+using Qurre.API.World;
 
 namespace Qurre.API.Classification.Roles;
 
 [PublicAPI]
 public sealed class Scp079
 {
-    private readonly API.Player _pl;
+    private readonly Controllers.Player _pl;
 
-    internal Scp079(API.Player pl)
+    internal Scp079(Controllers.Player pl)
     {
         _pl = pl;
 

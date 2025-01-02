@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using PlayerStatsSystem;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Objects;
 
 // ReSharper disable once CheckNamespace
@@ -9,6 +10,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class DeadEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Dead;
+
     internal DeadEvent(Player attacker, Player target, DamageHandlerBase damageInfo, DamageTypes type)
     {
         Attacker = attacker;
@@ -23,12 +26,13 @@ public class DeadEvent : IBaseEvent
     public DamageTypes DamageType { get; }
     public LiteDamageTypes LiteType { get; }
     public DamageHandlerBase DamageInfo { get; }
-    public uint EventId { get; } = PlayerEvents.Dead;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class DiesEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Dies;
     private LiteDamageTypes _liteType = LiteDamageTypes.Unknown;
 
     private DamageTypes _type = DamageTypes.Unknown;
@@ -64,12 +68,13 @@ public class DiesEvent : IBaseEvent
         }
     }
 
-    public uint EventId { get; } = PlayerEvents.Dies;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class DamageEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Damage;
     private LiteDamageTypes _liteType = LiteDamageTypes.Unknown;
 
     private DamageTypes _type = DamageTypes.Unknown;
@@ -107,12 +112,13 @@ public class DamageEvent : IBaseEvent
         }
     }
 
-    public uint EventId { get; } = PlayerEvents.Damage;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class AttackEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Attack;
     private LiteDamageTypes _liteType = LiteDamageTypes.Unknown;
 
     private DamageTypes _type = DamageTypes.Unknown;
@@ -153,12 +159,14 @@ public class AttackEvent : IBaseEvent
         }
     }
 
-    public uint EventId { get; } = PlayerEvents.Attack;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class HealEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Heal;
+
     internal HealEvent(Player player, float amount)
     {
         Player = player;
@@ -169,5 +177,5 @@ public class HealEvent : IBaseEvent
     public Player Player { get; }
     public float Amount { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.Heal;
+    public uint EventId { get; } = EventID;
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Qurre.API;
+using Qurre.API.Controllers;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;
@@ -8,6 +8,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class BanEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Ban;
+
     internal BanEvent(Player player, Player issuer, DateTime expires, string reason)
     {
         Player = player;
@@ -22,12 +24,14 @@ public class BanEvent : IBaseEvent
     public DateTime Expires { get; set; }
     public string Reason { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.Ban;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class BannedEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Banned;
+
     internal BannedEvent(Player? player, BanDetails details, BanHandler.BanType type, bool forced)
     {
         Player = player;
@@ -42,12 +46,14 @@ public class BannedEvent : IBaseEvent
     public BanHandler.BanType Type { get; }
     public bool Forced { get; }
     public bool UnsafeAllowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.Banned;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class KickEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Kick;
+
     internal KickEvent(Player player, Player issuer, string reason)
     {
         Player = player;
@@ -60,12 +66,14 @@ public class KickEvent : IBaseEvent
     public Player Issuer { get; }
     public string Reason { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.Kick;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class MuteEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Mute;
+
     internal MuteEvent(Player player, bool icom)
     {
         Player = player;
@@ -76,12 +84,14 @@ public class MuteEvent : IBaseEvent
     public Player Player { get; }
     public bool Intercom { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.Mute;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class UnMuteEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.Unmute;
+
     internal UnMuteEvent(Player player, bool icom)
     {
         Player = player;
@@ -92,12 +102,14 @@ public class UnMuteEvent : IBaseEvent
     public Player Player { get; }
     public bool Intercom { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.Unmute;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class ChangeGroupEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.ChangeGroup;
+
     internal ChangeGroupEvent(Player player, UserGroup group)
     {
         Player = player;
@@ -108,5 +120,5 @@ public class ChangeGroupEvent : IBaseEvent
     public Player Player { get; }
     public UserGroup Group { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.ChangeGroup;
+    public uint EventId { get; } = EventID;
 }

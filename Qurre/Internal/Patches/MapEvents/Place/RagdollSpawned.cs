@@ -12,7 +12,7 @@ namespace Qurre.Internal.Patches.MapEvents.Place;
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
 [SuppressMessage("ReSharper", "UnusedType.Global")]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
-internal static class RagdollSpawned
+internal static class CorpseSpawned
 {
     [HarmonyPostfix]
     private static void Call(BasicRagdoll __result)
@@ -22,11 +22,11 @@ internal static class RagdollSpawned
             if (__result == null)
                 return;
 
-            new RagdollSpawnedEvent(__result.GetRagdoll()).InvokeEvent();
+            new CorpseSpawnedEvent(__result.GetCorpse()).InvokeEvent();
         }
         catch (Exception e)
         {
-            Log.Error($"Patch Error - <Map> {{Place}} [RagdollSpawned]: {e}\n{e.StackTrace}");
+            Log.Error($"Patch Error - <Map> {{Place}} [CorpseSpawned]: {e}\n{e.StackTrace}");
         }
     }
 }

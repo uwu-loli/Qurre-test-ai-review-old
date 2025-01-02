@@ -1,6 +1,5 @@
 ﻿using Interactables.Interobjects;
 using JetBrains.Annotations;
-using Qurre.API;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Structs;
 using Qurre.API.Objects;
@@ -11,6 +10,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class InteractDoorEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.InteractDoor;
+
     internal InteractDoorEvent(Player player, Door door, bool allowed)
     {
         Player = player;
@@ -21,12 +22,14 @@ public class InteractDoorEvent : IBaseEvent
     public Player Player { get; }
     public Door Door { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.InteractDoor;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class InteractGeneratorEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.InteractGenerator;
+
     internal InteractGeneratorEvent(Player player, Generator generator, GeneratorStatus status)
     {
         Player = player;
@@ -39,12 +42,14 @@ public class InteractGeneratorEvent : IBaseEvent
     public Generator Generator { get; }
     public GeneratorStatus Status { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.InteractGenerator;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class InteractLiftEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.InteractLift;
+
     internal InteractLiftEvent(Player player, Lift lift)
     {
         Player = player;
@@ -55,12 +60,14 @@ public class InteractLiftEvent : IBaseEvent
     public Player Player { get; }
     public Lift Lift { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.InteractLift;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class InteractLockerEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.InteractLocker;
+
     internal InteractLockerEvent(Player player, Locker locker, Chamber? chamber, bool allow)
     {
         Player = player;
@@ -73,12 +80,14 @@ public class InteractLockerEvent : IBaseEvent
     public Locker Locker { get; }
     public Chamber? Chamber { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.InteractLocker;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class InteractScp330Event : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.InteractScp330;
+
     internal InteractScp330Event(Player player, Scp330Interobject scp330)
     {
         Player = player;
@@ -89,12 +98,14 @@ public class InteractScp330Event : IBaseEvent
     public Player Player { get; }
     public Scp330Interobject Scp330 { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.InteractScp330;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class InteractShootingTargetEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.InteractShootingTarget;
+
     internal InteractShootingTargetEvent(Player player, ShootingTarget shootingTarget,
         AdminToys.ShootingTarget.TargetButton button)
     {
@@ -108,12 +119,14 @@ public class InteractShootingTargetEvent : IBaseEvent
     public ShootingTarget ShootingTarget { get; }
     public AdminToys.ShootingTarget.TargetButton Button { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.InteractShootingTarget;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class InteractWorkStationEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.InteractWorkStation;
+
     internal InteractWorkStationEvent(Player player, WorkStation station, byte colliderId)
     {
         Player = player;
@@ -126,5 +139,5 @@ public class InteractWorkStationEvent : IBaseEvent
     public WorkStation Station { get; }
     public byte ColliderId { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.InteractWorkStation;
+    public uint EventId { get; } = EventID;
 }

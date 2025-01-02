@@ -19,10 +19,10 @@ internal static class Plugins
 
     internal static void Init()
     {
-        if (!Directory.Exists(Pathes.Plugins))
+        if (!Directory.Exists(Paths.Plugins))
         {
-            Log.Warn($"Plugins directory not found. Creating: {Pathes.Plugins}");
-            Directory.CreateDirectory(Pathes.Plugins);
+            Log.Warn($"Plugins directory not found. Creating: {Paths.Plugins}");
+            Directory.CreateDirectory(Paths.Plugins);
         }
 
         try
@@ -48,24 +48,6 @@ internal static class Plugins
             EnablePlugins();
             yield break;
         }
-    }
-
-    private static void LoadDependencies()
-    {
-        if (!Directory.Exists(Pathes.Dependencies))
-            Directory.CreateDirectory(Pathes.Dependencies);
-
-        foreach (string dll in Directory.GetFiles(Pathes.Dependencies))
-        {
-            if (!dll.EndsWith(".dll") || LoaderManager.Loaded(dll)) continue;
-
-            Assembly assembly = Assembly.Load(LoaderManager.ReadFile(dll));
-            LoaderManager.LocalLoaded.Add(new AssemblyDep(assembly, dll));
-
-            Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
-        }
-
-        Log.Custom("Dependencies loaded", "Loader", ConsoleColor.Green);
     }
 
     private static void PatchMethods()
@@ -105,9 +87,42 @@ internal static class Plugins
         }
     }
 
+    private static void LoadDependencies()
+    {
+        if (!Directory.Exists(Paths.Depends))
+            Directory.CreateDirectory(Paths.Depends);
+
+        List<string> files = [..Directory.GetFiles(Paths.Depends)];
+
+        if (Paths.CustomDepends != Paths.Depends &&
+            Directory.Exists(Paths.CustomDepends))
+            files.AddRange(Directory.GetFiles(Paths.CustomDepends));
+
+        if (Directory.Exists(Paths.SystemDepends))
+            files.AddRange(Directory.GetFiles(Paths.SystemDepends));
+
+        foreach (string dll in files)
+        {
+            if (!dll.EndsWith(".dll") || LoaderManager.Loaded(dll)) continue;
+
+            Assembly assembly = Assembly.Load(LoaderManager.ReadFile(dll));
+            LoaderManager.LocalLoaded.Add(new AssemblyDep(assembly, dll));
+
+            Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
+        }
+
+        Log.Custom("Depends loaded", "Loader", ConsoleColor.Green);
+    }
+
     private static void LoadPlugins()
     {
-        foreach (string plugin in Directory.GetFiles(Pathes.Plugins))
+        List<string> files = [..Directory.GetFiles(Paths.Plugins)];
+
+        if (Paths.CustomPlugins != Paths.Plugins &&
+            Directory.Exists(Paths.CustomPlugins))
+            files.AddRange(Directory.GetFiles(Paths.CustomPlugins));
+
+        foreach (string plugin in files)
             try
             {
                 Log.Debug($"Loading {plugin}");

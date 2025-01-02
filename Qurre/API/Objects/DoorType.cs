@@ -9,6 +9,7 @@ public enum DoorType : byte
 
     LczStandard, // LCZ BreakableDoor
     HczStandard, // HCZ BreakableDoor
+    HczBulk, // HCZ BulkDoor
     EzStandard, // EZ BreakableDoor
 
 
@@ -37,12 +38,9 @@ public enum DoorType : byte
 
     HczArmory, // HCZ_ARMORY
 
-    HczHid, // HID
-    HczHidLeft, // HID_LEFT
-    HczHidRight, // HID_RIGHT
-
-    HczNukeArmory, // NUKE_ARMORY
-    HczServers, // SERVERS_BOTTOM
+    HczHid, // HID_CHAMBER
+    HczHidLower, // HID_LOWER
+    HczHidUpper, // HID_UPPER
 
     Hcz049Armory, // 049_ARMORY
     Hcz049Gate, // Unsecured...
@@ -76,6 +74,7 @@ public enum DoorType : byte
     SurfaceGate, // SURFACE_GATE
     SurfaceEscapeFirst, // ESCAPE_PRIMARY
     SurfaceEscapeSecond, // ESCAPE_SECONDARY
+    SurfaceEscapeFinal, // ESCAPE_FINAL
     SurfaceNuke, // SURFACE_NUKE
 
     ElevatorLczChkpA, // RoomName: LczCheckpointA

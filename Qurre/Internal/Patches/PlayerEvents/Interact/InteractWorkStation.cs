@@ -2,6 +2,7 @@
 using HarmonyLib;
 using InventorySystem.Items.Firearms.Attachments;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 

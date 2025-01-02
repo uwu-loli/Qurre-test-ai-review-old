@@ -7,9 +7,9 @@ namespace Qurre.API.Classification.Structs;
 [PublicAPI]
 public sealed class Hand
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
-    internal Hand(API.Player player)
+    internal Hand(Controllers.Player player)
     {
         _player = player;
     }

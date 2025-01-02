@@ -4,6 +4,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp049;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -41,7 +42,7 @@ internal static class RaisingStart
             instance.IsCloseEnough(instance.CastRole.FpcModule.Position, instance._ragdollTransform.position)
             && IsSpawnableSpectator(target.ReferenceHub) &&
             instance.CheckMaxResurrections(target.ReferenceHub) == ResurrectError.None &&
-            !instance.AnyConflicts(@event.Ragdoll);
+            !instance.AnyConflicts(@event.Corpse.Base);
 
         @event.InvokeEvent();
 

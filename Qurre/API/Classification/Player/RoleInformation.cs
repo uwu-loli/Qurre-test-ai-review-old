@@ -2,16 +2,15 @@
 using PlayerRoles;
 using Qurre.API.Classification.Roles;
 using RemoteAdmin;
-using Respawning;
 
 namespace Qurre.API.Classification.Player;
 
 [PublicAPI]
 public sealed class RoleInformation
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
-    internal RoleInformation(API.Player pl)
+    internal RoleInformation(Controllers.Player pl)
     {
         _player = pl;
         CachedRole = RoleTypeId.None;
@@ -32,8 +31,6 @@ public sealed class RoleInformation
     public Scp173? Scp173 { get; internal set; }
 
     public RoleTypeId CachedRole { get; internal set; }
-
-    public float TimeForNextSequence => RespawnManager.Singleton._timeForNextSequence;
 
     public Team Team => _player.Disconnected ? CachedRole.GetTeam() : _player.ReferenceHub.GetTeam();
 

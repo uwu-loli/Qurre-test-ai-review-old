@@ -135,10 +135,10 @@ public class JsonConfig(string name)
 
     internal static void Init()
     {
-        if (!Directory.Exists(Pathes.Configs))
-            Directory.CreateDirectory(Pathes.Configs);
+        if (!Directory.Exists(Paths.Configs))
+            Directory.CreateDirectory(Paths.Configs);
 
-        ConfigPath = Path.Combine(Pathes.Configs, $"{Server.Port}.json");
+        ConfigPath = Path.Combine(Paths.Configs, $"{Server.Port}.json");
         if (!File.Exists(ConfigPath))
         {
             byte[] content = new UTF8Encoding(true).GetBytes("{\n    \n}");
@@ -147,12 +147,17 @@ public class JsonConfig(string name)
             stream.Close();
         }
 
+        string fileContent = File.ReadAllText(ConfigPath);
+
         try
         {
-            Cache = JObject.Parse(File.ReadAllText(ConfigPath));
+            Cache = JObject.Parse(fileContent);
         }
-        catch
+        catch (Exception ex)
         {
+            ServerConsole.AddLog(ex.Message, ConsoleColor.Red);
+            File.WriteAllText(ConfigPath + ".bak", fileContent);
+
             File.WriteAllText(ConfigPath, "{\n    \n}");
             Cache = JObject.Parse("{\n    \n}");
         }

@@ -10,16 +10,22 @@
         <Copyright>Copyright © Qurre Team</Copyright>
         <Company>Qurre Team</Company>
         <Product>Qurre SL</Product>
+        <Configurations>Debug;Release;Tests</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <OutputPath>..\_bin\Debug\</OutputPath>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <OutputPath>..\_bin\Release\</OutputPath>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Tests' ">
+        <OutputPath>..\_bin\Tests\</OutputPath>
+        <Tests>True</Tests>
     </PropertyGroup>
 
     <PropertyGroup>

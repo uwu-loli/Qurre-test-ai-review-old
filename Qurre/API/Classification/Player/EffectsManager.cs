@@ -9,9 +9,9 @@ namespace Qurre.API.Classification.Player;
 [PublicAPI]
 public sealed class EffectsManager
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
-    internal EffectsManager(API.Player pl)
+    internal EffectsManager(Controllers.Player pl)
     {
         _player = pl;
     }

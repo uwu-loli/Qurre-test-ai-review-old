@@ -128,9 +128,6 @@ public class Room
 
     private NetworkIdentity? GetNetworkIdentity()
     {
-        if (Type is not RoomType.Lcz330 and not RoomType.HczTestroom)
-            return null;
-
         if (NetworkIdentities.Count == 0)
             NetworkIdentities.AddRange(Object.FindObjectsOfType<NetworkIdentity>().Where(x => x.name.Contains("All")));
 
@@ -143,8 +140,14 @@ public class Room
     private static RoomType GetType(string name, Transform trans)
     {
         string rawName = name;
-        int arr = rawName.IndexOf('(') - 1;
+        int arr = rawName.IndexOf('(');
         if (arr > 0) rawName = rawName.Remove(arr, rawName.Length - arr).Trim();
+
+#if TESTS
+        Log.Custom($"rawName: {rawName};", "TESTS: API.Room");
+        if (rawName.EndsWith(" Part"))
+            Log.Custom($"ZZZ POSITION::::: {Addons.BetterColors.Red(trans.position.z)}");
+#endif
 
         return rawName switch
         {
@@ -165,44 +168,56 @@ public class Room
             "LCZ_914" => RoomType.Lcz914,
             "LCZ_372" => RoomType.LczGr18,
 
-            "HCZ_Room3" => RoomType.HczThreeWay,
             "HCZ_Crossing" => RoomType.HczCrossing,
             "HCZ_Curve" => RoomType.HczCurve,
-            "HCZ_Straight" => RoomType.HczStraight,
-            "HCZ_Tesla" => RoomType.HczTesla,
-            "HCZ_Room3ar" => RoomType.HczArmory,
-            "HCZ_Hid" => RoomType.HczHid,
+            "HCZ_Straight" or "HCZ_Straight Variant" => RoomType.HczStraight,
+            "HCZ_Intersection" => RoomType.HczIntersection,
+            "HCZ_Corner_Deep" => RoomType.HczCornerDeep,
+            "HCZ_Intersection_Junk" => RoomType.HczJunk,
+            "HCZ_Straight_PipeRoom" => RoomType.HczPipe,
+            "HCZ_Straight_C" => RoomType.HczToilets,
+            "HCZ_Tesla_Rework" => RoomType.HczTesla,
+            "HCZ_TArmory" => RoomType.HczArmory,
+            "HCZ_MicroHID_New" => RoomType.HczHid,
             "HCZ_Nuke" => RoomType.HczNuke,
-            "HCZ_Servers" => RoomType.HczServers,
             "HCZ_ChkpA" => RoomType.HczChkpA,
             "HCZ_ChkpB" => RoomType.HczChkpB,
             "HCZ_049" => RoomType.Hcz049,
             "HCZ_079" => RoomType.Hcz079,
-            "HCZ_457" => RoomType.Hcz096,
-            "HCZ_106" => RoomType.Hcz106,
+            "HCZ_096" => RoomType.Hcz096,
+            "HCZ_106_Rework" => RoomType.Hcz106,
             "HCZ_939" => RoomType.Hcz939,
-            "HCZ Part" => RoomType.HczPart,
-            "HCZ_Testroom" => RoomType.HczTestroom,
+            "HCZ_Testroom" => RoomType.HczTest,
+            "HCZ_Crossroom_Water" => RoomType.HczWater,
 
             "EZ_ThreeWay" => RoomType.EzThreeWay,
             "EZ_Crossing" => RoomType.EzCrossing,
             "EZ_Curve" => RoomType.EzCurve,
-            "EZ_Straight" => RoomType.EzStraight,
-            "EZ_Cafeteria" => RoomType.EzCafeteria,
+            "EZ_Straight" or
+                "EZ_Cafeteria" or
+                "EZ_StraightColumn" => RoomType.EzStraight,
             "EZ_upstairs" => RoomType.EzUpstairsPcs,
             "EZ_PCs_small" => RoomType.EzDownstairsPcs,
             "EZ_PCs" => RoomType.EzPcs,
-            "EZ_Smallrooms2" => RoomType.EzSmall,
+            "EZ_Smallrooms1" => RoomType.EzSmall1,
+            "EZ_Smallrooms2" => RoomType.EzSmall2,
+            "EZ_Chef" => RoomType.EzChef,
             "EZ_Intercom" => RoomType.EzIntercom,
             "EZ_Shelter" => RoomType.EzShelter,
             "EZ_Endoof" => RoomType.EzVent,
             "EZ_GateA" => RoomType.EzGateA,
             "EZ_GateB" => RoomType.EzGateB,
-            "EZ Part" => trans.parent.name switch
+            "HCZ_EZ_Checkpoint Part" => trans.position.z switch
             {
-                "HCZ_EZ_Checkpoint (A)" => RoomType.HczChkpA,
-                "HCZ_EZ_Checkpoint (B)" => RoomType.HczChkpB,
-                _ => RoomType.EzPart
+                // 60...90
+                > 75 => RoomType.HczChkpA,
+                _ => RoomType.HczChkpB
+            },
+            "EZ_HCZ_Checkpoint Part" => trans.position.z switch
+            {
+                // 60...90
+                > 75 => RoomType.EzChkpA,
+                _ => RoomType.EzChkpB
             },
             "EZ_CollapsedTunnel" => RoomType.EzCollapsedTunnel,
 

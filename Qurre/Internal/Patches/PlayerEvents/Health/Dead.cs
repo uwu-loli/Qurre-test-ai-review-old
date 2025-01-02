@@ -4,6 +4,7 @@ using HarmonyLib;
 using PlayerRoles;
 using PlayerStatsSystem;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Objects;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;

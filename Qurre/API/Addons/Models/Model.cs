@@ -19,7 +19,7 @@ namespace Qurre.API.Addons.Models;
 public class Model
 {
     private static readonly List<Model> ModelsList = [];
-    private readonly List<ModelBody> _body = [];
+    private readonly List<ModelCorpse> _corpses = [];
     private readonly List<ModelDoor> _doors = [];
 
     private readonly List<ModelGenerator> _generators = [];
@@ -56,7 +56,7 @@ public class Model
 
     public GameObject GameObject { get; }
 
-    public IReadOnlyList<ModelBody> Body => _body.AsReadOnly();
+    public IReadOnlyList<ModelCorpse> Corpses => _corpses.AsReadOnly();
     public IReadOnlyList<ModelDoor> Doors => _doors.AsReadOnly();
     public IReadOnlyList<ModelGenerator> Generators => _generators.AsReadOnly();
     public IReadOnlyList<ModelLight> Lights => _lights.AsReadOnly();
@@ -66,12 +66,12 @@ public class Model
     public IReadOnlyList<ModelTarget> Targets => _targets.AsReadOnly();
     public IReadOnlyList<ModelWorkStation> WorkStations => _workStations.AsReadOnly();
 
-    public void AddPart(ModelBody ragdoll, bool addToList = true)
+    public void AddPart(ModelCorpse corpse, bool addToList = true)
     {
         if (addToList)
-            _body.Add(ragdoll);
+            _corpses.Add(corpse);
 
-        _parts.Add(ragdoll.GameObject, ModelEnums.Body);
+        _parts.Add(corpse.GameObject, ModelEnums.Body);
     }
 
     public void AddPart(ModelDoor door, bool addToList = true)
@@ -147,7 +147,7 @@ public class Model
 
         Object.Destroy(GameObject);
         _parts.Clear();
-        _body.Clear();
+        _corpses.Clear();
         _doors.Clear();
         _generators.Clear();
         _lights.Clear();
@@ -163,7 +163,7 @@ public class Model
         ModelsList.ForEach(model =>
         {
             model._parts.Clear();
-            model._body.Clear();
+            model._corpses.Clear();
             model._doors.Clear();
             model._generators.Clear();
             model._lights.Clear();

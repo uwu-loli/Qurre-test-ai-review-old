@@ -4,6 +4,7 @@ using HarmonyLib;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -12,7 +13,7 @@ namespace Qurre.Internal.Patches.MapEvents.Place;
 [HarmonyPatch(typeof(RagdollManager), nameof(RagdollManager.ServerSpawnRagdoll))]
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
 [SuppressMessage("ReSharper", "UnusedType.Global")]
-internal static class RagdollSpawn
+internal static class CorpseSpawn
 {
     [HarmonyPrefix]
     private static bool Call(ReferenceHub owner, DamageHandlerBase handler)
@@ -24,14 +25,14 @@ internal static class RagdollSpawn
             if (player is null)
                 return false;
 
-            RagdollSpawnEvent ev = new(player, handler);
+            CorpseSpawnEvent ev = new(player, handler);
             ev.InvokeEvent();
 
             return ev.Allowed;
         }
         catch (Exception e)
         {
-            Log.Error($"Patch Error - <Map> {{Place}} [RagdollSpawn]: {e}\n{e.StackTrace}");
+            Log.Error($"Patch Error - <Map> {{Place}} [CorpseSpawn]: {e}\n{e.StackTrace}");
             return true;
         }
     }

@@ -2,6 +2,7 @@
 using InventorySystem.Items.ThrowableProjectiles;
 using JetBrains.Annotations;
 using Mirror;
+using Qurre.API.Controllers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -14,7 +15,7 @@ public sealed class GrenadeFlash : Throwable
 
     public GrenadeFlash(ThrowableItem itemBase, Player? owner = null) : base(itemBase)
     {
-        FlashbangGrenade grenade = (FlashbangGrenade)Base.Projectile;
+        FlashbangGrenade grenade = (FlashbangGrenade)GameBase.Projectile;
         BlindAnimation = grenade._blindingOverDistance;
         SurfaceDistanceIntensifier = grenade._surfaceZoneDistanceIntensifier;
         DeafenAnimation = grenade._deafenDurationOverDistance;
@@ -35,7 +36,7 @@ public sealed class GrenadeFlash : Throwable
 
     public new void Spawn(Vector3 position, Quaternion rotation = default, Vector3 scale = default)
     {
-        FlashbangGrenade grenade = (FlashbangGrenade)Object.Instantiate(Base.Projectile, position, rotation);
+        FlashbangGrenade grenade = (FlashbangGrenade)Object.Instantiate(GameBase.Projectile, position, rotation);
         grenade.PreviousOwner = new Footprint(Owner.ReferenceHub);
         grenade._blindingOverDistance = BlindAnimation;
         grenade._surfaceZoneDistanceIntensifier = SurfaceDistanceIntensifier;

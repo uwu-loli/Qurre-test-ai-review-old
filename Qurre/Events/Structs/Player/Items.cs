@@ -1,7 +1,6 @@
 ﻿using System;
 using InventorySystem.Items.Radio;
 using JetBrains.Annotations;
-using Qurre.API;
 using Qurre.API.Addons.Items;
 using Qurre.API.Controllers;
 using Qurre.API.Objects;
@@ -13,6 +12,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class CancelUseItemEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.CancelUseItem;
+
     internal CancelUseItemEvent(Player player, Item item)
     {
         Player = player;
@@ -23,12 +24,14 @@ public class CancelUseItemEvent : IBaseEvent
     public Player Player { get; }
     public Item Item { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.CancelUseItem;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class UseItemEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.UseItem;
+
     internal UseItemEvent(Player player, Item item)
     {
         Player = player;
@@ -39,12 +42,14 @@ public class UseItemEvent : IBaseEvent
     public Player Player { get; }
     public Item Item { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.UseItem;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class UsedItemEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.UsedItem;
+
     internal UsedItemEvent(Player player, Item item)
     {
         Player = player;
@@ -53,12 +58,14 @@ public class UsedItemEvent : IBaseEvent
 
     public Player Player { get; }
     public Item Item { get; }
-    public uint EventId { get; } = PlayerEvents.UsedItem;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class ChangeItemEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.ChangeItem;
+
     internal ChangeItemEvent(Player player, Item? oldItem, Item? newItem)
     {
         Player = player;
@@ -71,12 +78,14 @@ public class ChangeItemEvent : IBaseEvent
     public Item? OldItem { get; }
     public Item? NewItem { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.ChangeItem;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class UpdateRadioEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.UpdateRadio;
+
     internal UpdateRadioEvent(Player player, RadioItem radio, RadioStatus range, bool enabled)
     {
         Player = player;
@@ -91,12 +100,14 @@ public class UpdateRadioEvent : IBaseEvent
     public RadioStatus Range { get; set; }
     public bool Enabled { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.UpdateRadio;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class UsingRadioEvent : IBaseEvent
 {
+    private const uint EventID = PlayerEvents.UsingRadio;
+
     internal UsingRadioEvent(Player player, RadioItem radio, float num)
     {
         Player = player;
@@ -111,5 +122,5 @@ public class UsingRadioEvent : IBaseEvent
     public float Battery { get; set; }
     public float Consumption { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = PlayerEvents.UsingRadio;
+    public uint EventId { get; } = EventID;
 }

@@ -9,6 +9,7 @@ using InventorySystem.Items.Keycards;
 using MapGeneration.Distributors;
 using PlayerRoles;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Objects;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
@@ -83,7 +84,6 @@ internal static class InteractGenerator
                         if (ev.Allowed)
                         {
                             instance.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, true);
-                            instance.ServerGrantTicketsConditionally(new Footprint(ply), 0.5f);
                         }
                         else
                         {

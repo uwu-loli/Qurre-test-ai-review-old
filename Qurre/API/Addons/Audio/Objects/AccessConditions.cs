@@ -2,6 +2,7 @@
 using System.Linq;
 using JetBrains.Annotations;
 using PlayerRoles;
+using Qurre.API.Controllers;
 
 namespace Qurre.API.Addons.Audio.Objects;
 

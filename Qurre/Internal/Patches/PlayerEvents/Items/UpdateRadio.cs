@@ -4,6 +4,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using InventorySystem.Items.Radio;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Objects;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;

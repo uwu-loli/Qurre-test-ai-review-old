@@ -6,10 +6,10 @@ namespace Qurre.API.Classification.Player;
 public sealed class UserInformation
 {
     private readonly string _nick;
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
     private string _ui;
 
-    internal UserInformation(API.Player pl)
+    internal UserInformation(Controllers.Player pl)
     {
         _player = pl;
         _ui = pl.AuthManager.UserId;
@@ -31,7 +31,7 @@ public sealed class UserInformation
 
     public string CustomInfo
     {
-        get => NicknameSync.Network_customPlayerInfoString;
+        get => NicknameSync.Network_customPlayerInfoString ?? string.Empty;
         set => NicknameSync.Network_customPlayerInfoString = value;
     }
 
@@ -80,7 +80,7 @@ public sealed class UserInformation
         {
             NicknameSync.Network_myNickSync = value;
 
-            foreach (API.Player item in API.Player.List)
+            foreach (Controllers.Player item in Controllers.Player.List)
                 Network.SendSpawnMessage?.Invoke(null,
                 [
                     _player.ClassManager.netIdentity,

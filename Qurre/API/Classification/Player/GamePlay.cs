@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using MapGeneration;
 using Qurre.API.Controllers;
 using Qurre.API.Objects;
+using Qurre.API.World;
 using UnityEngine;
 
 namespace Qurre.API.Classification.Player;
@@ -11,9 +12,9 @@ namespace Qurre.API.Classification.Player;
 [PublicAPI]
 public sealed class GamePlay
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
-    internal GamePlay(API.Player pl)
+    internal GamePlay(Controllers.Player pl)
     {
         _player = pl;
         BlockSpawnTeleport = false;
@@ -56,7 +57,7 @@ public sealed class GamePlay
         }
     }
 
-    public API.Player? Cuffer
+    public Controllers.Player? Cuffer
     {
         get
         {

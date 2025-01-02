@@ -2,7 +2,6 @@
 using InventorySystem.Items.Pickups;
 using JetBrains.Annotations;
 using PlayerStatsSystem;
-using Qurre.API;
 using Qurre.API.Controllers;
 
 // ReSharper disable once CheckNamespace
@@ -11,6 +10,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class CreatePickupEvent : IBaseEvent
 {
+    private const uint EventID = MapEvents.CreatePickup;
+
     internal CreatePickupEvent(PickupSyncInfo psi, Inventory inv)
     {
         Info = psi;
@@ -21,15 +22,17 @@ public class CreatePickupEvent : IBaseEvent
     public PickupSyncInfo Info { get; }
     public Inventory Inventory { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = MapEvents.CreatePickup;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
-public class RagdollSpawnEvent : IBaseEvent
+public class CorpseSpawnEvent : IBaseEvent
 {
-    internal RagdollSpawnEvent(Player owner, DamageHandlerBase handler)
+    private const uint EventID = MapEvents.CorpseSpawn;
+
+    internal CorpseSpawnEvent(Player owner, DamageHandlerBase handler)
     {
-        Owner = owner ?? Server.Host;
+        Owner = owner;
         Handler = handler;
         Allowed = true;
     }
@@ -37,17 +40,19 @@ public class RagdollSpawnEvent : IBaseEvent
     public Player Owner { get; }
     public DamageHandlerBase Handler { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = MapEvents.RagdollSpawn;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
-public class RagdollSpawnedEvent : IBaseEvent
+public class CorpseSpawnedEvent : IBaseEvent
 {
-    internal RagdollSpawnedEvent(Ragdoll ragdoll)
+    private const uint EventID = MapEvents.CorpseSpawned;
+
+    internal CorpseSpawnedEvent(Corpse corpse)
     {
-        Ragdoll = ragdoll;
+        Corpse = corpse;
     }
 
-    public Ragdoll Ragdoll { get; }
-    public uint EventId { get; } = MapEvents.RagdollSpawned;
+    public Corpse Corpse { get; }
+    public uint EventId { get; } = EventID;
 }

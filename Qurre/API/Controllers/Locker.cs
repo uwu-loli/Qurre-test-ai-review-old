@@ -4,6 +4,7 @@ using MapGeneration.Distributors;
 using Mirror;
 using Qurre.API.Controllers.Structs;
 using Qurre.API.Objects;
+using Qurre.API.World;
 using Qurre.Internal.Misc;
 using UnityEngine;
 

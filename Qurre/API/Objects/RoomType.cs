@@ -5,6 +5,8 @@ namespace Qurre.API.Objects;
 [PublicAPI]
 public enum RoomType : byte
 {
+    Unknown,
+
     LczClassDSpawn,
     LczThreeWay,
     LczCrossing,
@@ -22,44 +24,49 @@ public enum RoomType : byte
     Lcz914,
     LczGr18,
 
-    HczThreeWay,
     HczCrossing,
     HczCurve,
     HczStraight,
+    HczIntersection,
+    HczCornerDeep,
+    HczJunk,
+    HczPipe,
+    HczToilets,
     HczTesla,
     HczArmory,
     HczHid,
     HczNuke,
-    HczServers,
-    HczChkpA,
-    HczChkpB,
     Hcz049,
     Hcz079,
     Hcz096,
     Hcz106,
     Hcz939,
-    HczPart,
-    HczTestroom,
+    HczTest,
+    HczWater,
+
+    HczChkpA,
+    HczChkpB,
+
+    EzChkpA,
+    EzChkpB,
 
     EzThreeWay,
     EzCrossing,
     EzCurve,
     EzStraight,
-    EzCafeteria,
     EzUpstairsPcs,
     EzDownstairsPcs,
     EzPcs,
-    EzSmall,
+    EzSmall1,
+    EzSmall2,
+    EzChef,
     EzIntercom,
     EzShelter,
     EzVent,
     EzGateA,
     EzGateB,
-    EzPart,
     EzCollapsedTunnel,
 
     Surface,
-    Pocket,
-
-    Unknown = 0
+    Pocket
 }

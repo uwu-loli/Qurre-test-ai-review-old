@@ -7,9 +7,9 @@ namespace Qurre.API.Classification.Player;
 [PublicAPI]
 public sealed class Administrative
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
-    internal Administrative(API.Player pl)
+    internal Administrative(Controllers.Player pl)
     {
         _player = pl;
     }

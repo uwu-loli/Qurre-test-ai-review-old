@@ -1,5 +1,5 @@
 ﻿using JetBrains.Annotations;
-using Qurre.API;
+using Qurre.API.Controllers;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;
@@ -7,6 +7,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class Scp173AddObserverEvent : IBaseEvent
 {
+    private const uint EventID = ScpEvents.Scp173AddObserver;
+
     internal Scp173AddObserverEvent(Player pl, Player scp)
     {
         Player = pl;
@@ -17,12 +19,14 @@ public class Scp173AddObserverEvent : IBaseEvent
     public Player Player { get; }
     public Player Scp { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = ScpEvents.Scp173AddObserver;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class Scp173RemovedObserverEvent : IBaseEvent
 {
+    private const uint EventID = ScpEvents.Scp173RemovedObserver;
+
     internal Scp173RemovedObserverEvent(Player pl, Player scp)
     {
         Player = pl;
@@ -31,12 +35,14 @@ public class Scp173RemovedObserverEvent : IBaseEvent
 
     public Player Player { get; }
     public Player Scp { get; }
-    public uint EventId { get; } = ScpEvents.Scp173RemovedObserver;
+    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
 public class Scp173EnableSpeedEvent : IBaseEvent
 {
+    private const uint EventID = ScpEvents.Scp173EnableSpeed;
+
     internal Scp173EnableSpeedEvent(Player pl, bool value)
     {
         Player = pl;
@@ -47,5 +53,5 @@ public class Scp173EnableSpeedEvent : IBaseEvent
     public Player Player { get; }
     public bool Value { get; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = ScpEvents.Scp173EnableSpeed;
+    public uint EventId { get; } = EventID;
 }

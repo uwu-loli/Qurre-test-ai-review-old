@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using MapGeneration;
 using Mirror;
 using Qurre.API.Objects;
+using Qurre.API.World;
 using Qurre.Internal.Misc;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -127,9 +128,13 @@ public class Door
     {
         get
         {
-            if (DoorVariant is PryableDoor pry)
-                return pry.TryPryGate(ReferenceHub.HostHub);
-            return false;
+            if (DoorVariant is not PryableDoor pry)
+                return false;
+
+            if (!ReferenceHub.TryGetHostHub(out ReferenceHub? hub))
+                return false;
+
+            return pry.TryPryGate(hub);
         }
     }
 
@@ -179,6 +184,10 @@ public class Door
     private void SetupDoorType()
     {
         Type = DoorType.Unknown;
+
+#if TESTS
+        Log.Custom($"Name: {Name};", "TESTS: API.Door");
+#endif
 
         switch (Name)
         {
@@ -234,21 +243,14 @@ public class Door
                 Type = DoorType.HczArmory;
                 return;
 
-            case "HID":
+            case "HID_CHAMBER":
                 Type = DoorType.HczHid;
                 return;
-            case "HID_LEFT":
-                Type = DoorType.HczHidLeft;
+            case "HID_LOWER":
+                Type = DoorType.HczHidLower;
                 return;
-            case "HID_RIGHT":
-                Type = DoorType.HczHidRight;
-                return;
-
-            case "NUKE_ARMORY":
-                Type = DoorType.HczNukeArmory;
-                return;
-            case "SERVERS_BOTTOM":
-                Type = DoorType.HczServers;
+            case "HID_UPPER":
+                Type = DoorType.HczHidUpper;
                 return;
 
             case "049_ARMORY":
@@ -286,11 +288,25 @@ public class Door
                 return;
 
             case "CHECKPOINT_EZ_HCZ_A":
-                Type = DoorType.EzCheckpointA;
+            {
+                foreach (RoomIdentifier? room in DoorVariant.Rooms)
+                    if (room.Name == RoomName.HczCheckpointToEntranceZone)
+                        switch (room.transform.position.z)
+                        {
+                            case > 75:
+                            {
+                                Type = DoorType.EzCheckpointA;
+                                return;
+                            }
+                            default:
+                            {
+                                Type = DoorType.EzCheckpointB;
+                                return;
+                            }
+                        }
+
                 return;
-            case "CHECKPOINT_EZ_HCZ_B":
-                Type = DoorType.EzCheckpointB;
-                return;
+            }
 
             case "GATE_A":
                 Type = DoorType.EzGateA;
@@ -308,6 +324,9 @@ public class Door
                 return;
             case "ESCAPE_SECONDARY":
                 Type = DoorType.SurfaceEscapeSecond;
+                return;
+            case "ESCAPE_FINAL":
+                Type = DoorType.SurfaceEscapeFinal;
                 return;
             case "SURFACE_NUKE":
                 Type = DoorType.SurfaceNuke;
@@ -328,6 +347,12 @@ public class Door
                 return;
             }
             case "HCZ":
+                if (Name.StartsWith("HCZ BulkDoor"))
+                {
+                    Type = DoorType.HczBulk;
+                    return;
+                }
+
                 Type = DoorType.HczStandard;
                 return;
             case "EZ":
@@ -363,40 +388,26 @@ public class Door
             case "Intercom":
             {
                 foreach (RoomIdentifier? room in DoorVariant.Rooms)
-                    switch (room.Name)
-                    {
-                        case RoomName.HczCheckpointA:
+                    if (room.Name == RoomName.HczCheckpointToEntranceZone)
+                        switch (room.transform.position.z)
                         {
-                            Type = DoorType.EzCheckpointArmoryA;
-                            return;
+                            case > 75:
+                            {
+                                Type = DoorType.EzCheckpointArmoryA;
+                                return;
+                            }
+                            default:
+                            {
+                                Type = DoorType.EzCheckpointArmoryB;
+                                return;
+                            }
                         }
-                        case RoomName.HczCheckpointB:
-                        {
-                            Type = DoorType.EzCheckpointArmoryB;
-                            return;
-                        }
-                        default:
-                        {
-                            if (room.gameObject.name.StartsWith("HCZ Part"))
-                                switch (room.gameObject.transform.parent.name)
-                                {
-                                    case "HCZ_EZ_Checkpoint (A)":
-                                        Type = DoorType.EzCheckpointArmoryA;
-                                        return;
-                                    case "HCZ_EZ_Checkpoint (B)":
-                                        Type = DoorType.EzCheckpointArmoryB;
-                                        return;
-                                }
-
-                            break;
-                        }
-                    }
 
                 Type = DoorType.Unknown;
                 return;
             }
 
-            case "Elevator":
+            case "Elevator" or "Nuke":
             {
                 if (!DoorVariant.Rooms.Any())
                     return;
@@ -438,10 +449,10 @@ public class Door
 
                         switch (elev.Group)
                         {
-                            case ElevatorManager.ElevatorGroup.GateA:
+                            case ElevatorGroup.GateA:
                                 Type = DoorType.EzGateA;
                                 return;
-                            case ElevatorManager.ElevatorGroup.GateB:
+                            case ElevatorGroup.GateB:
                                 Type = DoorType.EzGateB;
                                 return;
                         }

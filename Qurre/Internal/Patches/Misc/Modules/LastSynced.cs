@@ -3,6 +3,7 @@ using HarmonyLib;
 using Mirror;
 using PlayerRoles.FirstPersonControl.NetworkMessages;
 using Qurre.API;
+using Qurre.API.Controllers;
 using UnityEngine;
 
 namespace Qurre.Internal.Patches.Misc.Modules;

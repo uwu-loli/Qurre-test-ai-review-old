@@ -1,5 +1,5 @@
 ﻿using JetBrains.Annotations;
-using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Objects;
 
 // ReSharper disable once CheckNamespace
@@ -8,6 +8,8 @@ namespace Qurre.Events.Structs;
 [PublicAPI]
 public class ScpAttackEvent : IBaseEvent
 {
+    private const uint EventID = ScpEvents.Attack;
+
     internal ScpAttackEvent(Player attacker, Player target, ScpAttackType type)
     {
         Attacker = attacker;
@@ -21,5 +23,5 @@ public class ScpAttackEvent : IBaseEvent
     public ScpAttackType Type { get; }
     public float Damage { get; set; }
     public bool Allowed { get; set; }
-    public uint EventId { get; } = ScpEvents.Attack;
+    public uint EventId { get; } = EventID;
 }

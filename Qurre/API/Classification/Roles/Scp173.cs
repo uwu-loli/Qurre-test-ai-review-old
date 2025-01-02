@@ -9,9 +9,9 @@ namespace Qurre.API.Classification.Roles;
 [PublicAPI]
 public sealed class Scp173
 {
-    private readonly API.Player _pl;
+    private readonly Controllers.Player _pl;
 
-    internal Scp173(API.Player pl)
+    internal Scp173(Controllers.Player pl)
     {
         _pl = pl;
 
@@ -26,7 +26,7 @@ public sealed class Scp173
             Log.Debug("Null Debug: [Roles > Scp173] >> Scp173ObserversTracker is null");
     }
 
-    public static HashSet<API.Player> IgnoredPlayers { get; } = [];
+    public static HashSet<Controllers.Player> IgnoredPlayers { get; } = [];
 
     public Scp173Role Base { get; }
 

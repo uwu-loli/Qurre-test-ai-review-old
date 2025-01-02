@@ -8,9 +8,9 @@ namespace Qurre.API.Classification.Player;
 [PublicAPI]
 public sealed class Client
 {
-    private readonly API.Player _player;
+    private readonly Controllers.Player _player;
 
-    internal Client(API.Player pl)
+    internal Client(Controllers.Player pl)
     {
         _player = pl;
     }

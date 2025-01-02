@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using MEC;
-using Qurre.API;
 using Qurre.API.Attributes;
 using Qurre.API.Controllers;
+using Qurre.API.World;
 using Qurre.Events;
 
 namespace Qurre.Internal.EventsCalled;
@@ -36,13 +36,13 @@ internal static class Primitives
 
         Timing.KillCoroutines(CoroutineName);
 
-        if (API.Round.Waiting) Timing.RunCoroutine(ToysUpdate(), Segment.LateUpdate, CoroutineName);
+        if (API.World.Round.Waiting) Timing.RunCoroutine(ToysUpdate(), Segment.LateUpdate, CoroutineName);
     }
 
     [EventMethod(PlayerEvents.Join)]
     private static void UpdateJoin()
     {
-        if (API.Round.Waiting)
+        if (API.World.Round.Waiting)
             return;
 
         // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
