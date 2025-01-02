@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class LightPoint
+public class LightPoint : AdminToy<LightSourceToy>
 {
     public LightPoint(Vector3 position, Color lightColor = default, float lightIntensity = 5.0F,
         float lightRange = 10.0F, LightType lightType = LightType.Point, Quaternion rotation = default,
@@ -28,7 +28,7 @@ public class LightPoint
         NetworkServer.Spawn(Base.gameObject);
 
         Position = position;
-        RotationQuaternion = rotation;
+        Rotation = rotation;
         Scale = Vector3.one;
 
         if (lightColor == default || lightColor is { r: < 0.1f, g: < 0.1f, b: < 0.1f })
@@ -42,73 +42,6 @@ public class LightPoint
         ShadowStrength = shadowStrength;
 
         Map.Lights.Add(this);
-    }
-
-    public LightSourceToy Base { get; }
-
-    public Vector3 Position
-    {
-        get => Base.transform.position;
-        set
-        {
-            Base.transform.position = value;
-            Base.NetworkPosition = value;
-        }
-    }
-
-    public Quaternion RotationQuaternion
-    {
-        get => Base.transform.localRotation;
-        set
-        {
-            Base.transform.rotation = value;
-            Base.NetworkRotation = value;
-        }
-    }
-
-    public Vector3 RotationEuler
-    {
-        get => Base.transform.localRotation.eulerAngles;
-        set
-        {
-            Quaternion quaternion = Quaternion.Euler(value);
-            Base.transform.rotation = quaternion;
-            Base.NetworkRotation = quaternion;
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Base.transform.localScale;
-        set
-        {
-            Base.transform.localScale = value;
-            Base.NetworkScale = Base.transform.lossyScale;
-        }
-    }
-
-    public Vector3 GlobalScale => Base.transform.lossyScale;
-
-    public byte MovementSmoothing
-    {
-        get => Base.NetworkMovementSmoothing;
-        set => Base.NetworkMovementSmoothing = value;
-    }
-
-    public bool IsStatic
-    {
-        get => Base.NetworkIsStatic;
-        set
-        {
-            if (value)
-            {
-                Base.NetworkPosition = Base.transform.position;
-                Base.NetworkRotation = Base.transform.rotation;
-                Base.NetworkScale = Base.transform.lossyScale;
-            }
-
-            Base.NetworkIsStatic = value;
-        }
     }
 
     public Color Color

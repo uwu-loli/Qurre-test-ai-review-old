@@ -12,7 +12,7 @@ namespace Qurre.API.Controllers;
 
 // TODO: разобраться с лимитом в 4 штуки. Может быть сделать SpeakerPool?
 [PublicAPI]
-public class Speaker
+public class Speaker : AdminToy<SpeakerToy>
 {
     public Speaker(SpeakerToy speakerToy)
     {
@@ -43,76 +43,9 @@ public class Speaker
         MaxDistance = maxDistance;
     }
 
-    public SpeakerToy Base { get; }
-
     public SpeakerToyPlaybackBase Playback => Base.Playback;
 
     public AudioPlayerSpeaker ApiPlayer { get; }
-
-    public Vector3 Position
-    {
-        get => Base.transform.position;
-        set
-        {
-            Base.transform.position = value;
-            Base.NetworkPosition = value;
-        }
-    }
-
-    public Quaternion RotationQuaternion
-    {
-        get => Base.transform.rotation;
-        set
-        {
-            Base.transform.rotation = value;
-            Base.NetworkRotation = value;
-        }
-    }
-
-    public Vector3 RotationEuler
-    {
-        get => Base.transform.rotation.eulerAngles;
-        set
-        {
-            Quaternion quaternion = Quaternion.Euler(value);
-            Base.transform.localRotation = quaternion;
-            Base.NetworkRotation = quaternion;
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Base.transform.localScale;
-        set
-        {
-            Base.transform.localScale = value;
-            Base.NetworkScale = Base.transform.lossyScale;
-        }
-    }
-
-    public Vector3 GlobalScale => Base.transform.lossyScale;
-
-    public byte MovementSmoothing
-    {
-        get => Base.NetworkMovementSmoothing;
-        set => Base.NetworkMovementSmoothing = value;
-    }
-
-    public bool IsStatic
-    {
-        get => Base.NetworkIsStatic;
-        set
-        {
-            if (value)
-            {
-                Base.NetworkPosition = Base.transform.position;
-                Base.NetworkRotation = Base.transform.rotation;
-                Base.NetworkScale = Base.transform.lossyScale;
-            }
-
-            Base.NetworkIsSpatial = value;
-        }
-    }
 
     public byte ControllerId
     {

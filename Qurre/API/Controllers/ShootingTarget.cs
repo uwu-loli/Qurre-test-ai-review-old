@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class ShootingTarget
+public class ShootingTarget : AdminToy<AdminToys.ShootingTarget>
 {
     public ShootingTarget(TargetPrefabs type, Vector3 position, Quaternion rotation = default, Vector3 size = default)
     {
@@ -44,41 +44,6 @@ public class ShootingTarget
     }
 
     public TargetPrefabs Type { get; }
-
-    public AdminToys.ShootingTarget Base { get; }
-
-    public Vector3 Position
-    {
-        get => Base.transform.position;
-        set
-        {
-            NetworkServer.UnSpawn(Base.gameObject);
-            Base.transform.position = value;
-            NetworkServer.Spawn(Base.gameObject);
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Base.transform.localScale;
-        set
-        {
-            NetworkServer.UnSpawn(Base.gameObject);
-            Base.transform.localScale = value;
-            NetworkServer.Spawn(Base.gameObject);
-        }
-    }
-
-    public Quaternion Rotation
-    {
-        get => Base.transform.localRotation;
-        set
-        {
-            NetworkServer.UnSpawn(Base.gameObject);
-            Base.transform.localRotation = value;
-            NetworkServer.Spawn(Base.gameObject);
-        }
-    }
 
     public void Clear()
     {

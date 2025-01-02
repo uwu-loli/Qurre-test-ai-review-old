@@ -12,7 +12,7 @@ using Object = UnityEngine.Object;
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Primitive
+public class Primitive : AdminToy<PrimitiveObjectToy>
 {
     internal static bool AllowStatic;
     internal static readonly HashSet<Primitive> CachedToSetStatic = [];
@@ -33,7 +33,7 @@ public class Primitive
         NetworkServer.Spawn(Base.gameObject);
 
         Position = position;
-        RotationQuaternion = rotation;
+        Rotation = rotation;
         Scale = size == default ? Vector3.one : size;
 
         Type = type;
@@ -45,60 +45,9 @@ public class Primitive
         NonStaticPrims.Add(this);
     }
 
-    public PrimitiveObjectToy Base { get; }
-
-    public Vector3 Position
+    public override bool IsStatic
     {
-        get => Base.transform.position;
-        set
-        {
-            Base.transform.position = value;
-            Base.NetworkPosition = value;
-        }
-    }
-
-    public Quaternion RotationQuaternion
-    {
-        get => Base.transform.rotation;
-        set
-        {
-            Base.transform.rotation = value;
-            Base.NetworkRotation = value;
-        }
-    }
-
-    public Vector3 RotationEuler
-    {
-        get => Base.transform.localRotation.eulerAngles;
-        set
-        {
-            Quaternion quaternion = Quaternion.Euler(value);
-            Base.transform.localRotation = quaternion;
-            Base.NetworkRotation = quaternion;
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Base.transform.localScale;
-        set
-        {
-            Base.transform.localScale = value;
-            Base.NetworkScale = Base.transform.lossyScale;
-        }
-    }
-
-    public Vector3 GlobalScale => Base.transform.lossyScale;
-
-    public byte MovementSmoothing
-    {
-        get => Base.NetworkMovementSmoothing;
-        set => Base.NetworkMovementSmoothing = value;
-    }
-
-    public bool IsStatic
-    {
-        get => Base.IsStatic;
+        get => base.IsStatic;
         set
         {
             if (value)
@@ -107,7 +56,7 @@ public class Primitive
                 Base.NetworkRotation = Base.transform.rotation;
                 Base.NetworkScale = Base.transform.lossyScale;
             }
-
+            
             if (AllowStatic)
             {
                 Base.NetworkIsStatic = value;
