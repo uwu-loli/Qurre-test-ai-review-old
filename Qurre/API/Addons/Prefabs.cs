@@ -42,7 +42,11 @@ public static class Prefabs
         try
         {
             foreach (GameObject? prefab in NetworkManager.singleton.spawnPrefabs)
-                //Log.Custom(prefab.name, "Init", ConsoleColor.Magenta);
+            {
+#if TESTS
+                Log.Custom(prefab.name, "Init", ConsoleColor.Magenta);
+#endif
+
                 switch (prefab.name)
                 {
                     case "EZ BreakableDoor" when prefab.TryGetComponent<BreakableDoor>(out BreakableDoor? door):
@@ -61,6 +65,7 @@ public static class Prefabs
                         break;
                     }
                 }
+            }
         }
         catch (Exception e)
         {
@@ -73,7 +78,11 @@ public static class Prefabs
         try
         {
             foreach (var prefab in NetworkClient.prefabs)
-                //Log.Custom(prefab.Key + " - " + prefab.Value.name, "InitLate", ConsoleColor.Blue);
+            {
+#if TESTS
+                Log.Custom(prefab.Key + " - " + prefab.Value.name, "InitLate", ConsoleColor.Blue);
+#endif
+
                 switch (prefab.Key.ToString())
                 {
                     case "2724603877" when prefab.Value.TryGetComponent<Scp079Generator>(out Scp079Generator? gen):
@@ -119,6 +128,9 @@ public static class Prefabs
                     case "1964083310" when prefab.Value.TryGetComponent<Locker>(out Locker? locker):
                         LocalLockers[LockerPrefabs.MiscLocker] = locker;
                         break;
+                    case "2372810204" when prefab.Value.TryGetComponent<Locker>(out Locker? locker):
+                        LocalLockers[LockerPrefabs.Experimental] = locker;
+                        break;
 
                     case "4040822781" when prefab.Value.TryGetComponent<Locker>(out Locker? locker):
                         LocalLockers[LockerPrefabs.RegularMedkit] = locker;
@@ -127,14 +139,17 @@ public static class Prefabs
                         LocalLockers[LockerPrefabs.AdrenalineMedkit] = locker;
                         break;
 
-                    case "1883254029" when prefab.Value.TryGetComponent<BreakableDoor>(out BreakableDoor? door):
-                        LocalDoors[DoorPrefabs.DoorEZ] = door;
+                    case "3038351124" when prefab.Value.TryGetComponent<BreakableDoor>(out BreakableDoor? door):
+                        LocalDoors[DoorPrefabs.DoorLCZ] = door;
                         break;
                     case "2295511789" when prefab.Value.TryGetComponent<BreakableDoor>(out BreakableDoor? door):
                         LocalDoors[DoorPrefabs.DoorHCZ] = door;
                         break;
-                    case "3038351124" when prefab.Value.TryGetComponent<BreakableDoor>(out BreakableDoor? door):
-                        LocalDoors[DoorPrefabs.DoorLCZ] = door;
+                    case "1883254029" when prefab.Value.TryGetComponent<BreakableDoor>(out BreakableDoor? door):
+                        LocalDoors[DoorPrefabs.DoorEZ] = door;
+                        break;
+                    case "2176035362" when prefab.Value.TryGetComponent<BreakableDoor>(out BreakableDoor? door):
+                        LocalDoors[DoorPrefabs.BulkHCZ] = door;
                         break;
 
                     case "1704345398":
@@ -160,6 +175,7 @@ public static class Prefabs
                         Speaker = prefab.Value;
                         break;
                 }
+            }
         }
         catch (Exception e)
         {

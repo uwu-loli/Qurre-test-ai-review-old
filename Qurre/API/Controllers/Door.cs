@@ -36,6 +36,8 @@ public class Door
     public Door(Vector3 position, DoorPrefabs prefab, Quaternion? rotation = null, DoorPermissions? permissions = null)
     {
         Custom = true;
+        PrefabType = prefab;
+
         DoorVariant = Object.Instantiate(prefab.GetPrefab());
         _cachedGameObject = DoorVariant.gameObject;
 
@@ -61,10 +63,12 @@ public class Door
         SetupDoorType();
     }
 
-    public bool Custom { get; private set; }
-    public DoorType Type { get; private set; }
+    public bool Custom { get; init; }
+    public DoorPrefabs PrefabType { get; init; }
 
+    public DoorType Type { get; private set; }
     public DoorVariant DoorVariant { get; internal set; }
+
     public GameObject GameObject => DoorVariant != null ? DoorVariant.gameObject : _cachedGameObject;
     public bool IsLift => DoorVariant is ElevatorDoor;
     public bool Breakable => DoorVariant is BreakableDoor;

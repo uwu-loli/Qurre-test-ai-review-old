@@ -18,5 +18,6 @@ public enum LockerPrefabs : byte
     Pedestal2176,
     MiscLocker,
     RifleRack,
-    LargeGun
+    LargeGun,
+    Experimental
 }

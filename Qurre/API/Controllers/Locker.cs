@@ -27,6 +27,8 @@ public class Locker
     public Locker(Vector3 position, LockerPrefabs type, Quaternion? rotation = null)
     {
         Custom = true;
+        PrefabType = type;
+
         GlobalLocker = Object.Instantiate(type.GetPrefab());
 
         GlobalLocker.transform.position = position;
@@ -47,16 +49,18 @@ public class Locker
         Map.Lockers.Add(this);
     }
 
+    public bool Custom { get; init; }
+    public LockerPrefabs PrefabType { get; init; }
+
+    public BaseLocker GlobalLocker { get; }
+    public Chamber[] Chambers { get; private set; }
+
     public GameObject GameObject => GlobalLocker.gameObject;
     public Transform Transform => GlobalLocker.transform;
     public LockerLoot[] Loot => GlobalLocker.Loot;
     public AudioClip GrantedBeep => GlobalLocker._grantedBeep;
     public AudioClip DeniedBeep => GlobalLocker._deniedBeep;
     public string Name => GlobalLocker.name;
-
-    public BaseLocker GlobalLocker { get; }
-    public Chamber[] Chambers { get; private set; }
-    public bool Custom { get; private set; }
 
     public Vector3 Position
     {

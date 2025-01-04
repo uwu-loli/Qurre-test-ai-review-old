@@ -9,5 +9,6 @@ public enum DoorPrefabs : byte
 {
     DoorLCZ,
     DoorHCZ,
-    DoorEZ
+    DoorEZ,
+    BulkHCZ
 }
