@@ -1,6 +1,6 @@
 ﻿using InventorySystem.Items;
 using JetBrains.Annotations;
-using Qurre.API.Controllers;
+using Qurre.API.Addons.Items;
 
 namespace Qurre.API.Classification.Structs;
 

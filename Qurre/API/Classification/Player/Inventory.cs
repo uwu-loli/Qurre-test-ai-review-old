@@ -6,8 +6,8 @@ using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Attachments;
 using InventorySystem.Items.Pickups;
 using JetBrains.Annotations;
+using Qurre.API.Addons.Items;
 using Qurre.API.Classification.Structs;
-using Qurre.API.Controllers;
 using Qurre.API.Objects;
 
 namespace Qurre.API.Classification.Player;

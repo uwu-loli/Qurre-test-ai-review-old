@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using InventorySystem.Items.Armor;
 using JetBrains.Annotations;
-using Qurre.API.Controllers;
 using static InventorySystem.Items.Armor.BodyArmor;
 
 namespace Qurre.API.Addons.Items;

@@ -8,6 +8,7 @@ using HarmonyLib;
 using InventorySystem.Items.Pickups;
 using InventorySystem.Searching;
 using Qurre.API;
+using Qurre.API.Addons.Items;
 using Qurre.API.Controllers;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;

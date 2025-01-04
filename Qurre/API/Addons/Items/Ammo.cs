@@ -1,6 +1,5 @@
 ﻿using InventorySystem.Items.Firearms.Ammo;
 using JetBrains.Annotations;
-using Qurre.API.Controllers;
 using Qurre.API.Objects;
 
 namespace Qurre.API.Addons.Items;

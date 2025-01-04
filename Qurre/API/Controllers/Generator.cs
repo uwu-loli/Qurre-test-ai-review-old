@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using MapGeneration.Distributors;
 using Mirror;
 using Qurre.API.Addons;
+using Qurre.API.Controllers.Components;
 using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -10,7 +11,7 @@ using Object = UnityEngine.Object;
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Generator
+public class Generator : NetTransform
 {
     private readonly Scp079Generator _generator;
     private readonly StructurePositionSync _positionSync;
@@ -20,6 +21,7 @@ public class Generator
     {
         _generator = g;
         _positionSync = _generator.GetComponent<StructurePositionSync>();
+        SetupActions();
     }
 
     public Generator(Vector3 position, Quaternion? rotation = null)
@@ -34,6 +36,7 @@ public class Generator
 
         _positionSync = _generator.GetComponent<StructurePositionSync>();
 
+        SetupActions();
         NetworkServer.Spawn(_generator.gameObject);
 
         _generator.netIdentity.UpdateData();
@@ -41,48 +44,12 @@ public class Generator
         Map.Generators.Add(this);
     }
 
-    public GameObject GameObject => _generator.gameObject;
-    public Transform Transform => GameObject.transform;
+    public override GameObject GameObject => _generator.gameObject;
 
     public string Name
     {
         get => string.IsNullOrEmpty(_name) ? GameObject.name : _name;
         set => _name = value;
-    }
-
-    public Vector3 Position
-    {
-        get => Transform.position;
-        set
-        {
-            _positionSync.Network_position = value;
-            NetworkServer.UnSpawn(GameObject);
-            Transform.position = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Quaternion Rotation
-    {
-        get => Transform.localRotation;
-        set
-        {
-            _positionSync.Network_rotationY = (sbyte)(value.eulerAngles.y / 5.625f);
-            NetworkServer.UnSpawn(GameObject);
-            Transform.rotation = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Transform.localScale;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.localScale = value;
-            NetworkServer.Spawn(GameObject);
-        }
     }
 
     public bool Open
@@ -128,9 +95,15 @@ public class Generator
         set => _generator.Network_syncTime = value;
     }
 
-    public void Destroy()
+    private void SetupActions()
     {
-        Map.Generators.Remove(this);
+        OnPositionUpdate += () => _positionSync.Network_position = Position;
+        OnRotationUpdate += () => _positionSync.Network_rotationY = (sbyte)(Rotation.eulerAngles.y / 5.625f);
+    }
+
+    public override void Destroy()
+    {
         NetworkServer.Destroy(GameObject);
+        Map.Generators.Remove(this);
     }
 }

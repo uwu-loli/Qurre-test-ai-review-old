@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using InventorySystem.Items.Pickups;
 using JetBrains.Annotations;
+using Qurre.API.Addons.Items;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Structs;
 using UnityEngine;

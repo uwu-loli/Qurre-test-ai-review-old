@@ -1,6 +1,5 @@
 ﻿using InventorySystem.Items.Usables;
 using JetBrains.Annotations;
-using Qurre.API.Controllers;
 
 namespace Qurre.API.Addons.Items;
 

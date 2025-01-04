@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using InventorySystem;
 using Qurre.API;
-using Qurre.API.Controllers;
+using Qurre.API.Addons.Items;
 using Qurre.Events.Structs;
 
 namespace Qurre.Internal.Patches.PlayerEvents.Pickups;

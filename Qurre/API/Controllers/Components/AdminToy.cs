@@ -2,7 +2,7 @@ using AdminToys;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Qurre.API.Controllers;
+namespace Qurre.API.Controllers.Components;
 
 [PublicAPI]
 public abstract class AdminToy<TAdminToy> where TAdminToy : AdminToyBase
@@ -67,4 +67,7 @@ public abstract class AdminToy<TAdminToy> where TAdminToy : AdminToyBase
     }
 
     public Vector3 GlobalScale => Base.transform.lossyScale;
+
+
+    public abstract void Destroy();
 }

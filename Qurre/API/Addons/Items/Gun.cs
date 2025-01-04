@@ -7,7 +7,6 @@ using InventorySystem.Items.Firearms.Attachments;
 using InventorySystem.Items.Firearms.Attachments.Components;
 using InventorySystem.Items.Firearms.Modules;
 using JetBrains.Annotations;
-using Qurre.API.Controllers;
 using Qurre.API.Objects;
 
 namespace Qurre.API.Addons.Items;

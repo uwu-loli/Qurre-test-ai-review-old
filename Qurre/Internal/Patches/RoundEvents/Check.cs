@@ -9,6 +9,7 @@ using HarmonyLib;
 using MEC;
 using PlayerRoles;
 using Qurre.API;
+using Qurre.API.Addons.Items;
 using Qurre.API.Controllers;
 using Qurre.API.World;
 using Qurre.Events.Structs;

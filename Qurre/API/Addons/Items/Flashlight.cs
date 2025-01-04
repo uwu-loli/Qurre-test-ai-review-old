@@ -1,7 +1,6 @@
 ﻿using InventorySystem.Items.ToggleableLights;
 using InventorySystem.Items.ToggleableLights.Flashlight;
 using JetBrains.Annotations;
-using Qurre.API.Controllers;
 using Utils.Networking;
 
 namespace Qurre.API.Addons.Items;

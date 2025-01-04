@@ -3,6 +3,7 @@ using InventorySystem.Items.Firearms.Attachments;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
+using Qurre.API.Controllers.Components;
 using Qurre.API.Objects;
 using Qurre.API.World;
 using UnityEngine;
@@ -11,7 +12,7 @@ using Object = UnityEngine.Object;
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class WorkStation
+public class WorkStation : NetTransform
 {
     internal WorkStation(WorkstationController station)
     {
@@ -37,42 +38,8 @@ public class WorkStation
 
     public bool Custom { get; }
 
-    public GameObject GameObject => Controller.gameObject;
-    public Transform Transform => GameObject.transform;
+    public override GameObject GameObject => Controller.gameObject;
     public string Name => GameObject.name;
-
-    public Vector3 Position
-    {
-        get => Transform.position;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.position = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Transform.localScale;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.localScale = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Quaternion Rotation
-    {
-        get => Transform.rotation;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.rotation = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
 
     public Player? KnownUser
     {
@@ -114,7 +81,7 @@ public class WorkStation
         } // end field_set
     } // end field
 
-    public void Destroy()
+    public override void Destroy()
     {
         NetworkServer.Destroy(GameObject);
         Map.WorkStations.Remove(this);

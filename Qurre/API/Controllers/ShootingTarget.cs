@@ -2,6 +2,7 @@
 using AdminToys;
 using JetBrains.Annotations;
 using Mirror;
+using Qurre.API.Controllers.Components;
 using Qurre.API.Objects;
 using Qurre.API.World;
 using UnityEngine;
@@ -50,7 +51,7 @@ public class ShootingTarget : AdminToy<AdminToys.ShootingTarget>
         Base.ClearTarget();
     }
 
-    public void Destroy()
+    public override void Destroy()
     {
         NetworkServer.Destroy(Base.gameObject);
         Map.ShootingTargets.Remove(this);

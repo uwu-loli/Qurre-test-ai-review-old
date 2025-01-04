@@ -2,12 +2,14 @@
 using Hazards;
 using JetBrains.Annotations;
 using Mirror;
+using Qurre.API.Controllers.Components;
+using Qurre.API.World;
 using UnityEngine;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Sinkhole
+public class Sinkhole : NetTransform
 {
     internal Sinkhole(SinkholeEnvironmentalHazard hole)
     {
@@ -18,42 +20,8 @@ public class Sinkhole
 
     public bool ImmunityScps { get; set; }
 
-    public GameObject GameObject => EnvironmentalHazard.gameObject;
-    public Transform Transform => GameObject.transform;
+    public override GameObject GameObject => EnvironmentalHazard.gameObject;
     public string Name => GameObject.name;
-
-    public Vector3 Position
-    {
-        get => Transform.position;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.position = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Quaternion Rotation
-    {
-        get => Transform.localRotation;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.localRotation = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Transform.localScale;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.localScale = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
 
     public float MaxDistance
     {
@@ -65,6 +33,12 @@ public class Sinkhole
     {
         get => EnvironmentalHazard.MaxHeightDistance;
         set => EnvironmentalHazard.MaxHeightDistance = value;
+    }
+
+    public override void Destroy()
+    {
+        NetworkServer.Destroy(GameObject);
+        Map.Sinkholes.Remove(this);
     }
 
     public static bool operator ==(Sinkhole? first, Sinkhole? next)

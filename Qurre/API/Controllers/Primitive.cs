@@ -5,6 +5,7 @@ using Footprinting;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
+using Qurre.API.Controllers.Components;
 using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -56,7 +57,7 @@ public class Primitive : AdminToy<PrimitiveObjectToy>
                 Base.NetworkRotation = Base.transform.rotation;
                 Base.NetworkScale = Base.transform.lossyScale;
             }
-            
+
             if (AllowStatic)
             {
                 Base.NetworkIsStatic = value;
@@ -120,7 +121,7 @@ public class Primitive : AdminToy<PrimitiveObjectToy>
         }
     }
 
-    public void Destroy()
+    public override void Destroy()
     {
         NetworkServer.Destroy(Base.gameObject);
         Map.Primitives.Remove(this);

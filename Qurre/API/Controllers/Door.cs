@@ -6,6 +6,7 @@ using Interactables.Interobjects.DoorUtils;
 using JetBrains.Annotations;
 using MapGeneration;
 using Mirror;
+using Qurre.API.Controllers.Components;
 using Qurre.API.Objects;
 using Qurre.API.World;
 using Qurre.Internal.Misc;
@@ -15,7 +16,7 @@ using Object = UnityEngine.Object;
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Door
+public class Door : NetTransform
 {
     private GameObject _cachedGameObject;
     private string _name = string.Empty;
@@ -51,7 +52,7 @@ public class Door
         NetworkServer.Spawn(DoorVariant.gameObject);
 
         DoorVariant.netIdentity.UpdateData();
-        DoorsUpdater? comp = GameObject.AddComponent<DoorsUpdater>();
+        DoorsUpdater? comp = DoorVariant.gameObject.AddComponent<DoorsUpdater>();
         if (comp)
         {
             comp.Door = DoorVariant;
@@ -69,7 +70,8 @@ public class Door
     public DoorType Type { get; private set; }
     public DoorVariant DoorVariant { get; internal set; }
 
-    public GameObject GameObject => DoorVariant != null ? DoorVariant.gameObject : _cachedGameObject;
+    public override GameObject GameObject => DoorVariant != null ? DoorVariant.gameObject : _cachedGameObject;
+
     public bool IsLift => DoorVariant is ElevatorDoor;
     public bool Breakable => DoorVariant is BreakableDoor;
 
@@ -92,39 +94,6 @@ public class Door
             _rooms = DoorVariant.Rooms.Select(x => x.GetRoom()).ToList();
 
             return _rooms;
-        }
-    }
-
-    public Vector3 Position
-    {
-        get => GameObject.transform.position;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            GameObject.transform.position = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Quaternion Rotation
-    {
-        get => GameObject.transform.rotation;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            GameObject.transform.rotation = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => GameObject.transform.localScale;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            GameObject.transform.localScale = value;
-            NetworkServer.Spawn(GameObject);
         }
     }
 
@@ -179,10 +148,10 @@ public class Door
         return true;
     }
 
-    public void Destroy()
+    public override void Destroy()
     {
-        Map.Doors.Remove(this);
         NetworkServer.Destroy(GameObject);
+        Map.Doors.Remove(this);
     }
 
     private void SetupDoorType()

@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
 using Qurre.API.Addons.Audio;
+using Qurre.API.Controllers.Components;
 using Qurre.API.World;
 using UnityEngine;
 using VoiceChat.Playbacks;
@@ -82,7 +83,7 @@ public class Speaker : AdminToy<SpeakerToy>
         set => Base.NetworkMaxDistance = value;
     }
 
-    public void Destroy()
+    public override void Destroy()
     {
         ApiPlayer.DestroySelf();
         NetworkServer.Destroy(Base.gameObject);

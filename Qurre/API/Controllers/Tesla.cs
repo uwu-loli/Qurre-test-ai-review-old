@@ -2,12 +2,14 @@
 using JetBrains.Annotations;
 using Mirror;
 using PlayerRoles;
+using Qurre.API.Controllers.Components;
+using Qurre.API.World;
 using UnityEngine;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Tesla
+public class Tesla : NetTransform
 {
     private string _name;
 
@@ -15,6 +17,7 @@ public class Tesla
     {
         _name = string.Empty;
         Gate = gate;
+        OnScaleUpdate += () => SizeOfKiller = Scale;
     }
 
     public TeslaGate Gate { get; }
@@ -25,23 +28,7 @@ public class Tesla
     public List<RoleTypeId> ImmunityRoles { get; } = [];
     public List<Player> ImmunityPlayers { get; } = [];
 
-    public GameObject GameObject => Gate.gameObject;
-    public Transform Transform => GameObject.transform;
-
-    public Vector3 Position => Transform.position;
-    public Quaternion Rotation => Transform.localRotation;
-
-    public Vector3 Scale
-    {
-        get => Transform.localScale;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.localScale = value;
-            SizeOfKiller = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
+    public override GameObject GameObject => Gate.gameObject;
 
     public Vector3 SizeOfKiller
     {
@@ -73,8 +60,9 @@ public class Tesla
         else Gate.RpcPlayAnimation();
     }
 
-    public void Destroy()
+    public override void Destroy()
     {
-        Object.Destroy(Gate.gameObject);
+        NetworkServer.Destroy(GameObject);
+        Map.Teslas.Remove(this);
     }
 }

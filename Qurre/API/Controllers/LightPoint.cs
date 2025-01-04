@@ -4,6 +4,7 @@ using Footprinting;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
+using Qurre.API.Controllers.Components;
 using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -98,7 +99,7 @@ public class LightPoint : AdminToy<LightSourceToy>
         set => Base.NetworkInnerSpotAngle = value;
     }
 
-    public void Destroy()
+    public override void Destroy()
     {
         NetworkServer.Destroy(Base.gameObject);
         Map.Lights.Remove(this);

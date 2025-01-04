@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using MapGeneration.Distributors;
 using Mirror;
+using Qurre.API.Controllers.Components;
 using Qurre.API.Controllers.Structs;
 using Qurre.API.Objects;
 using Qurre.API.World;
@@ -13,7 +14,7 @@ namespace Qurre.API.Controllers;
 using BaseLocker = MapGeneration.Distributors.Locker;
 
 [PublicAPI]
-public class Locker
+public class Locker : NetTransform
 {
     private LockerType _typeCached = LockerType.Unknown;
 
@@ -39,7 +40,7 @@ public class Locker
         NetworkServer.Spawn(GlobalLocker.gameObject);
         GlobalLocker.netIdentity.UpdateData();
 
-        LockersUpdater? comp = GameObject.AddComponent<LockersUpdater>();
+        LockersUpdater? comp = GlobalLocker.gameObject.AddComponent<LockersUpdater>();
         if (comp)
         {
             comp.Locker = GlobalLocker;
@@ -55,45 +56,11 @@ public class Locker
     public BaseLocker GlobalLocker { get; }
     public Chamber[] Chambers { get; private set; }
 
-    public GameObject GameObject => GlobalLocker.gameObject;
-    public Transform Transform => GlobalLocker.transform;
+    public override GameObject GameObject => GlobalLocker.gameObject;
     public LockerLoot[] Loot => GlobalLocker.Loot;
     public AudioClip GrantedBeep => GlobalLocker._grantedBeep;
     public AudioClip DeniedBeep => GlobalLocker._deniedBeep;
     public string Name => GlobalLocker.name;
-
-    public Vector3 Position
-    {
-        get => Transform.position;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.position = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Quaternion Rotation
-    {
-        get => Transform.rotation;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.rotation = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Transform.localScale;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.localScale = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
 
     public LockerType Type
     {
@@ -114,4 +81,10 @@ public class Locker
             } // end void 'Get'
         } // end Type_get
     } // end field
+
+    public override void Destroy()
+    {
+        NetworkServer.Destroy(GameObject);
+        Map.Lockers.Remove(this);
+    }
 }

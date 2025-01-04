@@ -67,7 +67,9 @@ public class Room
             if (NetworkIdentity == null)
                 return;
 
+            NetworkServer.UnSpawn(NetworkIdentity.gameObject);
             NetworkIdentity.transform.position = value;
+            NetworkServer.Spawn(NetworkIdentity.gameObject);
             NetworkIdentity.UpdateData();
         }
     }

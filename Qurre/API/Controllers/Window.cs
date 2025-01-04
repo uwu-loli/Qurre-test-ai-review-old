@@ -1,12 +1,14 @@
 ﻿using Footprinting;
 using JetBrains.Annotations;
 using Mirror;
+using Qurre.API.Controllers.Components;
+using Qurre.API.World;
 using UnityEngine;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Window
+public class Window : NetTransform
 {
     private string _name;
 
@@ -19,8 +21,7 @@ public class Window
     public BreakableWindow Breakable { get; }
     public bool AllowBreak { get; set; } = true;
 
-    public GameObject GameObject => Breakable.gameObject;
-    public Transform Transform => Breakable.transform;
+    public override GameObject GameObject => Breakable.gameObject;
     public Footprint LastAttacker => Breakable.LastAttacker;
 
     public string Name
@@ -33,39 +34,6 @@ public class Window
             return _name;
         }
         set => _name = value;
-    }
-
-    public Vector3 Position
-    {
-        get => Transform.position;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.position = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Quaternion Rotation
-    {
-        get => Transform.rotation;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.rotation = value;
-            NetworkServer.Spawn(GameObject);
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Transform.localScale;
-        set
-        {
-            NetworkServer.UnSpawn(GameObject);
-            Transform.localScale = value;
-            NetworkServer.Spawn(GameObject);
-        }
     }
 
     public bool PreventScpDamage
@@ -84,5 +52,11 @@ public class Window
     {
         get => Breakable.NetworkisBroken;
         set => Breakable.NetworkisBroken = value;
+    }
+
+    public override void Destroy()
+    {
+        NetworkServer.Destroy(GameObject);
+        Map.Windows.Remove(this);
     }
 }

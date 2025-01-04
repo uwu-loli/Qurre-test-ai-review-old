@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using InventorySystem.Items.MicroHID;
 using JetBrains.Annotations;
-using Qurre.API.Controllers;
 
 namespace Qurre.API.Addons.Items;
 
