@@ -113,4 +113,10 @@ public class WorkStation
             } // end switch
         } // end field_set
     } // end field
+
+    public void Destroy()
+    {
+        NetworkServer.Destroy(GameObject);
+        Map.WorkStations.Remove(this);
+    }
 }

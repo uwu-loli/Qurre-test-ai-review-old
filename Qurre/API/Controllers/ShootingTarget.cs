@@ -19,7 +19,7 @@ public class ShootingTarget : AdminToy<AdminToys.ShootingTarget>
 
         AdminToyBase? prim = Object.Instantiate(primitiveToyBase, position, rotation);
 
-        Type = type;
+        PrefabType = type;
         Base = (AdminToys.ShootingTarget)prim;
         Base.transform.localScale = size == default ? Vector3.one : size;
         NetworkServer.Spawn(Base.gameObject);
@@ -31,11 +31,11 @@ public class ShootingTarget : AdminToy<AdminToys.ShootingTarget>
     {
         try
         {
-            Type = (TargetPrefabs)Enum.Parse(typeof(TargetPrefabs), @base._targetName);
+            PrefabType = (TargetPrefabs)Enum.Parse(typeof(TargetPrefabs), @base._targetName);
         }
         catch
         {
-            Type = TargetPrefabs.Binary;
+            PrefabType = TargetPrefabs.Binary;
         }
 
         Base = @base;
@@ -43,7 +43,7 @@ public class ShootingTarget : AdminToy<AdminToys.ShootingTarget>
         Map.ShootingTargets.Add(this);
     }
 
-    public TargetPrefabs Type { get; }
+    public TargetPrefabs PrefabType { get; }
 
     public void Clear()
     {
