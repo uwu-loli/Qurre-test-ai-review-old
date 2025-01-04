@@ -16,6 +16,7 @@ public static class Map
     public static List<LightPoint> Lights { get; } = [];
     public static List<Primitive> Primitives { get; } = [];
     public static List<ShootingTarget> ShootingTargets { get; } = [];
+    public static List<Speaker> Speakers { get; } = [];
     public static List<WorkStation> WorkStations { get; } = [];
 
     public static List<Camera> Cameras { get; } = [];

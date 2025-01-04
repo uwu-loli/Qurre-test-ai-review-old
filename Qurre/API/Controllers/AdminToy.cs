@@ -9,7 +9,9 @@ public abstract class AdminToy<TAdminToy> where TAdminToy : AdminToyBase
 {
     public TAdminToy Base { get; protected init; } = null!;
 
-    public  byte MovementSmoothing
+    public GameObject GameObject => Base.gameObject;
+
+    public byte MovementSmoothing
     {
         get => Base.NetworkMovementSmoothing;
         set => Base.NetworkMovementSmoothing = value;
@@ -27,7 +29,7 @@ public abstract class AdminToy<TAdminToy> where TAdminToy : AdminToyBase
             Base.NetworkScale = Base.transform.lossyScale;
         }
     }
-    
+
     public Vector3 Position
     {
         get => Base.transform.position;

@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
 using Qurre.API.Addons.Audio;
+using Qurre.API.World;
 using UnityEngine;
 using VoiceChat.Playbacks;
 
@@ -18,6 +19,8 @@ public class Speaker : AdminToy<SpeakerToy>
     {
         Base = speakerToy;
         ApiPlayer = new AudioPlayerSpeaker(speakerToy);
+
+        Map.Speakers.Add(this);
     }
 
     public Speaker(Vector3 position, byte controllerId = 0, bool isSpatial = true,
@@ -41,6 +44,8 @@ public class Speaker : AdminToy<SpeakerToy>
         Volume = volume;
         MinDistance = minDistance;
         MaxDistance = maxDistance;
+
+        Map.Speakers.Add(this);
     }
 
     public SpeakerToyPlaybackBase Playback => Base.Playback;
@@ -75,5 +80,12 @@ public class Speaker : AdminToy<SpeakerToy>
     {
         get => Base.NetworkMaxDistance;
         set => Base.NetworkMaxDistance = value;
+    }
+
+    public void Destroy()
+    {
+        ApiPlayer.DestroySelf();
+        NetworkServer.Destroy(Base.gameObject);
+        Map.Speakers.Remove(this);
     }
 }

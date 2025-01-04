@@ -148,6 +148,7 @@ internal static class Round
         Map.Lights.Clear();
         Map.Primitives.Clear();
         Map.ShootingTargets.Clear();
+        Map.Speakers.Clear();
         Map.WorkStations.Clear();
 
         Map.Cameras.Clear();

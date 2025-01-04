@@ -99,6 +99,16 @@ internal static class Primitives
                     // may flood, so disabled
                 }
 
+            foreach (Speaker speaker in Map.Speakers)
+                try
+                {
+                    speaker.Base.UpdatePositionServer();
+                }
+                catch
+                {
+                    // may flood, so disabled
+                }
+
             yield return Timing.WaitForOneFrame;
         } // while end
     } // coroutine end
