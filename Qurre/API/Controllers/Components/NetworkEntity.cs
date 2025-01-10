@@ -31,12 +31,17 @@ public abstract class NetworkEntity<TBase, T> : TransformableEntity<TBase, T>, I
 
     public void Spawn()
     {
+        if (!IsAlive || IsSpawned) return;
+        GameObject.SetActive(true);
         NetworkServer.Spawn(GameObject);
+        NetworkUpdateForAll();
         Spawned?.Invoke();
     }
 
     public void UnSpawn()
     {
+        if (!IsAlive || IsUnSpawned) return;
+        GameObject.SetActive(false);
         NetworkServer.UnSpawn(GameObject);
         UnSpawned?.Invoke();
     }
@@ -49,14 +54,14 @@ public abstract class NetworkEntity<TBase, T> : TransformableEntity<TBase, T>, I
     
     public void NetworkUpdateForAll()
     {
-        if (IsUnSpawned) return;
+        if (!IsAlive || IsUnSpawned) return;
         var spawnMessage = GetSpawnMessage();
         NetworkServer.SendToAll(spawnMessage);
     }
 
     public void NetworkUpdateForConnection(NetworkConnectionToClient connectionToClient)
     {
-        if (IsUnSpawned) return;
+        if (!IsAlive || IsUnSpawned) return;
         var spawnMessage = GetSpawnMessage();
         connectionToClient.SendDataToClient(spawnMessage);
     }

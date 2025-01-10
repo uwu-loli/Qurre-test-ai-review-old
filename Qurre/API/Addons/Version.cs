@@ -2,15 +2,15 @@
 
 public class Version
 {
-    private const string SMajor = "2";
+    private const string SMajor = "3";
     private const string SMinor = "0";
     private const string SBuild = "0";
-    private const string SRevision = "185";
+    private const string SRevision = "2";
 
-    private const string STesting = "zeta";
+    private const string STesting = "alpha";
 
     internal const string AssemblyVersion = $"{SMajor}.{SMinor}.{SBuild}.{SRevision}";
-    internal const string AssemblyCustom = $"v2-{STesting}";
+    internal const string AssemblyCustom = $"v3-{STesting}";
 
     internal Version()
     {

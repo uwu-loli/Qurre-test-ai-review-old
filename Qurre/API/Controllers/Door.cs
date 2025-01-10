@@ -5,8 +5,11 @@ using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using JetBrains.Annotations;
 using MapGeneration;
+using Mirror;
 using Qurre.API.Controllers.Components;
+using Qurre.API.Exceptions;
 using Qurre.API.Objects;
+using RelativePositioning;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -15,47 +18,37 @@ namespace Qurre.API.Controllers;
 [PublicAPI]
 public class Door : GeneratedNetworkEntity<DoorVariant, Door>
 {
-    protected sealed override DoorVariant UnsafeBase { get; }
     private List<Room> _rooms = [];
+    private NetIdWaypoint _unsafeNetworkWaypoint;
+    private DoorNametagExtension _unsafeNameTagExtension;
 
-    private Door(DoorVariant doorBase)
+    public NetIdWaypoint NetworkWaypoint => IsAlive ? _unsafeNetworkWaypoint : throw new ObjectDestroyedException();
+    
+    protected sealed override DoorVariant UnsafeBase { get; }
+
+    public string? NameTag
     {
-        UnsafeBase = doorBase;
-
-        RefreshRooms();
-        Type = SetupDoorType();
-        
-#if TESTS
-        WriteDebugLog();
-#endif
-
-        BaseToWrap[Base] = this;
-        AddEntityLink();
+        get => (bool)_unsafeNameTagExtension ? _unsafeNameTagExtension.GetName : null;
+        set
+        {
+            if (!IsAlive) return;
+            
+            var isNameTagExists = (bool)_unsafeNameTagExtension;
+            
+            if (string.IsNullOrEmpty(NameTag))
+            {
+                if (isNameTagExists)
+                    Object.Destroy(_unsafeNetworkWaypoint);
+                return;
+            }
+            
+            if (!isNameTagExists)
+                _unsafeNameTagExtension = GameObject.AddComponent<DoorNametagExtension>();
+            
+            _unsafeNameTagExtension.UpdateName(value);
+        }
     }
-
-    public Door(Vector3 position, DoorPrefabs prefab, Quaternion? rotation = null, DoorPermissions? permissions = null)
-    {
-        PrefabType = prefab;
-
-        UnsafeBase = Object.Instantiate(prefab.GetPrefab());
-
-        Transform.position = position;
-        Transform.rotation = rotation ?? new Quaternion();
-        Base.RequiredPermissions = permissions ?? new DoorPermissions();
-
-        Spawn();
-
-        RefreshRooms();
-        Type = SetupDoorType();
-        
-#if TESTS
-        WriteDebugLog();
-#endif
-        
-        BaseToWrap[Base] = this;
-        AddEntityLink();
-    }
-
+    
     public DoorPrefabs PrefabType { get; init; }
 
     public DoorType Type { get; }
@@ -104,6 +97,62 @@ public class Door : GeneratedNetworkEntity<DoorVariant, Door>
         }
     }
 
+    private Door(DoorVariant doorBase)
+    {
+        UnsafeBase = doorBase;
+        _unsafeNetworkWaypoint = GameObject.GetComponent<NetIdWaypoint>();
+        _unsafeNameTagExtension = GameObject.GetComponent<DoorNametagExtension>();
+
+        RefreshRooms();
+        Type = SetupDoorType();
+        
+#if TESTS
+        WriteDebugLog();
+#endif
+
+        BaseToWrap[Base] = this;
+        Spawned += OnSpawned;
+        UnSpawned += OnUnSpawned;
+        AddEntityLink();
+    }
+
+    public Door(Vector3 position, DoorPrefabs prefab, Quaternion? rotation = null, DoorPermissions? permissions = null)
+    {
+        PrefabType = prefab;
+
+        UnsafeBase = Object.Instantiate(prefab.GetPrefab());
+        _unsafeNetworkWaypoint = GameObject.GetComponent<NetIdWaypoint>();
+        _unsafeNameTagExtension = GameObject.GetComponent<DoorNametagExtension>();
+
+        Transform.position = position;
+        Transform.rotation = rotation ?? new Quaternion();
+        Base.RequiredPermissions = permissions ?? new DoorPermissions();
+
+        RefreshRooms();
+        Type = SetupDoorType();
+
+        NetworkServer.Spawn(GameObject);
+        
+        BaseToWrap[Base] = this;
+        Spawned += OnSpawned;
+        UnSpawned += OnUnSpawned;
+        AddEntityLink();
+    }
+
+    private void OnSpawned()
+    {
+        NetIdWaypoint.AllNetWaypoints.Add(NetworkWaypoint);
+        NetIdWaypoint._refreshNextFrame = true;
+        NetworkWaypoint.enabled = true;
+    }
+
+    private void OnUnSpawned()
+    {
+        NetIdWaypoint.AllNetWaypoints.Remove(NetworkWaypoint);
+        NetIdWaypoint._refreshNextFrame = true;
+        NetworkWaypoint.enabled = true;
+    }
+
     public bool Break()
     {
         if (Base is not BreakableDoor damageableDoor)
@@ -125,6 +174,14 @@ public class Door : GeneratedNetworkEntity<DoorVariant, Door>
         return door is not null;
     }
 
+    protected override void OnPositionUpdated()
+    {
+        if (!IsSpawned) return;
+        NetworkWaypoint._pos = WorldPosition;
+        NetworkServer.UnSpawn(GameObject);
+        NetworkServer.Spawn(GameObject);
+    }
+
     private void RefreshRooms()
     {
         RoomsSet.Clear();
@@ -139,9 +196,7 @@ public class Door : GeneratedNetworkEntity<DoorVariant, Door>
 #if TESTS
     internal string GetDebugString()
     {
-        var nameTagExtension = GameObject.GetComponent<DoorNametagExtension>();
-        var nameTagExists = (bool)nameTagExtension;
-        var nameTag = nameTagExists ? $"[YES] {nameTagExtension.name}" : $"[NO] {GameObject.name}";
+        var nameTag = !string.IsNullOrEmpty(NameTag) ? $"[YES] {NameTag}" : $"[NO] {GameObject.name}";
         return $"Door [ NameTag: {nameTag} | Type: {Type} ];";
     }
     
@@ -155,9 +210,9 @@ public class Door : GeneratedNetworkEntity<DoorVariant, Door>
     private DoorType SetupDoorType()
     {
         // by NameTag
-        if (Base.TryGetComponent(out DoorNametagExtension nameTagExtension))
+        if (!string.IsNullOrEmpty(NameTag))
         {
-            return nameTagExtension.GetName switch
+            return NameTag switch
             {
                 // LCZ
                 "LCZ_ARMORY" => DoorType.LczArmory,
