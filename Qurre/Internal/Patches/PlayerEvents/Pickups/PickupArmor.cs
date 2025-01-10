@@ -57,7 +57,7 @@ internal static class PickupArmor
         try
         {
             Player? pl = instance.Hub.GetPlayer();
-            Pickup? pickup = Pickup.SafeGet(instance.TargetPickup);
+            Pickup? pickup = Pickup.Get(instance.TargetPickup);
 
             if (pl is null || pickup is null)
                 return false;

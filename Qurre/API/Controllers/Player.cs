@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using CentralAuth;
 using JetBrains.Annotations;
 using Mirror;
@@ -16,12 +17,12 @@ namespace Qurre.API.Controllers;
 [PublicAPI]
 public class Player
 {
-    private string _tag = string.Empty;
+    public static IEnumerable<Player> List => Field.Dictionary.Values;
 
-    internal Player(ReferenceHub rh)
+    private Player(ReferenceHub referenceHub)
     {
-        ReferenceHub = rh;
-        GameObject = rh.gameObject;
+        ReferenceHub = referenceHub;
+        GameObject = referenceHub.gameObject;
 
         Disconnected = false;
         LastSynced = Time.time;
@@ -44,15 +45,16 @@ public class Player
         UserInformation = new UserInformation(this);
         ServerSpecificSettings = new ServerSpecificSettings(this);
 
-        if (rh.isLocalPlayer)
+        if (referenceHub.isLocalPlayer)
             return;
 
         Field.Dictionary[GameObject] = this;
         Field.Hubs[ReferenceHub] = this;
+        Field.Ids[UserInformation.Id] = this;
     }
 
-    public static IEnumerable<Player> List => Field.Dictionary.Values;
-
+    public string Tag { get; set; } = string.Empty;
+    
     public GameObject GameObject { get; }
     public ReferenceHub ReferenceHub { get; }
 
@@ -88,18 +90,6 @@ public class Player
     public DateTime SpawnedTime { get; internal set; }
     public VariableDictionary<string, object> Variables { get; }
 
-    public string Tag
-    {
-        get => _tag;
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-                value = string.Empty;
-
-            _tag = value;
-        }
-    }
-
     public BroadcastsList Broadcasts { get; }
 
     public Administrative Administrative { get; }
@@ -113,4 +103,54 @@ public class Player
     public RoleInformation RoleInformation { get; }
     public UserInformation UserInformation { get; }
     public ServerSpecificSettings ServerSpecificSettings { get; }
+
+    public static Player? Get(ReferenceHub referenceHub)
+    {
+        if (!referenceHub) return null;
+        return Field.Hubs.TryGetValue(referenceHub, out var player) ? player : new Player(referenceHub);
+    }
+
+    public static Player? Get(GameObject gameObject)
+    {
+        if (!gameObject) return null;
+        if (Field.Dictionary.TryGetValue(gameObject, out var player))
+            return player;
+        
+        var referenceHub = gameObject.GetComponent<ReferenceHub>();
+        return Get(referenceHub);
+    }
+
+    public static Player? Get(int id)
+    {
+        return Field.Ids.GetValueOrDefault(id);
+    }
+
+    public static Player? Get(string args)
+    {
+        return Field.Args.GetValueOrDefault(args);
+    }
+
+    public static bool TryGet(ReferenceHub referenceHub, [NotNullWhen(true)] out Player? player)
+    {
+        player = Get(referenceHub);
+        return player is not null;
+    }
+
+    public static bool TryGet(GameObject gameObject, [NotNullWhen(true)] out Player? player)
+    {
+        player = Get(gameObject);
+        return player is not null;
+    }
+
+    public static bool TryGet(int id, [NotNullWhen(true)] out Player? player)
+    {
+        player = Get(id);
+        return player is not null;
+    }
+
+    public static bool TryGet(string args, [NotNullWhen(true)] out Player? player)
+    {
+        player = Get(args);
+        return player is not null;
+    }
 }

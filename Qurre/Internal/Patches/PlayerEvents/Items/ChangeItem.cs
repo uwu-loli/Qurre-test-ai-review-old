@@ -24,13 +24,13 @@ internal static class ChangeItem
             if (itemSerial == __instance.CurItem.SerialNumber)
                 return false;
 
-            Player? player = __instance._hub.GetPlayer();
+            var player = __instance._hub.GetPlayer();
+            if (player is null) return false;
+            
+            if (!Item.TryGet(__instance.CurInstance, out var oldItem)) return true;
+            var newItem = itemSerial == 0 ? null : Item.Get(itemSerial);
 
-            if (player is null)
-                return false;
-
-            ChangeItemEvent ev = new(player, Item.SafeGet(__instance.CurInstance),
-                itemSerial == 0 ? null : Item.Get(itemSerial));
+            ChangeItemEvent ev = new(player, oldItem, newItem);
             ev.InvokeEvent();
 
             return ev.Allowed;

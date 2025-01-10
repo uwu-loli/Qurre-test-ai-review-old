@@ -30,13 +30,13 @@ public static class Server
     {
         get
         {
-            if (_host?.ReferenceHub is not null)
+            if (_host?.ReferenceHub)
                 return _host;
 
-            if (!ReferenceHub.TryGetHostHub(out ReferenceHub? hub))
+            if (!ReferenceHub.TryGetHostHub(out var hub) || !hub)
                 throw new NullReferenceException("ReferenceHub could not be found");
 
-            _host = new Player(hub);
+            _host = Player.Get(hub)!;
             return _host;
         }
     }
@@ -63,8 +63,8 @@ public static class Server
             ServerConfigSynchronizer.OnRefreshed?.Invoke();
             AttackerDamageHandler.RefreshConfigs();
 
-            foreach (Player pl in Player.List)
-                pl.FriendlyFire = value;
+            foreach (var player in Player.List)
+                player.FriendlyFire = value;
         }
     }
 

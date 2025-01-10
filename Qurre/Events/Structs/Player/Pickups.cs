@@ -204,7 +204,7 @@ public class JailbirdTriggerEvent : IBaseEvent
     {
         get
         {
-            _item ??= Item.UnsafeGet(JailbirdBase);
+            _item ??= Item.Get(JailbirdBase)!;
             return _item;
         }
     }

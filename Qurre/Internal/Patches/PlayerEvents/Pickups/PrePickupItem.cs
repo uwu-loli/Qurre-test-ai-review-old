@@ -39,7 +39,7 @@ internal static class PrePickupItem
             new CodeInstruction(OpCodes.Ldarg_0),
             new CodeInstruction(OpCodes.Ldfld,
                 AccessTools.Field(typeof(SearchCompletor), nameof(SearchCompletor.TargetPickup))),
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Pickup), nameof(Pickup.SafeGet))),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Pickup), nameof(Pickup.Get))),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(PrePickupItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, @event.LocalIndex), // var @event = ...;

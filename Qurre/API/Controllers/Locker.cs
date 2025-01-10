@@ -1,12 +1,11 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using JetBrains.Annotations;
 using MapGeneration.Distributors;
 using Mirror;
 using Qurre.API.Controllers.Components;
 using Qurre.API.Controllers.Structs;
 using Qurre.API.Objects;
-using Qurre.API.World;
-using Qurre.Internal.Misc;
 using UnityEngine;
 
 namespace Qurre.API.Controllers;
@@ -14,62 +13,55 @@ namespace Qurre.API.Controllers;
 using BaseLocker = MapGeneration.Distributors.Locker;
 
 [PublicAPI]
-public class Locker : NetTransform
+public class Locker : GeneratedNetworkEntity<BaseLocker, Locker>
 {
+    protected sealed override BaseLocker UnsafeBase { get; }
+
     private LockerType _typeCached = LockerType.Unknown;
 
-    internal Locker(BaseLocker locker)
+    private Locker(BaseLocker locker)
     {
-        Custom = false;
-        GlobalLocker = locker;
-        Chambers = GlobalLocker.Chambers.Select(x => new Chamber(x, this)).ToArray();
+        UnsafeBase = locker;
+        Chambers = Base.Chambers.Select(x => new Chamber(x, this)).ToArray();
+        
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
     public Locker(Vector3 position, LockerPrefabs type, Quaternion? rotation = null)
     {
-        Custom = true;
         PrefabType = type;
 
-        GlobalLocker = Object.Instantiate(type.GetPrefab());
+        UnsafeBase = Object.Instantiate(type.GetPrefab());
 
-        GlobalLocker.transform.position = position;
-        GlobalLocker.transform.rotation = rotation ?? new Quaternion();
+        Transform.position = position;
+        Transform.rotation = rotation ?? new Quaternion();
 
-        Chambers = GlobalLocker.Chambers.Select(x => new Chamber(x, this)).ToArray();
+        Chambers = Base.Chambers.Select(lc => new Chamber(lc, this)).ToArray();
 
-        NetworkServer.Spawn(GlobalLocker.gameObject);
-        GlobalLocker.netIdentity.UpdateData();
-
-        LockersUpdater? comp = GlobalLocker.gameObject.AddComponent<LockersUpdater>();
-        if (comp)
-        {
-            comp.Locker = GlobalLocker;
-            comp.Init();
-        }
-
-        Map.Lockers.Add(this);
+        Spawn();
+        
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
-    public bool Custom { get; init; }
     public LockerPrefabs PrefabType { get; init; }
 
-    public BaseLocker GlobalLocker { get; }
     public Chamber[] Chambers { get; private set; }
 
-    public override GameObject GameObject => GlobalLocker.gameObject;
-    public LockerLoot[] Loot => GlobalLocker.Loot;
-    public AudioClip GrantedBeep => GlobalLocker._grantedBeep;
-    public AudioClip DeniedBeep => GlobalLocker._deniedBeep;
-    public string Name => GlobalLocker.name;
+    public LockerLoot[] Loot => Base.Loot;
+    public AudioClip GrantedBeep => Base._grantedBeep;
+    public AudioClip DeniedBeep => Base._deniedBeep;
+    public string Name => Base.name;
 
     public LockerType Type
     {
         get
         {
-            if (_typeCached is LockerType.Unknown) _typeCached = Get();
+            if (_typeCached is LockerType.Unknown) _typeCached = GetLockerType();
             return _typeCached;
 
-            LockerType Get()
+            LockerType GetLockerType()
             {
                 if (Name.Contains("AdrenalineMedkit")) return LockerType.AdrenalineMedkit;
                 if (Name.Contains("RegularMedkit")) return LockerType.RegularMedkit;
@@ -82,9 +74,15 @@ public class Locker : NetTransform
         } // end Type_get
     } // end field
 
-    public override void Destroy()
+    public static Locker? Get(BaseLocker lockerBase)
     {
-        NetworkServer.Destroy(GameObject);
-        Map.Lockers.Remove(this);
+        if (!lockerBase) return null;
+        return BaseToWrap.TryGetValue(lockerBase, out var locker) ? locker : new Locker(lockerBase);
+    }
+
+    public static bool TryGet(BaseLocker lockerBase, [NotNullWhen(true)] out Locker? locker)
+    {
+        locker = Get(lockerBase);
+        return locker is not null;
     }
 }

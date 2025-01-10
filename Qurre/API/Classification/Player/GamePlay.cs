@@ -3,8 +3,6 @@ using InventorySystem.Disarming;
 using JetBrains.Annotations;
 using MapGeneration;
 using Qurre.API.Controllers;
-using Qurre.API.Objects;
-using Qurre.API.World;
 using UnityEngine;
 
 namespace Qurre.API.Classification.Player;
@@ -24,7 +22,7 @@ public sealed class GamePlay
 
     public bool Cuffed => _player.ReferenceHub.inventory.IsDisarmed();
 
-    public ZoneType CurrentZone => Room.Zone;
+    public FacilityZone CurrentZone => Room.Zone;
 
     public bool Overwatch
     {
@@ -41,8 +39,8 @@ public sealed class GamePlay
     public Room Room
     {
         get => RoomIdUtils.RoomAtPosition(_player.MovementState.Position)?.GetRoom() ??
-               Map.Rooms.OrderBy(x => Vector3.Distance(x.Position, _player.MovementState.Position)).First();
-        set => _player.MovementState.Position = value.Position + Vector3.up * 2;
+               Room.List.OrderBy(x => Vector3.Distance(x.WorldPosition, _player.MovementState.Position)).First();
+        set => _player.MovementState.Position = value.WorldPosition + Vector3.up * 2;
     }
 
     public Lift? Lift
@@ -53,7 +51,7 @@ public sealed class GamePlay
             if (value == null)
                 return;
 
-            _player.MovementState.Position = value.Position + Vector3.up * 2;
+            _player.MovementState.Position = value.WorldPosition + Vector3.up * 2;
         }
     }
 

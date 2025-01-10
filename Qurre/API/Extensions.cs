@@ -19,10 +19,12 @@ using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using Qurre.API.Addons;
 using Qurre.API.Controllers;
+using Qurre.API.Interfaces;
 using Qurre.API.Objects;
 using Qurre.API.World;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
+using Qurre.Internal.Misc;
 using UnityEngine;
 using Locker = Qurre.API.Controllers.Locker;
 using Random = UnityEngine.Random;
@@ -92,17 +94,9 @@ public static class Extensions
 
     #region GetLocker
 
-    public static Locker GetLocker(this MapGeneration.Distributors.Locker locker)
+    public static Locker? GetLocker(this MapGeneration.Distributors.Locker lockerBase)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Locker x in Map.Lockers)
-            if (x.GlobalLocker == locker)
-                return x;
-
-        Locker lockerNew = new(locker);
-        Map.Lockers.Add(lockerNew);
-
-        return lockerNew;
+        return Locker.Get(lockerBase);
     }
 
     #endregion
@@ -110,17 +104,9 @@ public static class Extensions
 
     #region GetCorpse
 
-    public static Corpse GetCorpse(this BasicRagdoll basic)
+    public static Corpse? GetCorpse(this BasicRagdoll ragdollBase)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Corpse doll in Map.Corpses)
-            if (doll.Base == basic)
-                return doll;
-
-        Corpse corpse = new(basic, basic.Info.OwnerHub.GetPlayer());
-        Map.Corpses.Add(corpse);
-
-        return corpse;
+        return Corpse.Get(ragdollBase);
     }
 
     #endregion
@@ -128,17 +114,9 @@ public static class Extensions
 
     #region GetWorkStation
 
-    public static WorkStation GetWorkStation(this WorkstationController controller)
+    public static WorkStation? GetWorkStation(this WorkstationController workstationBase)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (WorkStation station in Map.WorkStations)
-            if (station.Controller == controller)
-                return station;
-
-        WorkStation workStation = new(controller);
-        Map.WorkStations.Add(workStation);
-
-        return workStation;
+        return WorkStation.Get(workstationBase);
     }
 
     #endregion
@@ -146,17 +124,9 @@ public static class Extensions
 
     #region GetShootingTarget
 
-    public static ShootingTarget GetShootingTarget(this AdminToys.ShootingTarget controller)
+    public static ShootingTarget? GetShootingTarget(this AdminToys.ShootingTarget targetBase)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (ShootingTarget target in Map.ShootingTargets)
-            if (target.Base == controller)
-                return target;
-
-        ShootingTarget shootingTarget = new(controller);
-        Map.ShootingTargets.Add(shootingTarget);
-
-        return shootingTarget;
+        return ShootingTarget.Get(targetBase);
     }
 
     #endregion
@@ -166,24 +136,22 @@ public static class Extensions
 
     public static Room? GetRoom(this RoomName type)
     {
-        return Map.Rooms.FirstOrDefault(x => x.RoomName == type);
+        return Room.List.FirstOrDefault(x => x.RoomName == type);
     }
 
     public static Room? GetRoom(this RoomType type)
     {
-        return Map.Rooms.FirstOrDefault(x => x.Type == type);
+        return Room.List.FirstOrDefault(x => x.Type == type);
     }
 
     public static Room GetRoom(this RoomIdentifier identifier)
     {
         // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Room room in Map.Rooms)
-            if (room.Identifier == identifier)
+        foreach (var room in Room.List)
+            if (room.Base == identifier)
                 return room;
 
-        Room room2 = new(identifier);
-        Map.Rooms.Add(room2);
-
+        var room2 = Room.Get(identifier)!;
         return room2;
     }
 
@@ -192,22 +160,14 @@ public static class Extensions
 
     #region GetTesla
 
-    public static Tesla GetTesla(this TeslaGate teslaGate)
+    public static Tesla? GetTesla(this TeslaGate teslaBase)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Tesla tesla in Map.Teslas)
-            if (tesla.GameObject == teslaGate.gameObject)
-                return tesla;
-
-        Tesla tesla2 = new(teslaGate);
-        Map.Teslas.Add(tesla2);
-
-        return tesla2;
+        return Tesla.Get(teslaBase);
     }
 
     public static Tesla? GetTesla(this GameObject gameObject)
     {
-        return Map.Teslas.FirstOrDefault(x => x.GameObject == gameObject);
+        return Tesla.List.FirstOrDefault(tesla => tesla.GameObject == gameObject);
     }
 
     #endregion
@@ -217,20 +177,12 @@ public static class Extensions
 
     public static Generator? GetGenerator(this GameObject gameObject)
     {
-        return Map.Generators.FirstOrDefault(x => x.GameObject == gameObject);
+        return Generator.List.FirstOrDefault(x => x.GameObject == gameObject);
     }
 
-    public static Generator GetGenerator(this Scp079Generator generator079)
+    public static Generator? GetGenerator(this Scp079Generator generatorBase)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Generator generator in Map.Generators)
-            if (generator.GameObject == generator079.gameObject)
-                return generator;
-
-        Generator generator2 = new(generator079);
-        Map.Generators.Add(generator2);
-
-        return generator2;
+        return Generator.Get(generatorBase);
     }
 
     #endregion
@@ -238,22 +190,14 @@ public static class Extensions
 
     #region GetLift
 
-    public static Lift GetLift(this ElevatorChamber elevator)
+    public static Lift? GetLift(this ElevatorChamber liftBase)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Lift lift in Map.Lifts)
-            if (lift.Elevator == elevator)
-                return lift;
-
-        Lift lift2 = new(elevator);
-        Map.Lifts.Add(lift2);
-
-        return lift2;
+        return Lift.Get(liftBase);
     }
 
     public static Lift? GetLift(this Vector3 position)
     {
-        return Map.Lifts.FirstOrDefault(x => x.Bounds.Contains(position));
+        return Lift.List.FirstOrDefault(x => x.Bounds.Contains(position));
     }
 
     #endregion
@@ -261,22 +205,14 @@ public static class Extensions
 
     #region GetDoor
 
-    public static Door GetDoor(this DoorVariant variant)
+    public static Door? GetDoor(this DoorVariant doorBase)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Door door in Map.Doors)
-            if (door.DoorVariant == variant)
-                return door;
-
-        Door door2 = new(variant);
-        Map.Doors.Add(door2);
-
-        return door2;
+        return Door.Get(doorBase);
     }
 
     public static Door? GetDoor(this DoorType type)
     {
-        return Map.Doors.FirstOrDefault(x => x.Type == type);
+        return Door.List.FirstOrDefault(x => x.Type == type);
     }
 
     #endregion
@@ -357,10 +293,9 @@ public static class Extensions
             if (int.TryParse(args, out int id))
                 return GetPlayer(id);
 
-            if (args.EndsWith("@steam") || args.EndsWith("@discord") || args.EndsWith("@northwood") ||
-                args.EndsWith("@patreon"))
+            if (args.Contains("@"))
             {
-                if (Internal.Fields.Player.Dictionary.Values.TryFind(out Player player,
+                if (Internal.Fields.Player.Dictionary.Values.TryFind(out var player,
                         x => x.UserInformation.UserId == args))
                     playerFound = player;
             }
@@ -772,7 +707,7 @@ public static class Extensions
             EffectType.Snowed => typeof(Snowed),
             EffectType.Traumatized => typeof(Traumatized),
             EffectType.Vitality => typeof(Vitality),
-
+            
             _ => throw new InvalidOperationException("Invalid effect enum provided")
         };
     }
@@ -869,4 +804,47 @@ public static class Extensions
     }
 
     #endregion
+
+    #region Vector3
+
+    public static Vector3 SafeUnscale(this Vector3 vector, Vector3 scale)
+    {
+        return new Vector3(
+            x: vector.x / (scale.x == 0 ? 1 : scale.x),
+            y: vector.y / (scale.y == 0 ? 1 : scale.y),
+            z: vector.z / (scale.z == 0 ? 1 : scale.z));
+    }
+
+    #endregion
+
+    #region Transform
+
+    public static Vector3 SafeGetParentPosition(this Transform transform)
+    {
+        var parentPosition = Vector3.zero;
+        if (transform.parent) parentPosition = transform.parent.position;
+        return parentPosition;
+    }
+
+    public static Quaternion SafeGetParentRotation(this Transform transform)
+    {
+        var parentRotation = Quaternion.identity;
+        if (transform.parent) parentRotation = transform.parent.rotation;
+        return parentRotation;
+    }
+
+    public static Vector3 SafeGetParentScale(this Transform transform)
+    {
+        var parentScale = Vector3.one;
+        if (transform.parent) parentScale = transform.parent.position;
+        return parentScale;
+    }
+
+    #endregion
+
+    public static T? GetEntity<T>(this GameObject gameObject) where T : class, IEntity
+    {
+        if (!gameObject) return null;
+        return gameObject.TryGetComponent(out EntityLink entityLink) ? entityLink.Entity as T : null;
+    }
 }

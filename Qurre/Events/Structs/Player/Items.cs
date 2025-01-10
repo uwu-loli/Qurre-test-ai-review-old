@@ -89,7 +89,7 @@ public class UpdateRadioEvent : IBaseEvent
     internal UpdateRadioEvent(Player player, RadioItem radio, RadioStatus range, bool enabled)
     {
         Player = player;
-        Radio = Item.SafeGet(radio) as Radio ?? throw new ArgumentNullException(nameof(radio));
+        Radio = Item.Get(radio) as Radio ?? throw new ArgumentNullException(nameof(radio));
         Range = range;
         Enabled = enabled;
         Allowed = true;
@@ -111,7 +111,7 @@ public class UsingRadioEvent : IBaseEvent
     internal UsingRadioEvent(Player player, RadioItem radio, float num)
     {
         Player = player;
-        Radio = Item.SafeGet(radio) as Radio ?? throw new ArgumentNullException(nameof(radio));
+        Radio = Item.Get(radio) as Radio ?? throw new ArgumentNullException(nameof(radio));
         Battery = radio._battery * 100;
         Consumption = Time.deltaTime * (num / 60 / 100) * 100;
         Allowed = true;

@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using PlayerRoles.PlayableScps.Scp079;
 using PlayerRoles.Subroutines;
 using Qurre.API.Controllers;
+using Qurre.API.Exceptions;
 using Qurre.API.World;
 
 namespace Qurre.API.Classification.Roles;
@@ -122,7 +123,7 @@ public sealed class Scp079
 
     public Camera Camera
     {
-        get => Map.Cameras.Find(x => x.Base == Base.CurrentCamera);
+        get => Camera.Get(Base.CurrentCamera) ?? throw new ObjectDestroyedException();
         set => Base._curCamSync.CurrentCamera = value.Base;
     }
 

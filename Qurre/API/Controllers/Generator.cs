@@ -1,27 +1,29 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using MapGeneration.Distributors;
 using Mirror;
 using Qurre.API.Addons;
 using Qurre.API.Controllers.Components;
-using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Generator : NetTransform
+public class Generator : NetworkEntity<Scp079Generator, Generator>
 {
-    private readonly Scp079Generator _generator;
+    protected override Scp079Generator UnsafeBase { get; }
     private readonly StructurePositionSync _positionSync;
-    private string _name = string.Empty;
 
     internal Generator(Scp079Generator g)
     {
-        _generator = g;
-        _positionSync = _generator.GetComponent<StructurePositionSync>();
+        UnsafeBase = g;
+        _positionSync = Base.GetComponent<StructurePositionSync>();
         SetupActions();
+
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
     public Generator(Vector3 position, Quaternion? rotation = null)
@@ -29,81 +31,80 @@ public class Generator : NetTransform
         if (Prefabs.Generator == null)
             throw new NullReferenceException(nameof(Prefabs.Generator));
 
-        _generator = Object.Instantiate(Prefabs.Generator);
+        UnsafeBase = Object.Instantiate(Prefabs.Generator);
 
-        _generator.transform.position = position;
-        _generator.transform.rotation = rotation ?? new Quaternion();
+        Transform.position = position;
+        Transform.rotation = rotation ?? new Quaternion();
 
-        _positionSync = _generator.GetComponent<StructurePositionSync>();
+        _positionSync = Base.GetComponent<StructurePositionSync>();
 
         SetupActions();
-        NetworkServer.Spawn(_generator.gameObject);
+        NetworkServer.Spawn(Base.gameObject);
 
-        _generator.netIdentity.UpdateData();
+        Spawn();
 
-        Map.Generators.Add(this);
-    }
-
-    public override GameObject GameObject => _generator.gameObject;
-
-    public string Name
-    {
-        get => string.IsNullOrEmpty(_name) ? GameObject.name : _name;
-        set => _name = value;
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
     public bool Open
     {
-        get => _generator.HasFlag(_generator._flags, Scp079Generator.GeneratorFlags.Open);
+        get => Base.HasFlag(Base._flags, Scp079Generator.GeneratorFlags.Open);
         set
         {
-            _generator.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, value);
-            _generator._targetCooldown = _generator._doorToggleCooldownTime;
+            Base.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, value);
+            Base._targetCooldown = Base._doorToggleCooldownTime;
         }
     }
 
     public bool Lock
     {
-        get => !_generator.HasFlag(_generator._flags, Scp079Generator.GeneratorFlags.Unlocked);
+        get => !Base.HasFlag(Base._flags, Scp079Generator.GeneratorFlags.Unlocked);
         set
         {
-            _generator.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, !value);
-            _generator._targetCooldown = _generator._unlockCooldownTime;
+            Base.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, !value);
+            Base._targetCooldown = Base._unlockCooldownTime;
         }
     }
 
     public bool Active
     {
-        get => _generator.Activating;
+        get => Base.Activating;
         set
         {
-            _generator.Activating = value;
-            if (value) _generator._leverStopwatch.Restart();
-            _generator._targetCooldown = _generator._doorToggleCooldownTime;
+            Base.Activating = value;
+            if (value) Base._leverStopwatch.Restart();
+            Base._targetCooldown = Base._doorToggleCooldownTime;
         }
     }
 
     public bool Engaged
     {
-        get => _generator.Engaged;
-        set => _generator.Engaged = value;
+        get => Base.Engaged;
+        set => Base.Engaged = value;
     }
 
     public short Time
     {
-        get => _generator._syncTime;
-        set => _generator.Network_syncTime = value;
+        get => Base._syncTime;
+        set => Base.Network_syncTime = value;
     }
 
     private void SetupActions()
     {
-        OnPositionUpdate += () => _positionSync.Network_position = Position;
-        OnRotationUpdate += () => _positionSync.Network_rotationY = (sbyte)(Rotation.eulerAngles.y / 5.625f);
+        PositionUpdated += () => _positionSync.Network_position = WorldPosition;
+        RotationUpdated += () => _positionSync.Network_rotationY = (sbyte)(WorldRotationEuler.y / 5.625f);
     }
 
-    public override void Destroy()
+    public static Generator? Get(Scp079Generator generatorBase)
     {
-        NetworkServer.Destroy(GameObject);
-        Map.Generators.Remove(this);
+        if (!generatorBase) return null;
+        return BaseToWrap.TryGetValue(generatorBase, out var generator) ? generator : new Generator(generatorBase);
+    }
+
+    public static bool TryGet(Scp079Generator generatorBase, [NotNullWhen(true)] out Generator? generator)
+    {
+        generator = Get(generatorBase);
+        return generator is not null;
     }
 }

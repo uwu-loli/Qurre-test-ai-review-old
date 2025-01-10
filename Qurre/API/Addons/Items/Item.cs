@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using InventorySystem.Items;
 using InventorySystem.Items.Armor;
@@ -7,7 +7,6 @@ using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Ammo;
 using InventorySystem.Items.Keycards;
 using InventorySystem.Items.MicroHID;
-using InventorySystem.Items.Pickups;
 using InventorySystem.Items.Radio;
 using InventorySystem.Items.ThrowableProjectiles;
 using InventorySystem.Items.ToggleableLights.Flashlight;
@@ -15,26 +14,48 @@ using InventorySystem.Items.Usables;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Controllers;
+using Qurre.API.Controllers.Components;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Qurre.API.Addons.Items;
 
 [PublicAPI]
-public class Item
+public class Item : Entity<ItemBase, Item>
 {
-    internal static readonly Dictionary<ItemBase, Item> BaseToItem = [];
+    protected override ItemBase UnsafeBase { get; }
+    
+    public ItemCategory Category => Base.Category;
+    public float Weight => Base.Weight;
+    public ItemType ItemType => Base.ItemTypeId;
 
-    private string _tag = string.Empty;
+    public Player Owner => (bool)Base.Owner ? Base.Owner.GetPlayer() ?? Server.Host : Server.Host;
+    public Pickup? Pickup => Pickup.Get(Base.PickupDropModel);
 
-    public Item(ItemBase itemBase)
+    public ushort Serial
     {
-        Base = itemBase;
-        Serial = Base.OwnerInventory.UserInventory.Items.FirstOrDefault(i => i.Value == Base).Key;
+        get => Base.ItemSerial;
+        internal set
+        {
+            if (!Base.PickupDropModel) return;
+            var syncInfo = Base.PickupDropModel.NetworkInfo;
+            syncInfo.Serial = value != 0 ? value : ItemSerialGenerator.GenerateNext();
+            Base.PickupDropModel.NetworkInfo = syncInfo;
+        }
+    }
+
+    protected Item(ItemBase itemBase)
+    {
+        UnsafeBase = itemBase;
+        
+        if (Base.OwnerInventory)
+            Serial = Base.OwnerInventory.UserInventory.Items.FirstOrDefault(i => i.Value == Base).Key;
+        
         if (Serial == 0)
             Serial = ItemSerialGenerator.GenerateNext();
 
-        BaseToItem.Add(itemBase, this);
+        BaseToWrap[itemBase] = this;
+        AddEntityLink();
     }
 
     public Item(ItemType type)
@@ -43,60 +64,38 @@ public class Item
     {
     }
 
-    public ItemBase Base { get; }
-
-    public ItemCategory Category => Base.Category;
-    public float Weight => Base.Weight;
-
-    public ItemType Type
-        => Base.ItemTypeId;
-
-    public Player Owner => Base.Owner != null ? Base.Owner.GetPlayer() ?? Server.Host : Server.Host;
-
-    public Pickup? Pickup => Pickup.BaseToItem.GetValueOrDefault(Base.PickupDropModel);
-
-    public string Tag
+    public void Give(Player player)
     {
-        get => _tag;
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-                value = string.Empty;
-
-            _tag = value;
-        }
+        player.Inventory.AddItem(Base);
     }
 
-    public ushort Serial
+    public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default, Vector3 scale = default)
     {
-        get => Base.ItemSerial;
-        internal set
-        {
-            if (value == 0) value = ItemSerialGenerator.GenerateNext();
-            if (Base == null || Base.PickupDropModel == null)
-                return;
-            Base.PickupDropModel.Info.Serial = value;
-            Base.PickupDropModel.NetworkInfo = Base.PickupDropModel.Info;
-        }
+        var ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);
+
+        ipb.Info.ItemId = ItemType;
+        ipb.Info.WeightKg = Weight;
+        ipb.NetworkInfo = ipb.Info;
+
+        ipb.Position = position;
+        ipb.Rotation = rotation;
+
+        NetworkServer.Spawn(ipb.gameObject);
+
+        var pickup = Pickup.Get(ipb);
+
+        if (pickup is null)
+            throw new NullReferenceException("Pickup could not be found");
+
+        pickup.WorldScale = scale == default ? Vector3.one : scale;
+        return pickup;
     }
 
-    internal static Item? SafeGet(ItemBase itemBase)
+    public static Item? Get(ItemBase itemBase)
     {
-        try
-        {
-            return Get(itemBase);
-        }
-        catch (Exception e)
-        {
-            Log.Debug(e);
-            return null;
-        }
-    }
-
-    internal static Item UnsafeGet(ItemBase itemBase)
-    {
-        if (BaseToItem.TryGetValue(itemBase, out Item? value))
-            return value;
+        if (!itemBase) return null;
+        if (BaseToWrap.TryGetValue(itemBase, out var item))
+            return item;
 
         return itemBase switch
         {
@@ -121,43 +120,23 @@ public class Item
         };
     }
 
-    public static Item? Get(ItemBase itemBase)
-    {
-        return itemBase == null ? null : UnsafeGet(itemBase);
-    }
-
     public static Item? Get(ushort serial)
     {
         return Object.FindObjectsOfType<ItemBase>().TryFind(out var item, x => x.ItemSerial == serial)
-            ? SafeGet(item)
+            ? Get(item)
             : null;
     }
 
-    public void Give(Player player)
+    public static bool TryGet(ItemBase itemBase, [NotNullWhen(true)] out Item? item)
     {
-        player.Inventory.AddItem(Base);
+        item = Get(itemBase);
+        return item is not null;
     }
 
-    public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default, Vector3 scale = default)
+    public static bool TryGet(ushort serial, [NotNullWhen(true)] out Item? item)
     {
-        ItemPickupBase ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);
-
-        ipb.Info.ItemId = Type;
-        ipb.Info.WeightKg = Weight;
-        ipb.NetworkInfo = ipb.Info;
-
-        ipb.Position = position;
-        ipb.Rotation = rotation;
-
-        NetworkServer.Spawn(ipb.gameObject);
-
-        Pickup? pickup = Pickup.Get(ipb);
-
-        if (pickup is null)
-            throw new NullReferenceException("Pickup could not be found");
-
-        pickup.Scale = scale == default ? Vector3.one : scale;
-        return pickup;
+        item = Get(serial);
+        return item is not null;
     }
 
     public override bool Equals(object? obj)

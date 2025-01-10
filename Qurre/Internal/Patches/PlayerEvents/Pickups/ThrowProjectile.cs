@@ -48,7 +48,7 @@ internal static class ThrowProjectile
                 AccessTools.Method(typeof(Extensions), nameof(Extensions.GetPlayer), [typeof(ReferenceHub)])),
 
             new CodeInstruction(OpCodes.Ldarg_0),
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Item), nameof(Item.SafeGet))),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Item), nameof(Item.Get), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Ldloc_S, 4), // ProjectileSettings
             new CodeInstruction(OpCodes.Ldarg_1), // fullForce [bool]

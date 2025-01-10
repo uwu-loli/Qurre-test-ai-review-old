@@ -2,24 +2,21 @@
 using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using Interactables.Interobjects;
+using JetBrains.Annotations;
 using Qurre.API;
-using Qurre.API.World;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
 [HarmonyPatch(typeof(ElevatorChamber), nameof(ElevatorChamber.Awake))]
-[SuppressMessage("ReSharper", "UnusedMember.Local")]
-[SuppressMessage("ReSharper", "UnusedType.Global")]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 internal static class Lift
 {
-    [HarmonyPostfix]
+    [HarmonyPostfix, UsedImplicitly]
     private static void Call(ElevatorChamber __instance)
     {
         try
         {
-            Map.Lifts.RemoveAll(x => x.GameObject == null);
-            Map.Lifts.Add(new API.Controllers.Lift(__instance));
+            _ = API.Controllers.Lift.Get(__instance);
         }
         catch (Exception e)
         {

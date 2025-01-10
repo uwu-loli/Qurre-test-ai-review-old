@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using InventorySystem.Items.Firearms.Attachments;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
 using Qurre.API.Controllers.Components;
+using Qurre.API.Exceptions;
 using Qurre.API.Objects;
 using Qurre.API.World;
 using UnityEngine;
@@ -12,42 +16,46 @@ using Object = UnityEngine.Object;
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class WorkStation : NetTransform
+public class WorkStation : GeneratedNetworkEntity<WorkstationController, WorkStation>
 {
-    internal WorkStation(WorkstationController station)
-    {
-        Controller = station;
-    }
+    protected override WorkstationController UnsafeBase { get; }
 
-    public WorkStation(Vector3 position, Vector3 rotation, Vector3 scale)
+    private WorkStation(WorkstationController station)
+    {
+        UnsafeBase = station;
+
+        BaseToWrap[Base] = this;
+        AddEntityLink();
+        Destroyed += OnDestroyed;
+    }
+    
+    public WorkStation(Vector3 position, Quaternion? rotation = null, Vector3? scale = null)
     {
         if (Prefabs.WorkStation == null)
             throw new NullReferenceException(nameof(Prefabs.WorkStation));
 
-        Custom = true;
+        UnsafeBase = Object.Instantiate(Prefabs.WorkStation, position, rotation ?? Quaternion.identity);
 
-        Controller = Object.Instantiate(Prefabs.WorkStation, position, Quaternion.Euler(rotation));
+        Transform.localScale = scale ?? Vector3.one;
+        NetworkServer.Spawn(Base.gameObject);
 
-        Controller.gameObject.transform.localScale = scale;
-        NetworkServer.Spawn(Controller.gameObject);
-
-        Map.WorkStations.Add(this);
+        BaseToWrap[Base] = this;
+        AddEntityLink();
+        Destroyed += OnDestroyed;
     }
 
-    public WorkstationController Controller { get; }
-
-    public bool Custom { get; }
-
-    public override GameObject GameObject => Controller.gameObject;
-    public string Name => GameObject.name;
+    public WorkStation(Vector3 position, Vector3 rotationEuler, Vector3? scale = null)
+        : this(position, Quaternion.Euler(rotationEuler), scale)
+    {
+    }
 
     public Player? KnownUser
     {
-        get => Controller._knownUser.GetPlayer();
-        set => Controller._knownUser = value?.ReferenceHub;
+        get => Base._knownUser.GetPlayer();
+        set => Base._knownUser = value?.ReferenceHub;
     }
 
-    public bool Activated
+    public bool IsActivated
     {
         get => Status == WorkstationStatus.Online;
         set => Status = value ? WorkstationStatus.Online : WorkstationStatus.Offline;
@@ -55,35 +63,49 @@ public class WorkStation : NetTransform
 
     public WorkstationStatus Status
     {
-        get => (WorkstationStatus)Controller.Status;
+        get => (WorkstationStatus)Base.Status;
         set
         {
-            Controller.NetworkStatus = (byte)value;
+            Base.NetworkStatus = (byte)value; 
+            OnStatusChanged();
+        }
+    }
 
-            switch (value)
-            {
-                case WorkstationStatus.Offline:
-                {
-                    Controller._serverStopwatch.Stop();
-                    break;
-                }
-                case WorkstationStatus.PoweringUp:
-                {
-                    Controller._serverStopwatch.Restart();
-                    break;
-                }
-                default:
-                {
-                    Controller._serverStopwatch.Restart();
-                    break;
-                }
-            } // end switch
-        } // end field_set
-    } // end field
-
-    public override void Destroy()
+    private void OnDestroyed()
     {
-        NetworkServer.Destroy(GameObject);
-        Map.WorkStations.Remove(this);
+        if (!BaseToWrap.ContainsKey(Base)) return;
+        BaseToWrap.Remove(Base);
+    }
+
+    private void OnStatusChanged()
+    {
+        switch (Status)
+        {
+            case WorkstationStatus.Offline:
+            {
+                Base._serverStopwatch.Stop();
+                break;
+            }
+            case WorkstationStatus.PoweringUp:
+            case WorkstationStatus.PoweringDown:
+            case WorkstationStatus.Online:
+            default:
+            {
+                Base._serverStopwatch.Restart();
+                break;
+            }
+        }
+    }
+
+    public static WorkStation? Get(WorkstationController workstationBase)
+    {
+        if (!workstationBase) return null;
+        return BaseToWrap.TryGetValue(workstationBase, out var workstation) ? workstation : new WorkStation(workstationBase);
+    }
+
+    public static bool TryGet(WorkstationController workstationBase, [NotNullWhen(true)] out WorkStation? workstation)
+    {
+        workstation = Get(workstationBase);
+        return workstation is not null;
     }
 }

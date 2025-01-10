@@ -1,26 +1,55 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using Mirror;
 using PlayerRoles;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using Qurre.API.Controllers.Components;
-using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Corpse : NetTransform
+public class Corpse : NetworkEntity<BasicRagdoll, Corpse>
 {
-    private Player _pl;
+    protected sealed override BasicRagdoll UnsafeBase { get; }
+    private Player _owner;
 
-    internal Corpse(BasicRagdoll @base, Player? owner)
+    public string CharacterName
     {
-        Base = @base;
-        _pl = owner ?? Server.Host;
-        SetupActions();
+        get => Base.Info.Nickname;
+        set => Base.NetworkInfo = new RagdollData(Base.Info.OwnerHub, Base.Info.Handler, 
+            Role, WorldPosition, WorldRotation, value, Base.Info.CreationTime, Base.Info.Serial);
+    }
+
+    public RoleTypeId Role
+    {
+        get => Base.Info.RoleType;
+        set => Base.NetworkInfo = new RagdollData(Base.Info.OwnerHub, Base.Info.Handler,
+            value, WorldPosition, WorldRotation, CharacterName, Base.Info.CreationTime, Base.Info.Serial);
+    }
+
+    public Player Owner
+    {
+        get => _owner;
+        set
+        {
+            _owner = value;
+            var info = Base.Info;
+            Base.NetworkInfo =
+                new RagdollData(value.ReferenceHub, info.Handler, info.StartPosition, info.StartRotation);
+        }
+    }
+
+    private Corpse(BasicRagdoll ragdollBase, Player? owner)
+    {
+        UnsafeBase = ragdollBase;
+        _owner = owner ?? Server.Host;
+
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
     public Corpse(RoleTypeId type, Vector3 position, Quaternion rotation, DamageHandlerBase handler, Player owner)
@@ -41,7 +70,7 @@ public class Corpse : NetTransform
         if (role.Value is not IRagdollRole dollyRole)
             throw new MissingComponentException("IRagdollRole component not found");
 
-        GameObject gameObject = Object.Instantiate(dollyRole.Ragdoll.gameObject);
+        var gameObject = Object.Instantiate(dollyRole.Ragdoll.gameObject);
 
         if (!gameObject.TryGetComponent(out BasicRagdoll component))
         {
@@ -49,65 +78,52 @@ public class Corpse : NetTransform
             throw new MissingComponentException("BasicRagdoll component not found");
         }
 
-        Base = component;
-        _pl = Server.Host;
+        UnsafeBase = component;
+        _owner = Server.Host;
 
         Base.NetworkInfo = new RagdollData(Server.Host.ReferenceHub, handler,
             type, position, rotation, nickname, NetworkTime.time);
 
-        SetupActions();
         NetworkServer.Spawn(component.gameObject);
-
-        Map.Corpses.Add(this);
+        
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
-    public BasicRagdoll Base { get; }
-    public override GameObject GameObject => Base.gameObject;
-
-    public string Name
+    private void UpdateNetworkInfo()
     {
-        get => Base.Info.Nickname;
-        set => Base.NetworkInfo = new RagdollData(Base.Info.OwnerHub, Base.Info.Handler,
-            Role, Position, Rotation, value, Base.Info.CreationTime, Base.Info.Serial);
+        Base.NetworkInfo = new RagdollData(
+            Base.Info.OwnerHub,
+            Base.Info.Handler,
+            Role,
+            WorldPosition,
+            WorldRotation,
+            CharacterName,
+            Base.Info.CreationTime,
+            Base.Info.Serial);
     }
 
-    public RoleTypeId Role
+    protected override void OnPositionUpdated() => UpdateNetworkInfo();
+    protected override void OnRotationUpdated() => UpdateNetworkInfo();
+
+    internal static Corpse? Get(BasicRagdoll ragdollBase, Player? owner)
     {
-        get => Base.Info.RoleType;
-        set => Base.NetworkInfo = new RagdollData(Base.Info.OwnerHub, Base.Info.Handler,
-            value, Position, Rotation, Name, Base.Info.CreationTime, Base.Info.Serial);
+        if (!ragdollBase) return null;
+        return BaseToWrap.TryGetValue(ragdollBase, out var corpse) ? corpse : new Corpse(ragdollBase, owner);
     }
 
-    public Player Owner
+    public static Corpse? Get(BasicRagdoll ragdollBase)
     {
-        get => _pl;
-        set
-        {
-            _pl = value;
-            RagdollData info = Base.Info;
-            Base.NetworkInfo =
-                new RagdollData(value.ReferenceHub, info.Handler, info.StartPosition, info.StartRotation);
-        }
+        if (!ragdollBase) return null;
+        Player? player = null;
+        if (ragdollBase.NetworkInfo.OwnerHub)
+            player = Player.Get(ragdollBase.NetworkInfo.OwnerHub);
+        return Get(ragdollBase, player);
     }
 
-    private void SetupActions()
+    public static bool TryGet(BasicRagdoll ragdollBase, [NotNullWhen(true)] out Corpse? corpse)
     {
-        OnPositionUpdate += () =>
-        {
-            Base.NetworkInfo = new RagdollData(Base.Info.OwnerHub, Base.Info.Handler,
-                Role, Position, Rotation, Name, Base.Info.CreationTime, Base.Info.Serial);
-        };
-
-        OnRotationUpdate += () =>
-        {
-            Base.NetworkInfo = new RagdollData(Base.Info.OwnerHub, Base.Info.Handler,
-                Role, Position, Rotation, Name, Base.Info.CreationTime, Base.Info.Serial);
-        };
-    }
-
-    public override void Destroy()
-    {
-        NetworkServer.Destroy(GameObject);
-        Map.Corpses.Remove(this);
+        corpse = Get(ragdollBase);
+        return corpse is not null;
     }
 }

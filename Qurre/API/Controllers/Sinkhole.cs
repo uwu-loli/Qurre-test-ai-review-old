@@ -1,66 +1,48 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using Hazards;
 using JetBrains.Annotations;
-using Mirror;
 using Qurre.API.Controllers.Components;
-using Qurre.API.World;
-using UnityEngine;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Sinkhole : NetTransform
+public class Sinkhole : GeneratedNetworkEntity<SinkholeEnvironmentalHazard, Sinkhole>
 {
-    internal Sinkhole(SinkholeEnvironmentalHazard hole)
+    protected override SinkholeEnvironmentalHazard UnsafeBase { get; }
+    
+    private Sinkhole(SinkholeEnvironmentalHazard sinkholeBase)
     {
-        EnvironmentalHazard = hole;
-    }
+        UnsafeBase = sinkholeBase;
 
-    public SinkholeEnvironmentalHazard EnvironmentalHazard { get; }
+        BaseToWrap[Base] = this;
+        AddEntityLink();
+    }
 
     public bool ImmunityScps { get; set; }
 
-    public override GameObject GameObject => EnvironmentalHazard.gameObject;
     public string Name => GameObject.name;
 
     public float MaxDistance
     {
-        get => EnvironmentalHazard.MaxDistance;
-        set => EnvironmentalHazard.MaxDistance = value;
+        get => Base.MaxDistance;
+        set => Base.MaxDistance = value;
     }
 
     public float MaxHeightDistance
     {
-        get => EnvironmentalHazard.MaxHeightDistance;
-        set => EnvironmentalHazard.MaxHeightDistance = value;
+        get => Base.MaxHeightDistance;
+        set => Base.MaxHeightDistance = value;
     }
 
-    public override void Destroy()
+    public static Sinkhole? Get(SinkholeEnvironmentalHazard sinkholeBase)
     {
-        NetworkServer.Destroy(GameObject);
-        Map.Sinkholes.Remove(this);
+        if (!sinkholeBase) return null;
+        return BaseToWrap.TryGetValue(sinkholeBase, out var sinkhole) ? sinkhole : new Sinkhole(sinkholeBase);
     }
 
-    public static bool operator ==(Sinkhole? first, Sinkhole? next)
+    public static bool TryGet(SinkholeEnvironmentalHazard sinkholeBase, [NotNullWhen(true)] out Sinkhole? sinkhole)
     {
-        return first?.GameObject == next?.GameObject;
-    }
-
-    public static bool operator !=(Sinkhole first, Sinkhole next)
-    {
-        return !(first == next);
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is Sinkhole sinkhole)
-            return this == sinkhole;
-
-        return false;
-    }
-
-    public override int GetHashCode()
-    {
-        return Tuple.Create(this, GameObject).GetHashCode();
+        sinkhole = Get(sinkholeBase);
+        return sinkhole is not null;
     }
 }

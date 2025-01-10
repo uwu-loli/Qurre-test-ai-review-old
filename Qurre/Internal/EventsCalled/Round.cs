@@ -10,7 +10,6 @@ using Qurre.API;
 using Qurre.API.Addons;
 using Qurre.API.Addons.Audio;
 using Qurre.API.Addons.Items;
-using Qurre.API.Addons.Models;
 using Qurre.API.Attributes;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Structs;
@@ -79,34 +78,43 @@ internal static class Round
     {
         Map.AmbientSoundPlayer = Server.Host.GameObject.GetComponent<AmbientSoundPlayer>();
 
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (RoomIdentifier? roomIdent in RoomIdentifier.AllRoomIdentifiers)
+        foreach (var roomBase in RoomIdentifier.AllRoomIdentifiers)
+            _ = Room.Get(roomBase);
+
+        foreach (var doorBase in Server.GetObjectsOf<DoorVariant>())
         {
-            Room room = new(roomIdent);
-            Map.Rooms.Add(room);
-            Map.Cameras.AddRange(room.Cameras);
+            if (!Door.TryGet(doorBase, out var door)) continue;
+            door.MarkAsMapGenerated();
         }
 
-        foreach (DoorVariant? door in Server.GetObjectsOf<DoorVariant>())
-            Map.Doors.Add(new Door(door));
+        foreach (var sinkholeBase in Server.GetObjectsOf<SinkholeEnvironmentalHazard>())
+        {
+            if (!Sinkhole.TryGet(sinkholeBase, out var sinkhole)) continue;
+            sinkhole.MarkAsMapGenerated();
+        }
 
-        foreach (SinkholeEnvironmentalHazard? hole in Server.GetObjectsOf<SinkholeEnvironmentalHazard>())
-            Map.Sinkholes.Add(new Sinkhole(hole));
+        foreach (var teslaBase in Server.GetObjectsOf<TeslaGate>())
+        {
+            if (!Tesla.TryGet(teslaBase, out var tesla)) continue;
+            tesla.MarkAsMapGenerated();
+        }
 
-        foreach (TeslaGate? tesla in Server.GetObjectsOf<TeslaGate>())
-            Map.Teslas.Add(new Tesla(tesla));
+        foreach (var windowBase in Server.GetObjectsOf<BreakableWindow>())
+        {
+            if (!Window.TryGet(windowBase, out var window)) continue;
+            window.MarkAsMapGenerated();
+        }
 
-        foreach (BreakableWindow? window in Server.GetObjectsOf<BreakableWindow>())
-            Map.Windows.Add(new Window(window));
-
-        foreach (WorkstationController? station in WorkstationController.AllWorkstations)
-            Map.WorkStations.Add(new WorkStation(station));
-
-
+        foreach (var workstationBase in WorkstationController.AllWorkstations)
+        {
+            if (!WorkStation.TryGet(workstationBase, out var workstation)) continue;
+            workstation.MarkAsMapGenerated();
+        }
+        
         API.World.Scp914.Controller = Object.FindObjectOfType<Scp914Controller>();
 
 
-        List<Door> updateDoors = [.. Map.Doors];
+        List<Door> updateDoors = [.. Door.List];
 
         UpdateDoors();
         return;
@@ -115,10 +123,10 @@ internal static class Round
         {
             List<Door> updates = [.. updateDoors];
 
-            foreach (Door? door in updates)
+            foreach (var door in updates)
                 try
                 {
-                    foreach (Room? room in door.Rooms)
+                    foreach (var room in door.Rooms)
                         room.Doors.Add(door);
                     updateDoors.Remove(door);
                 }
@@ -138,7 +146,7 @@ internal static class Round
 
     private static void MapClearLists()
     {
-        foreach (Tesla? x in Map.Teslas.OfType<Tesla>())
+        foreach (var x in Tesla.List)
         {
             x.ImmunityRoles.Clear();
             x.ImmunityPlayers.Clear();
@@ -146,33 +154,31 @@ internal static class Round
 
         Map.Cassies.Clear();
 
-        Map.Lights.Clear();
-        Map.Primitives.Clear();
-        Map.ShootingTargets.Clear();
-        Map.Speakers.Clear();
-        Map.WorkStations.Clear();
+        LightPoint.ClearCache();
+        Primitive.ClearCache();
+        ShootingTarget.ClearCache();
+        Speaker.ClearCache();
+        WorkStation.ClearCache();
 
-        Map.Cameras.Clear();
-        Map.Doors.Clear();
-        Map.Generators.Clear();
-        Map.Lifts.Clear();
-        Map.Lockers.Clear();
-        Map.Corpses.Clear();
-        Map.Rooms.Clear();
-        Map.Sinkholes.Clear();
-        Map.Teslas.Clear();
-        Map.Windows.Clear();
+        API.Controllers.Camera.ClearCache();
+        Door.ClearCache();
+        Generator.ClearCache();
+        Lift.ClearCache();
+        Locker.ClearCache();
+        Corpse.ClearCache();
+        Room.ClearCache();
+        Sinkhole.ClearCache();
+        Tesla.ClearCache();
+        Window.ClearCache();
 
-        Room.NetworkIdentities.Clear();
+        Room.ClearCache();
 
         Banned.Cached.Clear();
 
         Extensions.DamagesCached.Clear();
 
-        Item.BaseToItem.Clear();
-        Pickup.BaseToItem.Clear();
-
-        Model.ClearCache();
+        Item.ClearCache();
+        Pickup.ClearCache();
     }
 
     private static void SceneUnloaded(Scene _)

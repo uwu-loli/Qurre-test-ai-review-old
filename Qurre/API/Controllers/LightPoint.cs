@@ -1,19 +1,29 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using AdminToys;
 using Footprinting;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
 using Qurre.API.Controllers.Components;
-using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class LightPoint : AdminToy<LightSourceToy>
+public class LightPoint : ToyEntity<LightSourceToy, LightPoint>
 {
+    protected sealed override LightSourceToy UnsafeBase { get; }
+
+    private LightPoint(LightSourceToy lightPointBase)
+    {
+        UnsafeBase = lightPointBase;
+        
+        BaseToWrap[Base] = this;
+        AddEntityLink();
+    }
+    
     public LightPoint(Vector3 position, Color lightColor = default, float lightIntensity = 5.0F,
         float lightRange = 10.0F, LightType lightType = LightType.Point, Quaternion rotation = default,
         LightShadows shadowType = LightShadows.None, float shadowStrength = 1.0F)
@@ -24,13 +34,13 @@ public class LightPoint : AdminToy<LightSourceToy>
         if (!Prefabs.Light.TryGetComponent<LightSourceToy>(out LightSourceToy? lightToyBase))
             throw new Exception("LightSourceToy not found");
 
-        Base = Object.Instantiate(lightToyBase);
+        UnsafeBase = Object.Instantiate(lightToyBase);
         Base.SpawnerFootprint = new Footprint(Server.Host.ReferenceHub);
         NetworkServer.Spawn(Base.gameObject);
 
-        Position = position;
-        Rotation = rotation;
-        Scale = Vector3.one;
+        WorldPosition = position;
+        WorldRotation = rotation;
+        WorldScale = Vector3.one;
 
         if (lightColor == default || lightColor is { r: < 0.1f, g: < 0.1f, b: < 0.1f })
             lightColor = Color.white;
@@ -42,7 +52,8 @@ public class LightPoint : AdminToy<LightSourceToy>
         ShadowType = shadowType;
         ShadowStrength = shadowStrength;
 
-        Map.Lights.Add(this);
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
     public Color Color
@@ -99,9 +110,15 @@ public class LightPoint : AdminToy<LightSourceToy>
         set => Base.NetworkInnerSpotAngle = value;
     }
 
-    public override void Destroy()
+    public static LightPoint? Get(LightSourceToy lightPointBase)
     {
-        NetworkServer.Destroy(Base.gameObject);
-        Map.Lights.Remove(this);
+        if (!lightPointBase) return null;
+        return BaseToWrap.TryGetValue(lightPointBase, out var lightPoint) ? lightPoint : new LightPoint(lightPointBase);
+    }
+
+    public static bool TryGet(LightSourceToy lightPointBase, [NotNullWhen(true)] out LightPoint? lightPoint)
+    {
+        lightPoint = Get(lightPointBase);
+        return lightPoint is not null;
     }
 }

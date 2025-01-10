@@ -17,21 +17,14 @@ public class MapBroadcast
 
         Start();
 
-        if (adminBC)
-            foreach (Player pl in Player.List)
-            {
-                if (!PermissionsHandler.IsPermitted(pl.Sender.Permissions, PlayerPermissions.AdminChat))
-                    continue;
+        foreach (var player in Player.List)
+        {
+            if (adminBC && !PermissionsHandler.IsPermitted(player.Sender.Permissions, PlayerPermissions.AdminChat))
+                continue;
 
-                Broadcast bc = pl.Client.Broadcast(message, time, instant);
-                _list.Add(bc);
-            }
-        else
-            foreach (Player pl in Player.List)
-            {
-                Broadcast bc = pl.Client.Broadcast(message, time, instant);
-                _list.Add(bc);
-            }
+            var broadcast = player.Client.Broadcast(message, time, instant);
+            _list.Add(broadcast);
+        }
     }
 
     public ushort Time { get; }

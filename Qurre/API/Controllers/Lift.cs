@@ -1,51 +1,33 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using Interactables.Interobjects;
 using JetBrains.Annotations;
+using Qurre.API.Controllers.Components;
 using UnityEngine;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Lift
+public class Lift : NetworkEntity<ElevatorChamber, Lift>
 {
-    internal Lift(ElevatorChamber elevator)
+    protected override ElevatorChamber UnsafeBase { get; }
+
+    private Lift(ElevatorChamber elevator)
     {
-        Elevator = elevator;
+        UnsafeBase = elevator;
+
+        BaseToWrap[Base] = this;
+        AddEntityLink();
+        Destroyed += OnDestroyed;
     }
 
-    public ElevatorChamber Elevator { get; }
+    public ElevatorGroup Type => Base.AssignedGroup;
 
-    public GameObject GameObject
-        => Elevator.gameObject;
-
-    public Transform Transform
-        => Elevator.transform;
-
-    public ElevatorGroup Type
-        => Elevator.AssignedGroup;
-
-    public Bounds Bounds
-        => Elevator.WorldspaceBounds;
-
-    public Vector3 Scale
-        => Transform.localScale;
-
-    public Vector3 Position
-    {
-        get => Transform.position;
-        set => Transform.position = value;
-    }
-
-    public Quaternion Rotation
-    {
-        get => Transform.rotation;
-        set => Transform.rotation = value;
-    }
+    public Bounds Bounds => Base.WorldspaceBounds;
 
     public ElevatorChamber.ElevatorSequence Status
     {
-        get => Elevator.CurSequence;
-        set => Elevator.CurSequence = value;
+        get => Base.CurSequence;
+        set => Base.CurSequence = value;
     }
 
     public void Use()
@@ -53,32 +35,20 @@ public class Lift
         Status = ElevatorChamber.ElevatorSequence.Ready;
     }
 
-    public static bool operator ==(Lift? lhs, Lift? rhs)
+    private void OnDestroyed()
     {
-        if (rhs is null)
-            return lhs?.Transform == null;
-
-        if (lhs is null)
-            return rhs.Transform == null;
-
-        return lhs.Transform == rhs.Transform;
+        BaseToWrap.Remove(Base);
     }
 
-    public static bool operator !=(Lift lhs, Lift rhs)
+    public static Lift? Get(ElevatorChamber liftBase)
     {
-        return !(lhs == rhs);
+        if (!liftBase) return null;
+        return BaseToWrap.TryGetValue(liftBase, out var lift) ? lift : new Lift(liftBase);
     }
 
-    public override bool Equals(object? obj)
+    public static bool TryGet(ElevatorChamber liftBase, [NotNullWhen(true)] out Lift? lift)
     {
-        if (obj is Lift lift)
-            return this == lift;
-
-        return false;
-    }
-
-    public override int GetHashCode()
-    {
-        return Tuple.Create(this, GameObject).GetHashCode();
+        lift = Get(liftBase);
+        return lift is not null;
     }
 }

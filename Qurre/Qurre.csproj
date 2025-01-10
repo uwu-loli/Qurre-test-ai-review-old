@@ -76,4 +76,12 @@
         </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Internal\Patches\Unity\" />
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="xcopy /Y /Q &quot;$(TargetPath)&quot; &quot;%AppData%\Qurre\&quot;" />
+    </Target>
+
 </Project>

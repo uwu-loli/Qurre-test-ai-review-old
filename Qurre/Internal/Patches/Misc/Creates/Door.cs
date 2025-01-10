@@ -1,0 +1,26 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+using HarmonyLib;
+using Interactables.Interobjects.DoorUtils;
+using JetBrains.Annotations;
+using Qurre.API;
+
+namespace Qurre.Internal.Patches.Misc.Creates;
+
+[HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.RegisterRooms))]
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+internal static class Door
+{
+    [HarmonyPostfix, UsedImplicitly]
+    private static void Call(DoorVariant __instance)
+    {
+        try
+        {
+            _ = API.Controllers.Door.Get(__instance);
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Patch Error - <Misc> {{Creates}} [Door]: {e}\n{e.StackTrace}");
+        }
+    }
+}

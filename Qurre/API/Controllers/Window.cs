@@ -1,62 +1,61 @@
-﻿using Footprinting;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using Footprinting;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Controllers.Components;
-using Qurre.API.World;
+using Qurre.API.Exceptions;
 using UnityEngine;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Window : NetTransform
+public class Window : GeneratedNetworkEntity<BreakableWindow, Window>
 {
-    private string _name;
+    protected override BreakableWindow UnsafeBase { get; }
+    
+    public bool IsBreakAllowed { get; set; } = true;
 
-    internal Window(BreakableWindow window)
-    {
-        _name = "Window";
-        Breakable = window;
-    }
-
-    public BreakableWindow Breakable { get; }
-    public bool AllowBreak { get; set; } = true;
-
-    public override GameObject GameObject => Breakable.gameObject;
-    public Footprint LastAttacker => Breakable.LastAttacker;
-
-    public string Name
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(_name))
-                _name = "Window";
-
-            return _name;
-        }
-        set => _name = value;
-    }
+    public Footprint LastAttacker => Base.LastAttacker;
 
     public bool PreventScpDamage
     {
-        get => Breakable._preventScpDamage;
-        set => Breakable._preventScpDamage = value;
+        get => Base._preventScpDamage;
+        set => Base._preventScpDamage = value;
     }
 
-    public float Hp
+    public float Health
     {
-        get => Breakable.health;
-        set => Breakable.health = value;
+        get => Base.health;
+        set => Base.health = value;
     }
 
     public bool IsBroken
     {
-        get => Breakable.NetworkisBroken;
-        set => Breakable.NetworkisBroken = value;
+        get => Base.NetworkisBroken;
+        set => Base.NetworkisBroken = value;
     }
 
-    public override void Destroy()
+    private Window(BreakableWindow window)
     {
-        NetworkServer.Destroy(GameObject);
-        Map.Windows.Remove(this);
+        UnsafeBase = window;
+    }
+
+    private void OnDestroyed()
+    {
+        if (!BaseToWrap.ContainsKey(Base)) return;
+        BaseToWrap.Remove(Base);
+    }
+
+    public static Window? Get(BreakableWindow windowBase)
+    {
+        if (!windowBase) return null;
+        return BaseToWrap.TryGetValue(windowBase, out var window) ? window : new Window(windowBase);
+    }
+
+    public static bool TryGet(BreakableWindow windowBase, [NotNullWhen(true)] out Window? window)
+    {
+        window = Get(windowBase);
+        return window is not null;
     }
 }

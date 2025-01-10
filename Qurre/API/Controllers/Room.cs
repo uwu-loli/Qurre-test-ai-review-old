@@ -1,50 +1,91 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using MapGeneration;
 using Mirror;
 using PlayerRoles.PlayableScps.Scp079.Cameras;
+using Qurre.API.Controllers.Components;
 using Qurre.API.Objects;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Room
+public class Room : TransformableEntity<RoomIdentifier, Room>
 {
-    internal static readonly List<NetworkIdentity> NetworkIdentities = [];
-
+    protected override RoomIdentifier UnsafeBase { get; }
+    
     internal readonly Color DefaultColor;
     internal readonly RoomLightController[] GameLights;
-
-    private ZoneType _zone = ZoneType.Unknown;
-
-    internal Room(RoomIdentifier identifier)
+    
+    /// <inheritdoc />
+    public override Vector3 WorldPosition
     {
-        Identifier = identifier;
-        RoomName = Identifier.Name;
-        Shape = Identifier.Shape;
-        GameObject = identifier.gameObject;
+        get => base.WorldPosition;
+        set => throw new InvalidOperationException("That won't move it on the client and is guaranteed to break everything.");
+    }
 
+    /// <inheritdoc />
+    public override Quaternion WorldRotation
+    {
+        get => base.WorldRotation;
+        set => throw new InvalidOperationException("That won't rotate it on the client and is guaranteed to break everything.");
+    }
+
+    /// <inheritdoc />
+    public override Vector3 WorldScale
+    {
+        get => base.WorldScale;
+        set => throw new InvalidOperationException("That won't scale it on the client and is guaranteed to break everything.");
+    }
+
+    /// <inheritdoc />
+    public override Vector3 LocalPosition
+    {
+        get => base.LocalPosition;
+        set => throw new InvalidOperationException("That won't move it on the client and is guaranteed to break everything.");
+    }
+
+    /// <inheritdoc />
+    public override Quaternion LocalRotation
+    {
+        get => base.LocalRotation;
+        set => throw new InvalidOperationException("That won't rotate it on the client and is guaranteed to break everything.");
+    }
+
+    /// <inheritdoc />
+    public override Vector3 LocalScale
+    {
+        get => base.LocalScale;
+        set => throw new InvalidOperationException("That won't scale it on the client and is guaranteed to break everything.");
+    }
+
+    private Room(RoomIdentifier roomIdentifier)
+    {
+        UnsafeBase = roomIdentifier;
+        RoomName = Base.Name;
+        Shape = Base.Shape;
+        
         GameLights = GameObject.GetComponentsInChildren<RoomLightController>();
 
         DefaultColor = GameLights.Length == 0 ? Color.white : GameLights[0].OverrideColor;
 
-        foreach (Scp079Camera? cam in GameObject.GetComponentsInChildren<Scp079Camera>())
-            Cameras.Add(new Camera(cam, this));
+        foreach (var cameraBase in GameObject.GetComponentsInChildren<Scp079Camera>())
+        {
+            if (!Camera.TryGet(cameraBase, this, out var camera)) continue;
+            Cameras.Add(camera);
+        }
 
         Lights = new Lights(this);
 
         Type = GetType(Name, Transform);
 
-        NetworkIdentity = GetNetworkIdentity();
+        BaseToWrap[Base] = this;
     }
 
     public Lights Lights { get; private set; }
-    public GameObject GameObject { get; }
-    public RoomIdentifier Identifier { get; }
-    public NetworkIdentity? NetworkIdentity { get; }
 
     public List<Door> Doors { get; } = [];
     public List<Camera> Cameras { get; } = [];
@@ -54,89 +95,16 @@ public class Room
     public RoomType Type { get; }
 
     public Tesla? Tesla => GameObject.GetComponentInChildren<TeslaGate>()?.GetTesla();
-    public Transform Transform => GameObject.transform;
     public string Name => GameObject.name;
-    public IReadOnlyCollection<Player> Players => [..Player.List.Where(x => !x.IsHost && x.GamePlay.Room.Name == Name)];
+    public IReadOnlyCollection<Player> Players => [..Player.List.Where(x => !x.IsHost && x.GamePlay.Room == this)];
     public bool LightsDisabled => GameLights.Length > 0 && GameLights.Any(x => !x.NetworkLightsEnabled);
 
-    public Vector3 Position
-    {
-        get => Transform.position;
-        set
-        {
-            if (NetworkIdentity == null)
-                return;
-
-            NetworkServer.UnSpawn(NetworkIdentity.gameObject);
-            NetworkIdentity.transform.position = value;
-            NetworkServer.Spawn(NetworkIdentity.gameObject);
-            NetworkIdentity.UpdateData();
-        }
-    }
-
-    public Quaternion Rotation
-    {
-        get => Transform.rotation;
-        set
-        {
-            if (NetworkIdentity == null)
-                return;
-
-            NetworkIdentity.transform.rotation = value;
-            NetworkIdentity.UpdateData();
-        }
-    }
-
-    public Vector3 Scale
-    {
-        get => Transform.localScale;
-        set
-        {
-            if (NetworkIdentity == null)
-                return;
-
-            NetworkIdentity.transform.localScale = value;
-            NetworkIdentity.UpdateData();
-        }
-    }
-
-    public ZoneType Zone
-    {
-        get
-        {
-            if (_zone != ZoneType.Unknown)
-                return _zone;
-
-            if (Name.Contains("EZ") || Name.Contains("INTERCOM"))
-                _zone = ZoneType.Office;
-            else
-                _zone = Position.y switch
-                {
-                    >= 0f and < 500f => ZoneType.Light,
-                    < -100 and > -1015f => ZoneType.Heavy,
-                    >= 5 => ZoneType.Surface,
-                    _ => _zone
-                };
-
-            return _zone;
-        }
-    }
+    public FacilityZone Zone => Base.Zone;
 
     public void LightsOff(float duration)
     {
         foreach (RoomLightController light in GameLights)
             light.ServerFlickerLights(duration);
-    }
-
-    private NetworkIdentity? GetNetworkIdentity()
-    {
-        if (NetworkIdentities.Count == 0)
-            NetworkIdentities.AddRange(Object.FindObjectsOfType<NetworkIdentity>().Where(x => x.name.Contains("All")));
-
-        if (NetworkIdentities.TryFind(out var ident, x => Vector3.Distance(x.transform.position, Position) < 0.1f))
-            return ident;
-
-        return null;
     }
 
     private static RoomType GetType(string name, Transform trans)
@@ -228,5 +196,17 @@ public class Room
 
             _ => RoomType.Unknown
         };
+    }
+
+    public static Room? Get(RoomIdentifier roomIdentifier)
+    {
+        if (!roomIdentifier) return null;
+        return BaseToWrap.TryGetValue(roomIdentifier, out var room) ? room : new Room(roomIdentifier);
+    }
+
+    public static bool TryGet(RoomIdentifier roomIdentifier, [NotNullWhen(true)] out Room? room)
+    {
+        room = Get(roomIdentifier);
+        return room is not null;
     }
 }

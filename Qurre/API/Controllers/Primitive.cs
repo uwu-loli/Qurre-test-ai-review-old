@@ -1,24 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using AdminToys;
 using Footprinting;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Addons;
 using Qurre.API.Controllers.Components;
-using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class Primitive : AdminToy<PrimitiveObjectToy>
+public class Primitive : ToyEntity<PrimitiveObjectToy, Primitive>
 {
-    internal static bool AllowStatic;
-    internal static readonly HashSet<Primitive> CachedToSetStatic = [];
-    internal static readonly HashSet<Primitive> NonStaticPrims = [];
+    protected sealed override PrimitiveObjectToy UnsafeBase { get; }
 
+    private Primitive(PrimitiveObjectToy primitiveBase)
+    {
+        UnsafeBase = primitiveBase;
+        BaseToWrap[Base] = this;
+        AddEntityLink();
+    }
+    
     public Primitive(PrimitiveType type, Vector3 position = default, Color color = default,
         Quaternion rotation = default, Vector3 size = default, bool collider = true,
         bool visible = true)
@@ -29,54 +33,21 @@ public class Primitive : AdminToy<PrimitiveObjectToy>
         if (!Prefabs.Primitive.TryGetComponent<PrimitiveObjectToy>(out PrimitiveObjectToy? primitiveToyBase))
             throw new NullReferenceException("PrimitiveObjectToy not found");
 
-        Base = Object.Instantiate(primitiveToyBase);
+        UnsafeBase = Object.Instantiate(primitiveToyBase);
         Base.SpawnerFootprint = new Footprint(Server.Host.ReferenceHub);
         NetworkServer.Spawn(Base.gameObject);
 
-        Position = position;
-        Rotation = rotation;
-        Scale = size == default ? Vector3.one : size;
+        WorldPosition = position;
+        WorldRotation = rotation;
+        WorldScale = size == default ? Vector3.one : size;
 
         Type = type;
         Color = color == default ? Color.white : color;
         Collider = collider;
         Visible = visible;
 
-        Map.Primitives.Add(this);
-        NonStaticPrims.Add(this);
-    }
-
-    public override bool IsStatic
-    {
-        get => base.IsStatic;
-        set
-        {
-            if (value)
-            {
-                Base.NetworkPosition = Base.transform.position;
-                Base.NetworkRotation = Base.transform.rotation;
-                Base.NetworkScale = Base.transform.lossyScale;
-            }
-
-            if (AllowStatic)
-            {
-                Base.NetworkIsStatic = value;
-
-                if (value)
-                    NonStaticPrims.Remove(this);
-                else
-                    NonStaticPrims.Add(this);
-
-                if (!value && CachedToSetStatic.Contains(this))
-                    CachedToSetStatic.Remove(this);
-                return;
-            }
-
-            if (value)
-                CachedToSetStatic.Add(this);
-            else
-                CachedToSetStatic.Remove(this);
-        }
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
     public Color Color
@@ -121,10 +92,15 @@ public class Primitive : AdminToy<PrimitiveObjectToy>
         }
     }
 
-    public override void Destroy()
+    public static Primitive? Get(PrimitiveObjectToy primitiveBase)
     {
-        NetworkServer.Destroy(Base.gameObject);
-        Map.Primitives.Remove(this);
-        NonStaticPrims.Remove(this);
+        if (!primitiveBase) return null;
+        return BaseToWrap.TryGetValue(primitiveBase, out var primitive) ? primitive : new Primitive(primitiveBase);
+    }
+
+    public static bool TryGet(PrimitiveObjectToy primitiveBase, [NotNullWhen(true)] out Primitive? primitive)
+    {
+        primitive = Get(primitiveBase);
+        return primitive is not null;
     }
 }

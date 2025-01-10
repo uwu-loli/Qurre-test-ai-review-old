@@ -6,7 +6,6 @@ using Qurre.API.Addons;
 using Qurre.API.Attributes;
 using Qurre.API.Classification.Roles;
 using Qurre.API.Controllers;
-using Qurre.API.World;
 using Qurre.Events;
 using Qurre.Events.Structs;
 
@@ -26,14 +25,11 @@ internal static class Player
         /* --- send net identity info --- */
 
         // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Door? door in Map.Doors)
+        foreach (var door in Door.List)
         {
-            if (!door.Custom)
-                continue;
-
             try
             {
-                door.DoorVariant.netIdentity.UpdateDataForConnection(ev.Player.ConnectionToClient);
+                door.NetworkUpdateForConnection(ev.Player.ConnectionToClient);
             }
             catch (Exception ex)
             {
@@ -43,14 +39,11 @@ internal static class Player
         }
 
         // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Locker? locker in Map.Lockers)
+        foreach (var locker in Locker.List)
         {
-            if (!locker.Custom)
-                continue;
-
             try
             {
-                locker.GlobalLocker.netIdentity.UpdateDataForConnection(ev.Player.ConnectionToClient);
+                locker.NetworkUpdateForConnection(ev.Player.ConnectionToClient);
             }
             catch (Exception ex)
             {

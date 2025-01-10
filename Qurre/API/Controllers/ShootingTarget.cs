@@ -1,59 +1,74 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using AdminToys;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API.Controllers.Components;
 using Qurre.API.Objects;
-using Qurre.API.World;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Qurre.API.Controllers;
 
 [PublicAPI]
-public class ShootingTarget : AdminToy<AdminToys.ShootingTarget>
+public class ShootingTarget : ToyEntity<AdminToys.ShootingTarget, ShootingTarget>
 {
+    /// <inheritdoc />
+    protected sealed override AdminToys.ShootingTarget UnsafeBase { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public TargetPrefabs PrefabType { get; }
+
     public ShootingTarget(TargetPrefabs type, Vector3 position, Quaternion rotation = default, Vector3 size = default)
     {
-        if (!type.GetPrefab().TryGetComponent<AdminToyBase>(out AdminToyBase? primitiveToyBase))
+        if (!type.GetPrefab().TryGetComponent(out AdminToyBase primitiveToyBase))
             throw new ArgumentNullException(nameof(primitiveToyBase));
 
-        AdminToyBase? prim = Object.Instantiate(primitiveToyBase, position, rotation);
+        var instanceToyBase = Object.Instantiate(primitiveToyBase, position, rotation);
 
         PrefabType = type;
-        Base = (AdminToys.ShootingTarget)prim;
+        UnsafeBase = (AdminToys.ShootingTarget)instanceToyBase;
         Base.transform.localScale = size == default ? Vector3.one : size;
         NetworkServer.Spawn(Base.gameObject);
 
-        Map.ShootingTargets.Add(this);
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
 
-    internal ShootingTarget(AdminToys.ShootingTarget @base)
+    private ShootingTarget(AdminToys.ShootingTarget targetBase)
     {
         try
         {
-            PrefabType = (TargetPrefabs)Enum.Parse(typeof(TargetPrefabs), @base._targetName);
+            PrefabType = (TargetPrefabs)Enum.Parse(typeof(TargetPrefabs), targetBase._targetName);
         }
         catch
         {
             PrefabType = TargetPrefabs.Binary;
         }
 
-        Base = @base;
+        UnsafeBase = targetBase;
 
-        Map.ShootingTargets.Add(this);
+        BaseToWrap[Base] = this;
+        AddEntityLink();
     }
-
-    public TargetPrefabs PrefabType { get; }
 
     public void Clear()
     {
         Base.ClearTarget();
     }
 
-    public override void Destroy()
+    public static ShootingTarget? Get(AdminToys.ShootingTarget targetBase)
     {
-        NetworkServer.Destroy(Base.gameObject);
-        Map.ShootingTargets.Remove(this);
+        if (!targetBase) return null;
+        return BaseToWrap.TryGetValue(targetBase, out var target) ? target : new ShootingTarget(targetBase);
+    }
+
+    public static bool TryGet(AdminToys.ShootingTarget targetBase, [NotNullWhen(true)] out ShootingTarget? target)
+    {
+        target = Get(targetBase);
+        return target is not null;
     }
 }

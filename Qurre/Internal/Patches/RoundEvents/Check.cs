@@ -207,7 +207,7 @@ internal static class Check
             // optimization
             try
             {
-                foreach (Player? pl in Player.List)
+                foreach (var pl in Player.List)
                     try
                     {
                         if (pl.RoleInformation.Role == RoleTypeId.Spectator)
@@ -228,7 +228,7 @@ internal static class Check
 
             try
             {
-                foreach (Pickup? p in Map.Pickups.ToArray())
+                foreach (var p in Pickup.List)
                     try
                     {
                         p.Destroy();
@@ -245,10 +245,10 @@ internal static class Check
 
             try
             {
-                foreach (Corpse? doll in Map.Corpses.ToArray())
+                foreach (var corpse in Corpse.List)
                     try
                     {
-                        doll.Destroy();
+                        corpse.Destroy();
                     }
                     catch
                     {
@@ -262,7 +262,7 @@ internal static class Check
 
             try
             {
-                foreach (Primitive? prim in Map.Primitives.ToArray())
+                foreach (var prim in Primitive.List)
                     try
                     {
                         prim.Destroy();

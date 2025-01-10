@@ -20,7 +20,7 @@ internal static class DroppedItem
     private static void Call(Inventory inv, ItemPickupBase __result)
     {
         Player? pl = inv._hub.GetPlayer();
-        Pickup? pickup = Pickup.SafeGet(__result);
+        Pickup? pickup = Pickup.Get(__result);
 
         if (pl is null || pickup is null)
             return;
