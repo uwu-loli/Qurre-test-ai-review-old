@@ -2,21 +2,23 @@
 using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using JetBrains.Annotations;
-using MapGeneration.Distributors;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Structures;
+using LockerBase = MapGeneration.Distributors.Locker;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
-[HarmonyPatch(typeof(Locker), nameof(Locker.Start))]
+[HarmonyPatch(typeof(LockerBase), nameof(LockerBase.Start))]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
-internal static class Locker1
+internal static class Locker
 {
     [HarmonyPostfix, UsedImplicitly]
-    private static void Call(Locker __instance)
+    private static void Call(LockerBase __instance)
     {
         try
         {
-            _ = API.Controllers.Locker.Get(__instance);
+            _ = EntityManager.Get<ILocker>(__instance);
         }
         catch (Exception e)
         {

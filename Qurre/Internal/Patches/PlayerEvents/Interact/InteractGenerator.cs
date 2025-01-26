@@ -10,7 +10,9 @@ using MapGeneration.Distributors;
 using PlayerRoles;
 using Qurre.API;
 using Qurre.API.Controllers;
-using Qurre.API.Objects;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Enums;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 

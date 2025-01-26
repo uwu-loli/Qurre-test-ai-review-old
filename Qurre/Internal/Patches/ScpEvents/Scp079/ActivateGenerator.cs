@@ -28,13 +28,13 @@ internal static class ActivateGenerator
             if (!state)
                 return true;
 
-            ActivateGeneratorEvent ev = new(__instance.GetGenerator());
+            var ev = new ActivateGeneratorEvent(__instance.GetGenerator()!);
             ev.InvokeEvent();
 
-            if (ev.Allowed)
+            if (ev.IsAllowed)
                 Round.ActiveGenerators++;
 
-            return ev.Allowed;
+            return ev.IsAllowed;
         }
         catch (Exception e)
         {

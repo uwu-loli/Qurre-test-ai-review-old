@@ -49,13 +49,13 @@ internal static class PickupCandy
                     pickup.StoredCandies.RemoveAt(0);
                 }
 
-            PickupCandyEvent ev = new(ply.GetPlayer() ?? throw new NullReferenceException(nameof(ply)), bag, list);
+            var ev = new PickupCandyEvent(ply.GetPlayer() ?? throw new NullReferenceException(nameof(ply)), bag, list);
             ev.InvokeEvent();
 
-            if (!ev.Allowed)
+            if (!ev.IsAllowed)
                 ev.List.Clear();
 
-            foreach (CandyKindID candy in ev.List)
+            foreach (var candy in ev.List)
                 bag.TryAddSpecific(candy);
 
             if (bag.AcquisitionAlreadyReceived)

@@ -4,6 +4,9 @@ using HarmonyLib;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Doors;
+using Qurre.API.Entities.Structures;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -16,18 +19,17 @@ namespace Qurre.Internal.Patches.MapEvents.Doors;
 internal static class LockDoor
 {
     [HarmonyPrefix]
-    private static bool Call(BreakableDoor __instance, DoorLockReason reason, ref bool newState)
+    private static bool Call(DoorVariant __instance, DoorLockReason reason, ref bool newState)
     {
         try
         {
-            if (__instance == null)
-                return true;
+            if (!EntityManager.TryGet(__instance, out IDoor? door)) return true;
 
-            LockDoorEvent ev = new(__instance.GetDoor(), reason, newState);
+            var ev = new LockDoorEvent(door, reason, newState);
             ev.InvokeEvent();
 
             newState = ev.NewState;
-            return ev.Allowed;
+            return ev.IsAllowed;
         }
         catch (Exception e)
         {

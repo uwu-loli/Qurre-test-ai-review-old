@@ -4,6 +4,8 @@ using HarmonyLib;
 using Interactables.Interobjects;
 using JetBrains.Annotations;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Environment;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -16,7 +18,7 @@ internal static class Lift
     {
         try
         {
-            _ = API.Controllers.Lift.Get(__instance);
+            _ = EntityManager.Get<ILift>(__instance);
         }
         catch (Exception e)
         {

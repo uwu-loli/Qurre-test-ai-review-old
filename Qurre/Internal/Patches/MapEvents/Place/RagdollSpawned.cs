@@ -3,6 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using PlayerRoles.Ragdolls;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Characters;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -19,10 +21,11 @@ internal static class CorpseSpawned
     {
         try
         {
-            if (__result == null)
+            if (__result == null || !EntityManager.TryGet(__result, out ICorpse? corpse))
                 return;
 
-            new CorpseSpawnedEvent(__result.GetCorpse()).InvokeEvent();
+            var ev = new CorpseSpawnedEvent(corpse);
+            ev.InvokeEvent();
         }
         catch (Exception e)
         {

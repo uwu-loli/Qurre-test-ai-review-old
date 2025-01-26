@@ -29,7 +29,7 @@ internal class EntryPoint : ICharacterLoader
 
             Prefabs.Init();
 
-            Log.Custom(BetterColors.Bold($"Qurre {BetterColors.BrightRed($"v{Core.Version}")} enabled"), "Loader",
+            Log.Custom(BetterColors.Bold($"Qurre {BetterColors.BrightRed($"v{EventCore.Version}")} enabled"), "Loader",
                 ConsoleColor.Red);
         }
         catch (Exception e)

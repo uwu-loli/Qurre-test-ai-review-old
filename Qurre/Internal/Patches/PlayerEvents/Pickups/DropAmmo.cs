@@ -4,6 +4,8 @@ using HarmonyLib;
 using InventorySystem;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -27,10 +29,10 @@ internal static class DropAmmo
             DropAmmoEvent ev = new(pl, ammoType.GetAmmoType(), amount);
             ev.InvokeEvent();
 
-            ammoType = ev.Type.GetItemType();
+            ammoType = ev.AmmoType.GetItemType();
             amount = ev.Amount;
 
-            return ev.Allowed;
+            return ev.IsAllowed;
         }
         catch (Exception e)
         {

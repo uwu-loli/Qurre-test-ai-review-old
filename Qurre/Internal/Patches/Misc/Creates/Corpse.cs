@@ -4,6 +4,8 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using PlayerRoles.Ragdolls;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Characters;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -16,7 +18,7 @@ internal static class Corpse
     {
         try
         {
-            _ = API.Controllers.Corpse.Get(__result, owner.GetPlayer());
+            _ = EntityManager.Get<ICorpse>(__result);
         }
         catch (Exception e)
         {

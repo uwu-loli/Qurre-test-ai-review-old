@@ -4,6 +4,8 @@ using HarmonyLib;
 using PlayerStatsSystem;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 
 namespace Qurre.Internal.Patches.Misc;
 

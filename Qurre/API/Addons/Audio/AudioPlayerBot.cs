@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using JetBrains.Annotations;
+
 using Mirror;
+
 using VoiceChat;
 using VoiceChat.Networking;
 
@@ -53,7 +56,7 @@ public class AudioPlayerBot : BaseAudioPlayer
     protected override ArraySegment<byte> SerializeAndPackToDataSegment(int dataLength, byte[] dataBuffer,
         int channelId = 0)
     {
-        using NetworkWriterPooled? writer = NetworkWriterPool.Get();
+        using var networkWriter = NetworkWriterPool.Get();
         VoiceMessage message = new(
             ReferenceHub,
             CurrentAudioTask?.VoiceChannel ?? VoiceChatChannel.None,
@@ -62,8 +65,8 @@ public class AudioPlayerBot : BaseAudioPlayer
             false
         );
 
-        NetworkMessages.Pack(message, writer);
-        int maxMessageSize = NetworkMessages.MaxMessageSize(channelId);
-        return writer.Position > maxMessageSize ? ArraySegment<byte>.Empty : writer.ToArraySegment();
+        NetworkMessages.Pack(message, networkWriter);
+        var maxMessageSize = NetworkMessages.MaxMessageSize(channelId);
+        return networkWriter.Position > maxMessageSize ? ArraySegment<byte>.Empty : networkWriter.ToArraySegment();
     }
 }

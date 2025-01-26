@@ -2,7 +2,9 @@
 using PlayerStatsSystem;
 using Qurre.API;
 using Qurre.API.Controllers;
-using Qurre.API.Objects;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Enums;
+using Qurre.API.World.Entities.Player;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;
@@ -24,7 +26,7 @@ public class DeadEvent : IBaseEvent
     public Player Attacker { get; }
     public Player Target { get; }
     public DamageTypes DamageType { get; }
-    public LiteDamageTypes LiteType { get; }
+    public DamagePrimitiveTypes LiteType { get; }
     public DamageHandlerBase DamageInfo { get; }
     public uint EventId { get; } = EventID;
 }
@@ -33,7 +35,7 @@ public class DeadEvent : IBaseEvent
 public class DiesEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.Dies;
-    private LiteDamageTypes _liteType = LiteDamageTypes.Unknown;
+    private DamagePrimitiveTypes _liteType = DamagePrimitiveTypes.Unknown;
 
     private DamageTypes _type = DamageTypes.Unknown;
 
@@ -59,11 +61,11 @@ public class DiesEvent : IBaseEvent
         }
     }
 
-    public LiteDamageTypes LiteType
+    public DamagePrimitiveTypes LiteType
     {
         get
         {
-            if (_liteType is LiteDamageTypes.Unknown) _liteType = DamageInfo.GetLiteDamageTypes();
+            if (_liteType is DamagePrimitiveTypes.Unknown) _liteType = DamageInfo.GetLiteDamageTypes();
             return _liteType;
         }
     }
@@ -75,7 +77,7 @@ public class DiesEvent : IBaseEvent
 public class DamageEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.Damage;
-    private LiteDamageTypes _liteType = LiteDamageTypes.Unknown;
+    private DamagePrimitiveTypes _liteType = DamagePrimitiveTypes.Unknown;
 
     private DamageTypes _type = DamageTypes.Unknown;
 
@@ -103,11 +105,11 @@ public class DamageEvent : IBaseEvent
         }
     }
 
-    public LiteDamageTypes LiteType
+    public DamagePrimitiveTypes LiteType
     {
         get
         {
-            if (_liteType is LiteDamageTypes.Unknown) _liteType = DamageInfo.GetLiteDamageTypes();
+            if (_liteType is DamagePrimitiveTypes.Unknown) _liteType = DamageInfo.GetLiteDamageTypes();
             return _liteType;
         }
     }
@@ -119,7 +121,7 @@ public class DamageEvent : IBaseEvent
 public class AttackEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.Attack;
-    private LiteDamageTypes _liteType = LiteDamageTypes.Unknown;
+    private DamagePrimitiveTypes _liteType = DamagePrimitiveTypes.Unknown;
 
     private DamageTypes _type = DamageTypes.Unknown;
 
@@ -150,11 +152,11 @@ public class AttackEvent : IBaseEvent
         }
     }
 
-    public LiteDamageTypes LiteType
+    public DamagePrimitiveTypes LiteType
     {
         get
         {
-            if (_liteType is LiteDamageTypes.Unknown) _liteType = DamageInfo.GetLiteDamageTypes();
+            if (_liteType is DamagePrimitiveTypes.Unknown) _liteType = DamageInfo.GetLiteDamageTypes();
             return _liteType;
         }
     }

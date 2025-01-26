@@ -5,6 +5,8 @@ using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -20,7 +22,7 @@ internal static class CorpseSpawn
     {
         try
         {
-            Player? player = owner.GetPlayer();
+            var player = owner.GetPlayer();
 
             if (player is null)
                 return false;
@@ -28,7 +30,7 @@ internal static class CorpseSpawn
             CorpseSpawnEvent ev = new(player, handler);
             ev.InvokeEvent();
 
-            return ev.Allowed;
+            return ev.IsAllowed;
         }
         catch (Exception e)
         {

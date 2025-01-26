@@ -3,6 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Environment;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -15,7 +17,7 @@ internal static class Tesla
     {
         try
         {
-            _ = API.Controllers.Tesla.Get(__instance);
+            _ = EntityManager.Get<ITesla>(__instance);
         }
         catch (Exception e)
         {

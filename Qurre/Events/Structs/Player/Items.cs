@@ -1,9 +1,9 @@
-﻿using System;
-using InventorySystem.Items.Radio;
+﻿using InventorySystem.Items.Radio;
 using JetBrains.Annotations;
-using Qurre.API.Addons.Items;
-using Qurre.API.Controllers;
-using Qurre.API.Objects;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Entities.Items;
+using Qurre.API.Enums;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
@@ -14,7 +14,7 @@ public class CancelUseItemEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.CancelUseItem;
 
-    internal CancelUseItemEvent(Player player, Item item)
+    internal CancelUseItemEvent(Player player, IItem item)
     {
         Player = player;
         Item = item;
@@ -22,7 +22,7 @@ public class CancelUseItemEvent : IBaseEvent
     }
 
     public Player Player { get; }
-    public Item Item { get; }
+    public IItem Item { get; }
     public bool Allowed { get; set; }
     public uint EventId { get; } = EventID;
 }
@@ -32,7 +32,7 @@ public class UseItemEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.UseItem;
 
-    internal UseItemEvent(Player player, Item item)
+    internal UseItemEvent(Player player, IItem item)
     {
         Player = player;
         Item = item;
@@ -40,7 +40,7 @@ public class UseItemEvent : IBaseEvent
     }
 
     public Player Player { get; }
-    public Item Item { get; }
+    public IItem Item { get; }
     public bool Allowed { get; set; }
     public uint EventId { get; } = EventID;
 }
@@ -50,14 +50,14 @@ public class UsedItemEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.UsedItem;
 
-    internal UsedItemEvent(Player player, Item item)
+    internal UsedItemEvent(Player player, IItem item)
     {
         Player = player;
         Item = item;
     }
 
     public Player Player { get; }
-    public Item Item { get; }
+    public IItem Item { get; }
     public uint EventId { get; } = EventID;
 }
 
@@ -66,7 +66,7 @@ public class ChangeItemEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.ChangeItem;
 
-    internal ChangeItemEvent(Player player, Item? oldItem, Item? newItem)
+    internal ChangeItemEvent(Player player, IItem? oldItem, IItem? newItem)
     {
         Player = player;
         OldItem = oldItem;
@@ -75,8 +75,8 @@ public class ChangeItemEvent : IBaseEvent
     }
 
     public Player Player { get; }
-    public Item? OldItem { get; }
-    public Item? NewItem { get; }
+    public IItem? OldItem { get; }
+    public IItem? NewItem { get; }
     public bool Allowed { get; set; }
     public uint EventId { get; } = EventID;
 }
@@ -86,17 +86,17 @@ public class UpdateRadioEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.UpdateRadio;
 
-    internal UpdateRadioEvent(Player player, RadioItem radio, RadioStatus range, bool enabled)
+    internal UpdateRadioEvent(Player player, RadioItem radioBase, RadioStatus range, bool enabled)
     {
         Player = player;
-        Radio = Item.Get(radio) as Radio ?? throw new ArgumentNullException(nameof(radio));
+        Radio = EntityManager.GetOrException<IRadio>(radioBase);
         Range = range;
         Enabled = enabled;
         Allowed = true;
     }
 
     public Player Player { get; }
-    public Radio Radio { get; }
+    public IRadio Radio { get; }
     public RadioStatus Range { get; set; }
     public bool Enabled { get; set; }
     public bool Allowed { get; set; }
@@ -108,17 +108,17 @@ public class UsingRadioEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.UsingRadio;
 
-    internal UsingRadioEvent(Player player, RadioItem radio, float num)
+    internal UsingRadioEvent(Player player, RadioItem radioBase, float num)
     {
         Player = player;
-        Radio = Item.Get(radio) as Radio ?? throw new ArgumentNullException(nameof(radio));
-        Battery = radio._battery * 100;
+        Radio = EntityManager.GetOrException<IRadio>(radioBase);
+        Battery = radioBase._battery * 100;
         Consumption = Time.deltaTime * (num / 60 / 100) * 100;
         Allowed = true;
     }
 
     public Player Player { get; }
-    public Radio Radio { get; }
+    public IRadio Radio { get; }
     public float Battery { get; set; }
     public float Consumption { get; set; }
     public bool Allowed { get; set; }

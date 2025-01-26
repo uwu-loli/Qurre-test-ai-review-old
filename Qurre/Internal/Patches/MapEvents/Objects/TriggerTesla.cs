@@ -6,7 +6,9 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using Mirror;
 using Qurre.API;
-using Qurre.API.Controllers;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Entities.Environment;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using UnityEngine;
@@ -35,7 +37,7 @@ internal static class TriggerTesla
 
             if (!NetworkServer.active)
             {
-                foreach (TeslaGate teslaGate2 in TeslaGate.AllGates)
+                foreach (var teslaGate2 in TeslaGate.AllGates)
                     teslaGate2.ClientSideCode();
                 return;
             }
@@ -43,7 +45,7 @@ internal static class TriggerTesla
             List<Player> players = [..Player.List.Where(x => !x.IsHost && x.RoleInformation.IsAlive)];
 
             // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-            foreach (TeslaGate teslaGate in TeslaGate.AllGates)
+            foreach (var teslaGate in TeslaGate.AllGates)
             {
                 if (!teslaGate.isActiveAndEnabled)
                     continue;
@@ -54,30 +56,27 @@ internal static class TriggerTesla
                     continue;
                 }
 
-                Tesla tesla = teslaGate.GetTesla();
-                if (!tesla.Enable)
+                if (!EntityManager.TryGet(teslaGate, out ITesla? tesla) || !tesla.IsEnabled)
                     continue;
 
                 bool idling = false;
                 bool activated = false;
 
                 // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-                foreach (Player pl in players)
+                foreach (var player in players)
                 {
-                    bool inIdle = teslaGate.IsInIdleRange(pl.ReferenceHub);
-                    if (!inIdle)
-                        continue;
+                    var inIdleRange = teslaGate.IsInIdleRange(player.ReferenceHub);
+                    if (!inIdleRange) continue;
 
-                    bool inRng = teslaGate.PlayerInRange(pl.ReferenceHub);
+                    var inRageRange = teslaGate.PlayerInRange(player.ReferenceHub);
 
-                    TriggerTeslaEvent ev = new(pl, tesla, inIdle, inRng);
+                    TriggerTeslaEvent ev = new(player, tesla, inIdleRange, inRageRange);
                     ev.InvokeEvent();
 
-                    if (!ev.Allowed)
+                    if (!ev.IsAllowed)
                         continue;
 
-                    if (!idling)
-                        idling = true;
+                    idling = true;
 
                     if (!activated && ev.InRageRange && !teslaGate.InProgress)
                         activated = true;

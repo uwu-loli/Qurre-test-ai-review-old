@@ -7,6 +7,8 @@ using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp173;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 

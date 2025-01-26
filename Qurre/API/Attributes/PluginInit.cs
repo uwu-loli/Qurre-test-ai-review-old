@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Linq;
+
 using JetBrains.Annotations;
 
 namespace Qurre.API.Attributes;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Class)]
+[MeansImplicitUse]
 public class PluginInit : Attribute
 {
+    public string Name { get; }
+    public string Developer { get; }
+    public Version Version { get; }
+    
     public PluginInit(string name, string developer = "", string version = "")
     {
         Name = name;
@@ -18,7 +24,7 @@ public class PluginInit : Attribute
         }
         catch
         {
-            int[] versions = version.Split('.').Select(TryParse).ToArray();
+            var versions = version.Split('.').Select(SafeParse).ToArray();
 
             Version = versions.Length switch
             {
@@ -29,23 +35,10 @@ public class PluginInit : Attribute
                 _ => new Version(0, 0)
             };
         }
-
-        return;
-
-        static int TryParse(string str)
-        {
-            try
-            {
-                return int.Parse(str);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
     }
-
-    public string Name { get; }
-    public string Developer { get; }
-    public Version Version { get; }
+    
+    private static int SafeParse(string numberString)
+    {
+        return int.TryParse(numberString, out var result) ? result : 0;
+    }
 }

@@ -9,8 +9,12 @@ using HarmonyLib;
 using MEC;
 using PlayerRoles;
 using Qurre.API;
-using Qurre.API.Addons.Items;
-using Qurre.API.Controllers;
+using Qurre.API.Core;
+using Qurre.API.Entities;
+using Qurre.API.Entities.AdminToys;
+using Qurre.API.Entities.AdminToys.Implementations;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Entities.Characters.Implementations;
 using Qurre.API.World;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
@@ -79,7 +83,7 @@ internal static class Check
                             break;
                         case Team.SCPs:
                         {
-                            if (pl.RoleInformation.Role is RoleTypeId.Scp0492)
+                            if (pl.RoleInformation.RoleType is RoleTypeId.Scp0492)
                                 list.zombies++;
                             else
                                 list.scps_except_zombies++;
@@ -210,11 +214,11 @@ internal static class Check
                 foreach (var pl in Player.List)
                     try
                     {
-                        if (pl.RoleInformation.Role == RoleTypeId.Spectator)
+                        if (pl.RoleInformation.RoleType == RoleTypeId.Spectator)
                             continue;
 
                         pl.Inventory.Clear();
-                        pl.RoleInformation.Role = RoleTypeId.Spectator;
+                        pl.RoleInformation.RoleType = RoleTypeId.Spectator;
                     }
                     catch
                     {
@@ -225,57 +229,8 @@ internal static class Check
             {
                 // ignored
             }
-
-            try
-            {
-                foreach (var p in Pickup.List)
-                    try
-                    {
-                        p.Destroy();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-            }
-            catch
-            {
-                // ignored
-            }
-
-            try
-            {
-                foreach (var corpse in Corpse.List)
-                    try
-                    {
-                        corpse.Destroy();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-            }
-            catch
-            {
-                // ignored
-            }
-
-            try
-            {
-                foreach (var prim in Primitive.List)
-                    try
-                    {
-                        prim.Destroy();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-            }
-            catch
-            {
-                // ignored
-            }
+            
+            EntityManager.GetAll<IEntity>().ForEach(entity => entity.Destroy());
 
             yield break;
         } // end while

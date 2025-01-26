@@ -1,11 +1,14 @@
+using System;
 using JetBrains.Annotations;
-using Qurre.API.Interfaces;
+using Qurre.API.Core;
 using UnityEngine;
 
 namespace Qurre.Internal.Misc;
 
-internal class EntityLink : MonoBehaviour
+public class EntityLink : MonoBehaviour
 {
+    public event Action? ObjectDestroyed;
+    
     [PublicAPI]
     public IEntity? Entity { get; private set; }
 
@@ -18,6 +21,6 @@ internal class EntityLink : MonoBehaviour
 
     private void OnDestroy()
     {
-        Entity?.Destroy();
+        ObjectDestroyed?.Invoke();
     }
 }

@@ -7,7 +7,8 @@ using HarmonyLib;
 using InventorySystem;
 using InventorySystem.Items;
 using Qurre.API;
-using Qurre.API.Addons.Items;
+using Qurre.API.Entities.Items.Implementations;
+using Qurre.API.Utils.Entities;
 using Qurre.Events.Structs;
 
 namespace Qurre.Internal.Patches.PlayerEvents.Pickups;
@@ -46,7 +47,7 @@ internal static class DropItem
                 AccessTools.Method(typeof(Extensions), nameof(Extensions.GetPlayer), [typeof(ReferenceHub)])),
 
             new CodeInstruction(OpCodes.Ldloc_0),
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Item), nameof(Item.Get), [typeof(ItemBase)])),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(DropItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, @event.LocalIndex), // var @event = ...;
@@ -58,7 +59,7 @@ internal static class DropItem
             // if(!@event.Allowed) return;
             new CodeInstruction(OpCodes.Ldloc_S, @event.LocalIndex),
             new CodeInstruction(OpCodes.Callvirt,
-                AccessTools.PropertyGetter(typeof(DropItemEvent), nameof(DropItemEvent.Allowed))),
+                AccessTools.PropertyGetter(typeof(DropItemEvent), nameof(DropItemEvent.IsAllowed))),
             new CodeInstruction(OpCodes.Brfalse, retLabel)
         ]);
 

@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using JetBrains.Annotations;
 using MapGeneration;
-using Qurre.API.Controllers;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Rooms;
 using UnityEngine;
 
 namespace Qurre.API.World;
@@ -9,52 +11,37 @@ namespace Qurre.API.World;
 [PublicAPI]
 public static class GlobalLights
 {
-    public static void TurnOff(float duration)
+    private static void ApplyToRooms(Action<IRoom> action, bool includeCustom = true, FacilityZone? zoneType = null)
     {
-        foreach (var room in Room.List)
-            room.LightsOff(duration);
-    }
+        var roomList = EntityManager.GetAll<IGameRoom>().Where(room => zoneType is null || room.Zone == zoneType).Cast<IRoom>().ToList();
+        
+        // if include custom, then add range to list
+        // TODO: include custom rooms
+        //RoomManager.AllRooms.ForEach(action);
 
-    public static void TurnOff(float duration, FacilityZone zone)
-    {
-        foreach (var room in Room.List.Where(x => x.Zone == zone))
-            room.LightsOff(duration);
-    }
-
-    public static void ChangeColor(Color color, bool customToo = true, bool lockChange = false, bool ignoreLock = false)
-    {
-        foreach (var room in Room.List)
+        foreach (var room in roomList)
         {
-            if (ignoreLock) room.Lights.LockChange = false;
-            room.Lights.Color = color;
-            if (lockChange) room.Lights.LockChange = true;
+            action(room);
         }
     }
 
-    public static void ChangeColor(Color color, FacilityZone zone)
+    public static void DisableLight(float? duration = null, bool includeCustom = true, FacilityZone? zoneType = null)
     {
-        foreach (var room in Room.List.Where(x => x.Zone == zone))
-            room.Lights.Color = color;
+        ApplyToRooms(room => room.Lights.Disable(duration), includeCustom, zoneType);
     }
 
-    public static void Intensivity(float intensive, bool customToo = false)
+    public static void ChangeColor(Color color, bool includeCustom = true, FacilityZone? zoneType = null)
     {
-        foreach (var room in Room.List)
-            room.Lights.Intensity = intensive;
+        ApplyToRooms(room => room.Lights.Color = color, includeCustom, zoneType);
     }
 
-    public static void Intensivity(float intensive, FacilityZone zone)
+    public static void Intensivity(float intensity, bool includeCustom = true, FacilityZone? zoneType = null)
     {
-        foreach (var room in Room.List.Where(x => x.Zone == zone))
-            room.Lights.Intensity = intensive;
+        ApplyToRooms(room => room.Lights.Intensity = intensity, includeCustom, zoneType);
     }
 
-    public static void SetToDefault(bool customToo = true, bool ignoreLock = false)
+    public static void Reset(bool includeCustom = true, FacilityZone? zoneType = null)
     {
-        foreach (var room in Room.List)
-        {
-            if (ignoreLock) room.Lights.LockChange = false;
-            room.Lights.Override = false;
-        }
+        ApplyToRooms(room => room.Lights.Reset(), includeCustom, zoneType);
     }
 }

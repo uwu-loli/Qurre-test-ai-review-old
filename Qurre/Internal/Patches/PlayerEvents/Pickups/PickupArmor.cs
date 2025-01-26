@@ -8,8 +8,12 @@ using HarmonyLib;
 using InventorySystem.Items.Pickups;
 using InventorySystem.Searching;
 using Qurre.API;
-using Qurre.API.Addons.Items;
 using Qurre.API.Controllers;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Entities.Items;
+using Qurre.API.Entities.Items.Implementations;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -56,22 +60,22 @@ internal static class PickupArmor
     {
         try
         {
-            Player? pl = instance.Hub.GetPlayer();
-            Pickup? pickup = Pickup.Get(instance.TargetPickup);
-
-            if (pl is null || pickup is null)
-                return false;
-
-            PickupArmorEvent ev = new(pl, pickup);
-            ev.InvokeEvent();
-
-            if (ev.Allowed)
+            if (!EntityManager.TryGet(instance.TargetPickup, out IPickup? pickup))
                 return true;
 
-            PickupSyncInfo info = instance.TargetPickup.Info;
-            info.InUse = false;
-            info.Locked = false;
-            instance.TargetPickup.NetworkInfo = info;
+            if (!Player.TryGet(instance.Hub, out var player))
+                return true;
+
+            var ev = new PickupArmorEvent(player, pickup);
+            ev.InvokeEvent();
+
+            if (ev.IsAllowed)
+                return true;
+
+            var syncInfo = instance.TargetPickup.Info;
+            syncInfo.InUse = false;
+            syncInfo.Locked = false;
+            instance.TargetPickup.NetworkInfo = syncInfo;
 
             return false;
         }

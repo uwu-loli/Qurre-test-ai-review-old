@@ -3,6 +3,8 @@ using JetBrains.Annotations;
 using Mirror;
 using PlayerRoles.Voice;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using BaseIntercom = PlayerRoles.Voice.Intercom;
 
 namespace Qurre.API.World;

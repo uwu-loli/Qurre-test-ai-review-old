@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using PlayerRoles;
-using Qurre.API;
 using Qurre.API.Addons;
 using Qurre.API.Attributes;
-using Qurre.API.Classification.Roles;
-using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters.Components.Roles;
 using Qurre.Events;
 using Qurre.Events.Structs;
 
@@ -21,36 +19,6 @@ internal static class Player
         ServerConsole.AddLog($"Player {ev.Player.UserInformation.Nickname} ({ev.Player.UserInformation.UserId}) " +
                              $"({ev.Player.UserInformation.Id}) connected. iP: {ev.Player.UserInformation.Ip}",
             ConsoleColor.Magenta);
-
-        /* --- send net identity info --- */
-
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (var door in Door.List)
-        {
-            try
-            {
-                door.NetworkUpdateForConnection(ev.Player.ConnectionToClient);
-            }
-            catch (Exception ex)
-            {
-                Log.Debug(
-                    $"Error in {BetterColors.Yellow("Qurre.Internal.EventsCalled.Join<DoorsUpdate>")}\n{BetterColors.Grey(ex)}");
-            }
-        }
-
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (var locker in Locker.List)
-        {
-            try
-            {
-                locker.NetworkUpdateForConnection(ev.Player.ConnectionToClient);
-            }
-            catch (Exception ex)
-            {
-                Log.Debug(
-                    $"Error in {BetterColors.Yellow("Qurre.Internal.EventsCalled.Join<LockersUpdate>")}\n{BetterColors.Grey(ex)}");
-            }
-        }
     }
 
     [EventMethod(PlayerEvents.Leave)]
@@ -87,29 +55,7 @@ internal static class Player
             ev.Player.RoleInformation.CachedRole = ev.Role;
 
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-        switch (ev.Role)
-        {
-            case RoleTypeId.Scp079:
-            {
-                ev.Player.RoleInformation.Scp079 = new Scp079(ev.Player);
-                break;
-            }
-            case RoleTypeId.Scp096:
-            {
-                ev.Player.RoleInformation.Scp096 = new Scp096(ev.Player);
-                break;
-            }
-            case RoleTypeId.Scp106:
-            {
-                ev.Player.RoleInformation.Scp106 = new Scp106(ev.Player);
-                break;
-            }
-            case RoleTypeId.Scp173:
-            {
-                ev.Player.RoleInformation.Scp173 = new Scp173(ev.Player);
-                break;
-            }
-        }
+        ev.Player.RoleInformation.SetupRole();
     }
 
     [EventMethod(PlayerEvents.ChangeRole, int.MinValue)]

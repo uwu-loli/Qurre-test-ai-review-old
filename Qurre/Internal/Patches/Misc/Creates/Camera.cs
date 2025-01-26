@@ -5,6 +5,8 @@ using JetBrains.Annotations;
 using PlayerRoles.PlayableScps.Scp079;
 using PlayerRoles.PlayableScps.Scp079.Cameras;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Environment;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -19,7 +21,7 @@ internal static class Camera
         
         try
         {
-            _ = API.Controllers.Camera.Get(cameraBase);
+            _ = EntityManager.Get<IScp079Camera>(cameraBase);
         }
         catch (Exception e)
         {

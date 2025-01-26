@@ -35,7 +35,7 @@ internal static class AddCredits
 
         list.InsertRange(index,
         [
-            new CodeInstruction(OpCodes.Ldstr, $"<color=#00000000><size=1> Qurre v{Core.Version}</size></color>"),
+            new CodeInstruction(OpCodes.Ldstr, $"<color=#00000000><size=1> Qurre v{EventCore.Version}</size></color>"),
             new CodeInstruction(OpCodes.Call,
                 AccessTools.Method(typeof(string), nameof(string.Concat), [typeof(object), typeof(object)]))
         ]);

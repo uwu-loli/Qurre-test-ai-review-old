@@ -6,9 +6,10 @@ using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp079;
 using PlayerRoles.PlayableScps.Scp079.Rewards;
 using Qurre.API;
-using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
+using RoleScp079 = Qurre.API.Entities.Characters.Components.Roles.Scp079;
 
 namespace Qurre.Internal.Patches.ScpEvents.Scp079;
 
@@ -31,21 +32,19 @@ internal static class GetExp
     {
         try
         {
-            if (!instance.TryGetOwner(out ReferenceHub? hub))
+            if (!instance.TryGetOwner(out var referenceHub))
                 return;
 
-            Player? pl = hub.GetPlayer();
+            var player = referenceHub.GetPlayer();
+            if (player is null) return;
 
-            if (pl is null)
-                return;
-
-            Scp079GetExpEvent ev = new(pl, gainReason, reward);
+            var ev = new Scp079GetExpEvent(player, gainReason, reward);
             ev.InvokeEvent();
 
-            if (!ev.Allowed)
-                return;
-
-            ev.Player.RoleInformation.Scp079?.TierManager?.ServerGrantExperience(ev.Amount, ev.Type);
+            if (!ev.IsAllowed) return;
+            if (ev.Player.RoleInformation.CurrentRole is not RoleScp079 roleScp079) return;
+            
+            roleScp079.TierManager.Instance.ServerGrantExperience(ev.Amount, ev.Type);
         }
         catch (Exception e)
         {

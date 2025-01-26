@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace Qurre.API.Exceptions;
 
 [PublicAPI]
-public class ObjectDestroyedException() : InvalidOperationException("Object was destroyed")
+public class ObjectDestroyedException(string objectName = "") : InvalidOperationException($"Object{(objectName != "" ? $" \"{objectName}\")" : "")} was destroyed")
 {
     
 }

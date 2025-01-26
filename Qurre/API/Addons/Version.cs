@@ -1,11 +1,14 @@
-﻿namespace Qurre.API.Addons;
+﻿using JetBrains.Annotations;
 
+namespace Qurre.API.Addons;
+
+[PublicAPI]
 public class Version
 {
     private const string SMajor = "3";
     private const string SMinor = "0";
     private const string SBuild = "0";
-    private const string SRevision = "2";
+    private const string SRevision = "3";
 
     private const string STesting = "alpha";
 
@@ -30,7 +33,8 @@ public class Version
     {
         if (!string.IsNullOrEmpty(Testing)) return $"{Major}-{Testing} r-{Revision}";
 
-        string version = $"{Major}";
+        // TODO: use StringBuilder
+        var version = $"{Major}";
 
         if (Minor <= 0)
             return version;

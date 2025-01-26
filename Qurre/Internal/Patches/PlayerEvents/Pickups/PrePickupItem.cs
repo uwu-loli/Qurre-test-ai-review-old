@@ -3,9 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
+using InventorySystem.Items.Pickups;
 using InventorySystem.Searching;
 using Qurre.API;
-using Qurre.API.Addons.Items;
+using Qurre.API.Entities.Items.Implementations;
+using Qurre.API.Utils.Entities;
 using Qurre.Events.Structs;
 
 namespace Qurre.Internal.Patches.PlayerEvents.Pickups;
@@ -39,7 +41,7 @@ internal static class PrePickupItem
             new CodeInstruction(OpCodes.Ldarg_0),
             new CodeInstruction(OpCodes.Ldfld,
                 AccessTools.Field(typeof(SearchCompletor), nameof(SearchCompletor.TargetPickup))),
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Pickup), nameof(Pickup.Get))),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetPickupByBase), [typeof(ItemPickupBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(PrePickupItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, @event.LocalIndex), // var @event = ...;
@@ -51,7 +53,7 @@ internal static class PrePickupItem
             // if !@event.Allowed return;
             new CodeInstruction(OpCodes.Ldloc_S, @event.LocalIndex),
             new CodeInstruction(OpCodes.Callvirt,
-                AccessTools.PropertyGetter(typeof(PrePickupItemEvent), nameof(PrePickupItemEvent.Allowed))),
+                AccessTools.PropertyGetter(typeof(PrePickupItemEvent), nameof(PrePickupItemEvent.IsAllowed))),
             new CodeInstruction(OpCodes.Brtrue, label),
             new CodeInstruction(OpCodes.Ldc_I4_0), // false [if boolean]
             new CodeInstruction(OpCodes.Br, retLabel)

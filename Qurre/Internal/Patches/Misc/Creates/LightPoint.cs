@@ -4,6 +4,8 @@ using AdminToys;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.AdminToys;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -16,7 +18,7 @@ internal static class LightPoint
     {
         try
         {
-            _ = API.Controllers.LightPoint.Get(__instance);
+            _ = EntityManager.Get<ILightPoint>(__instance);
         }
         catch (Exception e)
         {

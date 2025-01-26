@@ -7,6 +7,8 @@ using CentralAuth;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 
 namespace Qurre.Internal.Patches.PlayerEvents.Network;

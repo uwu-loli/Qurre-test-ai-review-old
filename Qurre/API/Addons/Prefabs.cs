@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdminToys;
 using Interactables.Interobjects;
 using InventorySystem.Items.Firearms.Attachments;
 using JetBrains.Annotations;
 using MapGeneration.Distributors;
 using Mirror;
-using Qurre.API.Objects;
+using Qurre.API.Enums;
 using UnityEngine;
 
 namespace Qurre.API.Addons;
@@ -15,22 +16,22 @@ public static class Prefabs
 {
     private static readonly Dictionary<DoorPrefabs, BreakableDoor> LocalDoors = [];
     private static readonly Dictionary<LockerPrefabs, Locker> LocalLockers = [];
-    private static readonly Dictionary<TargetPrefabs, GameObject> LocalTargets = [];
+    private static readonly Dictionary<ShootingTargetPrefabs, ShootingTarget> LocalShootingTargets = [];
 
     public static IReadOnlyDictionary<DoorPrefabs, BreakableDoor> Doors => LocalDoors;
     public static IReadOnlyDictionary<LockerPrefabs, Locker> Lockers => LocalLockers;
-    public static IReadOnlyDictionary<TargetPrefabs, GameObject> Targets => LocalTargets;
+    public static IReadOnlyDictionary<ShootingTargetPrefabs, ShootingTarget> ShootingTargets => LocalShootingTargets;
 
     public static WorkstationController? WorkStation { get; private set; }
 
     public static Scp079Generator? Generator { get; private set; }
 
-    public static GameObject? Primitive { get; private set; }
+    public static PrimitiveObjectToy? Primitive { get; private set; }
 
-    public static GameObject? Light { get; private set; }
+    public static LightSourceToy? Light { get; private set; }
 
 
-    public static GameObject? Speaker { get; private set; }
+    public static SpeakerToy? Speaker { get; private set; }
 
     public static GameObject? Tantrum { get; private set; }
 
@@ -152,27 +153,27 @@ public static class Prefabs
                         LocalDoors[DoorPrefabs.BulkHCZ] = door;
                         break;
 
-                    case "1704345398":
-                        LocalTargets[TargetPrefabs.Sport] = prefab.Value;
+                    case "1704345398" when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
+                        LocalShootingTargets[ShootingTargetPrefabs.Sport] = shootingTarget;
                         break;
-                    case "858699872":
-                        LocalTargets[TargetPrefabs.Dboy] = prefab.Value;
+                    case "858699872" when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
+                        LocalShootingTargets[ShootingTargetPrefabs.Dboy] = shootingTarget;
                         break;
-                    case "3613149668":
-                        LocalTargets[TargetPrefabs.Binary] = prefab.Value;
+                    case "3613149668" when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
+                        LocalShootingTargets[ShootingTargetPrefabs.Binary] = shootingTarget;
                         break;
 
-                    case "1321952889":
-                        Primitive = prefab.Value;
+                    case "1321952889" when prefab.Value.TryGetComponent(out PrimitiveObjectToy primitiveObjectToy):
+                        Primitive = primitiveObjectToy;
                         break;
-                    case "3956448839":
-                        Light = prefab.Value;
+                    case "3956448839" when prefab.Value.TryGetComponent(out LightSourceToy lightSourceToy):
+                        Light = lightSourceToy;
                         break;
                     case "825024811":
                         Cloud = prefab.Value;
                         break;
-                    case "712426663":
-                        Speaker = prefab.Value;
+                    case "712426663" when prefab.Value.TryGetComponent(out SpeakerToy speakerToy):
+                        Speaker = speakerToy;
                         break;
                 }
             }

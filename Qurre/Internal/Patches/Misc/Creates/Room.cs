@@ -4,6 +4,8 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using MapGeneration;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Rooms;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -16,7 +18,7 @@ internal static class Room
     {
         try
         {
-            _ = API.Controllers.Room.Get(__instance);
+            _ = EntityManager.Get<IGameRoom>(__instance);
         }
         catch (Exception e)
         {

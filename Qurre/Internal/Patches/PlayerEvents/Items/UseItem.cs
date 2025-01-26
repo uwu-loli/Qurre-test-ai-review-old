@@ -7,7 +7,8 @@ using HarmonyLib;
 using InventorySystem.Items;
 using InventorySystem.Items.Usables;
 using Qurre.API;
-using Qurre.API.Addons.Items;
+using Qurre.API.Entities.Items.Implementations;
+using Qurre.API.Utils.Entities;
 using Qurre.Events.Structs;
 
 namespace Qurre.Internal.Patches.PlayerEvents.Items;
@@ -55,7 +56,7 @@ internal static class UseItem
                 AccessTools.Field(typeof(PlayerHandler), nameof(PlayerHandler.CurrentUsable))), // CurrentUsable
             new CodeInstruction(OpCodes.Ldfld,
                 AccessTools.Field(typeof(CurrentlyUsedItem), nameof(CurrentlyUsedItem.Item))), // Item [UsableItem]
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Item), nameof(Item.Get), [typeof(ItemBase)])),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(CancelUseItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, cancelUseEvent.LocalIndex), // var cancelUseEvent = ...;
@@ -95,7 +96,7 @@ internal static class UseItem
 
             // Item
             new CodeInstruction(OpCodes.Ldloc_1), // usableItem
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Item), nameof(Item.Get), [typeof(ItemBase)])),
+            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(UseItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, useEvent.LocalIndex), // var UseEvent = ...;

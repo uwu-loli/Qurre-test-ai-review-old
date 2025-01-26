@@ -4,6 +4,8 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.AdminToys;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -18,8 +20,7 @@ internal static class ShootingTarget
 
         try
         {
-            _ = API.Controllers.ShootingTarget.Get(shootingTarget);
-            Log.Info("It's work, omg"); // TODO: remove log
+            _ = EntityManager.Get<IShootingTarget>(shootingTarget);
         }
         catch (Exception e)
         {

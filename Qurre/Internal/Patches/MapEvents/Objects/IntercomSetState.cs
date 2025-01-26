@@ -14,11 +14,10 @@ internal static class IntercomSetState
     [HarmonyPrefix]
     private static bool Call(ref IntercomState value)
     {
-        IntercomSetStateEvent @event = new(value);
-        @event.InvokeEvent();
+        var ev = new IntercomSetStateEvent(value);
+        ev.InvokeEvent();
 
-        value = @event.State;
-
-        return @event.Allowed;
+        value = ev.State;
+        return ev.IsAllowed;
     }
 }

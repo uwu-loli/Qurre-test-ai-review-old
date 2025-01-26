@@ -3,6 +3,8 @@ using System.Linq;
 using JetBrains.Annotations;
 using PlayerRoles;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 
 namespace Qurre.API.Addons.Audio.Objects;
 

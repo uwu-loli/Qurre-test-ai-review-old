@@ -5,6 +5,8 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using Mirror;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.AdminToys;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -19,7 +21,7 @@ internal static class Speaker
         
         try
         {
-            _ = API.Controllers.Speaker.Get(speakerToy);
+            _ = EntityManager.Get<ISpeaker>(speakerToy);
         }
         catch (Exception e)
         {

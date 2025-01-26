@@ -4,6 +4,8 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using MapGeneration.Distributors;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Structures;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -16,7 +18,7 @@ internal static class Generator
     {
         try
         {
-            _ = API.Controllers.Generator.Get(__instance);
+            _ = EntityManager.Get<IGenerator>(__instance);
         }
         catch (Exception e)
         {

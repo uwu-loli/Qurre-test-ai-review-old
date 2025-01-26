@@ -7,6 +7,8 @@ using InventorySystem.Items.Jailbird;
 using Mirror;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -55,7 +57,7 @@ internal static class JailbirdTrigger
         JailbirdTriggerEvent @event = new(player, @base, message);
         @event.InvokeEvent();
 
-        if (@event.Allowed)
+        if (@event.IsAllowed)
             return @event.Message;
 
         @event.Message = JailbirdMessageType.UpdateState;

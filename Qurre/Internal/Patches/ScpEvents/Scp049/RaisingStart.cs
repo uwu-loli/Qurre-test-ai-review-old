@@ -5,6 +5,8 @@ using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp049;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -30,22 +32,20 @@ internal static class RaisingStart
         if (instance.CurRagdoll == null)
             return false;
 
-        Player? target = instance.CurRagdoll.Info.OwnerHub.GetPlayer();
-        Player? player = instance.Owner.GetPlayer();
+        var issuer = instance.Owner.GetPlayer();
+        var target = instance.CurRagdoll.Info.OwnerHub.GetPlayer();
 
-        if (target is null || player is null)
+        if (target is null || issuer is null)
             return false;
 
-        Scp049RaisingStartEvent @event = new(player, target, instance.CurRagdoll);
-
-        @event.Allowed =
-            instance.IsCloseEnough(instance.CastRole.FpcModule.Position, instance._ragdollTransform.position)
-            && IsSpawnableSpectator(target.ReferenceHub) &&
-            instance.CheckMaxResurrections(target.ReferenceHub) == ResurrectError.None &&
-            !instance.AnyConflicts(@event.Corpse.Base);
-
-        @event.InvokeEvent();
-
-        return @event.Allowed;
+        var ev = new Scp049RaisingStartEvent(issuer, target, instance.CurRagdoll)
+        {
+            IsAllowed = instance.IsCloseEnough(instance.CastRole.FpcModule.Position, instance._ragdollTransform.position) &&
+                        IsSpawnableSpectator(target.ReferenceHub) &&
+                        instance.CheckMaxResurrections(target.ReferenceHub) == ResurrectError.None &&
+                        !instance.AnyConflicts(instance.CurRagdoll)
+        };
+        ev.InvokeEvent();
+        return ev.IsAllowed;
     }
 }

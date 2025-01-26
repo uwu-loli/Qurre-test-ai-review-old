@@ -212,7 +212,7 @@ public static class BetterColors
 
     private static string ParseCode(int code)
     {
-        return $"\u001b[{code}m";
+        return $"\e[{code}m";
     }
 
 

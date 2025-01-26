@@ -4,7 +4,8 @@ using HarmonyLib;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using Qurre.API;
-using Qurre.API.Controllers;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Doors;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -21,13 +22,13 @@ internal static class DamageDoor
     {
         try
         {
-            if (!Door.TryGet(__instance, out var door)) return true;
+            if (!EntityManager.TryGet(__instance, out IBreakableDoor? breakableDoor)) return true;
             
-            var damageDoorEvent = new DamageDoorEvent(door, type, hp);
-            damageDoorEvent.InvokeEvent();
+            var ev = new DamageDoorEvent(breakableDoor, type, hp);
+            ev.InvokeEvent();
             
-            hp = damageDoorEvent.Damage;
-            return damageDoorEvent.Allowed;
+            hp = ev.Damage;
+            return ev.IsAllowed;
         }
         catch (Exception e)
         {

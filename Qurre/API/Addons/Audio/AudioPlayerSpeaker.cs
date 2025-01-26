@@ -4,6 +4,8 @@ using JetBrains.Annotations;
 using Mirror;
 using VoiceChat.Networking;
 
+using SpeakerBase = AdminToys.SpeakerToy;
+
 namespace Qurre.API.Addons.Audio;
 
 [PublicAPI]
@@ -12,14 +14,14 @@ public class AudioPlayerSpeaker : BaseAudioPlayer
     /// <summary>
     ///     Initializes a new instance of the <see cref="AudioPlayerSpeaker" /> class.
     /// </summary>
-    /// <param name="speakerToy"><see cref="AdminToys.SpeakerToy" /> of the audio source.</param>
+    /// <param name="speakerBase"><see cref="SpeakerBase" /> of the audio source.</param>
     /// <exception cref="ArgumentNullException" />
-    public AudioPlayerSpeaker(SpeakerToy speakerToy)
+    public AudioPlayerSpeaker(SpeakerBase speakerBase)
     {
-        SpeakerToy = speakerToy ?? throw new ArgumentNullException(nameof(speakerToy));
+        SpeakerToy = speakerBase ?? throw new ArgumentNullException(nameof(speakerBase));
     }
 
-    public SpeakerToy SpeakerToy { get; }
+    public SpeakerBase SpeakerToy { get; }
 
     public override void DestroySelf()
     {
@@ -38,15 +40,15 @@ public class AudioPlayerSpeaker : BaseAudioPlayer
     protected override ArraySegment<byte> SerializeAndPackToDataSegment(int dataLength, byte[] dataBuffer,
         int channelId = 0)
     {
-        using NetworkWriterPooled? writer = NetworkWriterPool.Get();
+        using var networkWriter = NetworkWriterPool.Get();
         AudioMessage message = new(
             SpeakerToy.ControllerId,
             dataBuffer,
             dataLength
         );
 
-        NetworkMessages.Pack(message, writer);
-        int maxMessageSize = NetworkMessages.MaxMessageSize(channelId);
-        return writer.Position > maxMessageSize ? ArraySegment<byte>.Empty : writer.ToArraySegment();
+        NetworkMessages.Pack(message, networkWriter);
+        var maxMessageSize = NetworkMessages.MaxMessageSize(channelId);
+        return networkWriter.Position > maxMessageSize ? ArraySegment<byte>.Empty : networkWriter.ToArraySegment();
     }
 }

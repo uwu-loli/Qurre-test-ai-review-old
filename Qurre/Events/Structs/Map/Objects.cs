@@ -1,60 +1,61 @@
 ﻿using JetBrains.Annotations;
 using PlayerRoles.Voice;
-using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Entities.Environment;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;
 
 [PublicAPI]
-public class TriggerTeslaEvent : IBaseEvent
+public class TriggerTeslaEvent : ICancellableEvent
 {
     private const uint EventID = MapEvents.TriggerTesla;
 
-    internal TriggerTeslaEvent(Player player, Tesla tesla, bool inIdlingRange, bool inRageRange)
+    public uint EventId { get; } = EventID;
+    public bool IsAllowed { get; set; } = true;
+    
+    public Player Player { get; }
+    public ITesla Tesla { get; }
+    public bool InIdlingRange { get; }
+    public bool InRageRange { get; set; }
+    
+    internal TriggerTeslaEvent(Player player, ITesla tesla, bool inIdlingRange, bool inRageRange)
     {
         Player = player;
         Tesla = tesla;
         InIdlingRange = inIdlingRange;
         InRageRange = inRageRange;
-        Allowed = true;
     }
-
-    public Player Player { get; }
-    public Tesla Tesla { get; }
-    public bool InIdlingRange { get; }
-    public bool InRageRange { get; set; }
-    public bool Allowed { get; set; }
-    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
-public class WorkStationUpdateEvent : IBaseEvent
+public class WorkStationUpdateEvent : ICancellableEvent
 {
     private const uint EventID = MapEvents.WorkStationUpdate;
 
-    internal WorkStationUpdateEvent(WorkStation station)
+    public uint EventId { get; } = EventID;
+    public bool IsAllowed { get; set; } = true;
+    
+    public IWorkStation Station { get; }
+    
+    internal WorkStationUpdateEvent(IWorkStation station)
     {
         Station = station;
-        Allowed = true;
     }
-
-    public WorkStation Station { get; }
-    public bool Allowed { get; set; }
-    public uint EventId { get; } = EventID;
 }
 
 [PublicAPI]
-public class IntercomSetStateEvent : IBaseEvent
+public class IntercomSetStateEvent : ICancellableEvent
 {
     private const uint EventID = MapEvents.IntercomSetState;
 
+    public uint EventId { get; } = EventID;
+    public bool IsAllowed { get; set; } = true;
+    
+    public IntercomState State { get; set; }
+    
     internal IntercomSetStateEvent(IntercomState state)
     {
         State = state;
-        Allowed = true;
     }
-
-    public IntercomState State { get; set; }
-    public bool Allowed { get; set; }
-    public uint EventId { get; } = EventID;
 }

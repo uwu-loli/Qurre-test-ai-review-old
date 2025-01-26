@@ -85,9 +85,10 @@ public static class PlayerEvents //1xxx
 public static class MapEvents //2xxx
 {
     //2000+ ← Main Map Events
-    public const uint MapGenerated = 2001;
-    public const uint LczDecontamination = 2002;
-    public const uint LczAnnounce = 2003;
+    public const uint MapGenerating = 2001;
+    public const uint MapGenerated = 2002;
+    public const uint LczDecontamination = 2003;
+    public const uint LczAnnounce = 2004;
 
     //2100+ ← Place/Spawn
     public const uint PlaceBlood = 2101;

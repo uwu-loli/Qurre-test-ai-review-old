@@ -4,6 +4,8 @@ using HarmonyLib;
 using InventorySystem.Items.Firearms.Attachments;
 using JetBrains.Annotations;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Environment;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -16,7 +18,7 @@ internal static class WorkStation
     {
         try
         {
-            _ = API.Controllers.WorkStation.Get(__instance);
+            _ = EntityManager.Get<IWorkStation>(__instance);
         }
         catch (Exception e)
         {

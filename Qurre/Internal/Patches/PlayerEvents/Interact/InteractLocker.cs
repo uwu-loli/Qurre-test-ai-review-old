@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
 using MapGeneration.Distributors;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Entities.Structures;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using Locker = MapGeneration.Distributors.Locker;
@@ -32,24 +37,23 @@ internal static class InteractLocker
     {
         try
         {
-            if (!instance.Chambers.TryGet<LockerChamber>(colliderId, out LockerChamber chamber))
+            if (!EntityManager.TryGet(instance, out ILocker? locker))
                 return;
 
-            if (!chamber.CanInteract)
+            if (!instance.Chambers.TryGet<LockerChamber>(colliderId, out var lockerChamber))
                 return;
 
-            Player? player = ply.GetPlayer();
+            if (!lockerChamber.CanInteract)
+                return;
+
+            var player = ply.GetPlayer();
 
             if (player is null)
                 return;
 
-            bool allow = instance.CheckTogglePerms(colliderId, ply) || ply.serverRoles.BypassMode;
+            var isAllowed = instance.CheckTogglePerms(colliderId, ply) || ply.serverRoles.BypassMode;
 
-            API.Controllers.Locker locker = instance.GetLocker();
-
-            locker.Chambers.TryFind(out var chamber2, x => x.LockerChamber == chamber);
-
-            InteractLockerEvent ev = new(player, locker, chamber2, allow);
+            InteractLockerEvent ev = new(player, locker, lockerChamber, isAllowed);
             ev.InvokeEvent();
 
             if (!ev.Allowed)
@@ -58,7 +62,7 @@ internal static class InteractLocker
                 return;
             }
 
-            chamber.SetDoor(!chamber.IsOpen, instance._grantedBeep);
+            lockerChamber.SetDoor(!lockerChamber.IsOpen, instance._grantedBeep);
             instance.RefreshOpenedSyncvar();
         }
         catch (Exception e)

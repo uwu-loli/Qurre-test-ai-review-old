@@ -4,6 +4,8 @@ using HarmonyLib;
 using Hazards;
 using JetBrains.Annotations;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Hazards;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -16,7 +18,7 @@ internal static class Sinkhole
     {
         try
         {
-            _ = API.Controllers.Sinkhole.Get(__instance);
+            _ = EntityManager.Get<ISinkhole>(__instance);
         }
         catch (Exception e)
         {

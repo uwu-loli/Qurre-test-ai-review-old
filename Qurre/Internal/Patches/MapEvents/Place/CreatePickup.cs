@@ -24,7 +24,7 @@ internal static class CreatePickup
             CreatePickupEvent ev = new(psi, inv);
             ev.InvokeEvent();
 
-            spawn = ev.Allowed;
+            spawn = ev.IsAllowed;
         }
         catch (Exception e)
         {

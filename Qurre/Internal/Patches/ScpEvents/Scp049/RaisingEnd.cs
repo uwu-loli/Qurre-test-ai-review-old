@@ -3,6 +3,8 @@ using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp049;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -20,15 +22,14 @@ internal static class RaisingEnd
         if (__instance.CurRagdoll == null)
             return false;
 
-        Player? target = __instance.CurRagdoll.Info.OwnerHub.GetPlayer();
-        Player? player = __instance.Owner.GetPlayer();
+        var issuer = __instance.Owner.GetPlayer();
+        var target = __instance.CurRagdoll.Info.OwnerHub.GetPlayer();
 
-        if (target is null || player is null)
+        if (target is null || issuer is null)
             return false;
 
-        Scp049RaisingEndEvent @event = new(player, target, __instance.CurRagdoll);
-        @event.InvokeEvent();
-
-        return @event.Allowed;
+        var ev = new Scp049RaisingEndEvent(issuer, target, __instance.CurRagdoll);
+        ev.InvokeEvent();
+        return ev.IsAllowed;
     }
 }

@@ -4,6 +4,9 @@ using HarmonyLib;
 using Interactables.Interobjects.DoorUtils;
 using JetBrains.Annotations;
 using Qurre.API;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Doors;
+using Qurre.API.World.Entities;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 
@@ -16,7 +19,7 @@ internal static class Door
     {
         try
         {
-            _ = API.Controllers.Door.Get(__instance);
+            _ = EntityManager.Get<IDoor>(__instance);
         }
         catch (Exception e)
         {

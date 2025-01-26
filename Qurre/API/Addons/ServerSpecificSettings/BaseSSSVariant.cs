@@ -1,5 +1,8 @@
 using JetBrains.Annotations;
+
 using Qurre.API.Controllers;
+using Qurre.API.Entities.Characters;
+using Qurre.API.World.Entities.Player;
 using UserSettings.ServerSpecific;
 
 namespace Qurre.API.Addons.ServerSpecificSettings;

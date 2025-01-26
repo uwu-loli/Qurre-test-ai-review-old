@@ -18,15 +18,21 @@ using PlayerRoles.PlayableScps;
 using PlayerRoles.Ragdolls;
 using PlayerStatsSystem;
 using Qurre.API.Addons;
-using Qurre.API.Controllers;
-using Qurre.API.Interfaces;
-using Qurre.API.Objects;
-using Qurre.API.World;
+using Qurre.API.Core;
+using Qurre.API.Entities;
+using Qurre.API.Entities.AdminToys;
+using Qurre.API.Entities.Characters;
+using Qurre.API.Entities.Doors;
+using Qurre.API.Entities.Environment;
+using Qurre.API.Entities.Rooms;
+using Qurre.API.Entities.Structures;
+using Qurre.API.Enums;
+using Qurre.API.Models;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using Qurre.Internal.Misc;
 using UnityEngine;
-using Locker = Qurre.API.Controllers.Locker;
+using Corpse = Qurre.API.Entities.Characters.Implementations.Corpse;
 using Random = UnityEngine.Random;
 using Sinkhole = CustomPlayerEffects.Sinkhole;
 
@@ -35,13 +41,13 @@ namespace Qurre.API;
 [PublicAPI]
 public static class Extensions
 {
-    public static bool TryFind<TSource>(this IEnumerable<TSource> source, out TSource found,
+    public static bool TryFind<TSource>(this IEnumerable<TSource> enumerable, out TSource found,
         Func<TSource, bool> predicate)
     {
-        foreach (TSource t in source)
-            if (predicate(t))
+        foreach (var item in enumerable)
+            if (predicate(item))
             {
-                found = t;
+                found = item;
                 return true;
             }
 
@@ -94,9 +100,9 @@ public static class Extensions
 
     #region GetLocker
 
-    public static Locker? GetLocker(this MapGeneration.Distributors.Locker lockerBase)
+    public static ILocker? GetLocker(this Locker lockerBase)
     {
-        return Locker.Get(lockerBase);
+        return EntityManager.Get<ILocker>(lockerBase);
     }
 
     #endregion
@@ -104,9 +110,9 @@ public static class Extensions
 
     #region GetCorpse
 
-    public static Corpse? GetCorpse(this BasicRagdoll ragdollBase)
+    public static ICorpse? GetCorpse(this BasicRagdoll ragdollBase)
     {
-        return Corpse.Get(ragdollBase);
+        return EntityManager.Get<ICorpse>(ragdollBase);
     }
 
     #endregion
@@ -114,9 +120,9 @@ public static class Extensions
 
     #region GetWorkStation
 
-    public static WorkStation? GetWorkStation(this WorkstationController workstationBase)
+    public static IWorkStation? GetWorkStation(this WorkstationController workstationBase)
     {
-        return WorkStation.Get(workstationBase);
+        return EntityManager.Get<IWorkStation>(workstationBase);
     }
 
     #endregion
@@ -124,9 +130,9 @@ public static class Extensions
 
     #region GetShootingTarget
 
-    public static ShootingTarget? GetShootingTarget(this AdminToys.ShootingTarget targetBase)
+    public static IShootingTarget? GetShootingTarget(this AdminToys.ShootingTarget targetBase)
     {
-        return ShootingTarget.Get(targetBase);
+        return EntityManager.Get<IShootingTarget>(targetBase);
     }
 
     #endregion
@@ -134,25 +140,19 @@ public static class Extensions
 
     #region GetRoom
 
-    public static Room? GetRoom(this RoomName type)
+    public static IGameRoom? GetRoom(this RoomName roomName)
     {
-        return Room.List.FirstOrDefault(x => x.RoomName == type);
+        return EntityManager.GetAll<IGameRoom>().FirstOrDefault(room => room.Name == roomName);
     }
 
-    public static Room? GetRoom(this RoomType type)
+    public static IGameRoom? GetRoom(this RoomTypes roomType)
     {
-        return Room.List.FirstOrDefault(x => x.Type == type);
+        return EntityManager.GetAll<IGameRoom>().FirstOrDefault(room => room.RoomType == roomType);
     }
 
-    public static Room GetRoom(this RoomIdentifier identifier)
+    public static IGameRoom GetRoom(this RoomIdentifier identifier)
     {
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (var room in Room.List)
-            if (room.Base == identifier)
-                return room;
-
-        var room2 = Room.Get(identifier)!;
-        return room2;
+        return EntityManager.Get<IGameRoom>(identifier)!;
     }
 
     #endregion
@@ -160,14 +160,16 @@ public static class Extensions
 
     #region GetTesla
 
-    public static Tesla? GetTesla(this TeslaGate teslaBase)
+    public static ITesla? GetTesla(this TeslaGate teslaBase)
     {
-        return Tesla.Get(teslaBase);
+        return EntityManager.Get<ITesla>(teslaBase);
     }
 
-    public static Tesla? GetTesla(this GameObject gameObject)
+    public static ITesla? GetTesla(this GameObject gameObject)
     {
-        return Tesla.List.FirstOrDefault(tesla => tesla.GameObject == gameObject);
+        return gameObject.TryGetComponent<TeslaGate>(out var teslaGate)
+            ? EntityManager.Get<ITesla>(teslaGate)
+            : null;
     }
 
     #endregion
@@ -175,14 +177,16 @@ public static class Extensions
 
     #region GetGenerator
 
-    public static Generator? GetGenerator(this GameObject gameObject)
+    public static IGenerator? GetGenerator(this Scp079Generator generatorBase)
     {
-        return Generator.List.FirstOrDefault(x => x.GameObject == gameObject);
+        return EntityManager.Get<IGenerator>(generatorBase);
     }
-
-    public static Generator? GetGenerator(this Scp079Generator generatorBase)
+    
+    public static IGenerator? GetGenerator(this GameObject gameObject)
     {
-        return Generator.Get(generatorBase);
+        return gameObject.TryGetComponent<Scp079Generator>(out var generator)
+            ? EntityManager.Get<IGenerator>(generator)
+            : null;
     }
 
     #endregion
@@ -190,14 +194,14 @@ public static class Extensions
 
     #region GetLift
 
-    public static Lift? GetLift(this ElevatorChamber liftBase)
+    public static ILift? GetLift(this ElevatorChamber liftBase)
     {
-        return Lift.Get(liftBase);
+        return EntityManager.Get<ILift>(liftBase);
     }
 
-    public static Lift? GetLift(this Vector3 position)
+    public static ILift? GetLift(this Vector3 worldPoint)
     {
-        return Lift.List.FirstOrDefault(x => x.Bounds.Contains(position));
+        return EntityManager.GetAll<ILift>().FirstOrDefault(lift => lift.WorldBounds.Contains(worldPoint));
     }
 
     #endregion
@@ -205,14 +209,14 @@ public static class Extensions
 
     #region GetDoor
 
-    public static Door? GetDoor(this DoorVariant doorBase)
+    public static IDoor? GetDoor(this DoorVariant doorBase)
     {
-        return Door.Get(doorBase);
+        return EntityManager.Get<IDoor>(doorBase);
     }
 
-    public static Door? GetDoor(this DoorType type)
+    public static IDoor? GetDoor(this DoorTypes doorType)
     {
-        return Door.List.FirstOrDefault(x => x.Type == type);
+        return EntityManager.GetAll<IDoor>().FirstOrDefault(door => door.DoorType == doorType);
     }
 
     #endregion
@@ -227,7 +231,7 @@ public static class Extensions
 
     public static IEnumerable<Player> GetPlayer(this RoleTypeId role)
     {
-        return Player.List.Where(player => player.RoleInformation.Role == role);
+        return Player.List.Where(player => player.RoleInformation.RoleType == role);
     }
 
 
@@ -432,25 +436,25 @@ public static class Extensions
 
     #region Damages
 
-    public static LiteDamageTypes GetLiteDamageTypes(this DamageHandlerBase handler)
+    public static DamagePrimitiveTypes GetLiteDamageTypes(this DamageHandlerBase handler)
     {
         return handler switch
         {
-            CustomReasonDamageHandler _ => LiteDamageTypes.Custom,
-            DisruptorDamageHandler _ => LiteDamageTypes.Disruptor,
-            ExplosionDamageHandler _ => LiteDamageTypes.Explosion,
-            FirearmDamageHandler _ => LiteDamageTypes.Gun,
-            JailbirdDamageHandler _ => LiteDamageTypes.Jailbird,
-            MicroHidDamageHandler _ => LiteDamageTypes.MicroHid,
-            RecontainmentDamageHandler _ => LiteDamageTypes.Recontainment,
-            Scp018DamageHandler _ => LiteDamageTypes.Scp018,
-            Scp049DamageHandler _ => LiteDamageTypes.Scp049,
-            Scp096DamageHandler _ => LiteDamageTypes.Scp096,
-            ScpDamageHandler _ => LiteDamageTypes.ScpDamage,
-            UniversalDamageHandler _ => LiteDamageTypes.Universal,
-            WarheadDamageHandler _ => LiteDamageTypes.Warhead,
+            CustomReasonDamageHandler _ => DamagePrimitiveTypes.Custom,
+            DisruptorDamageHandler _ => DamagePrimitiveTypes.Disruptor,
+            ExplosionDamageHandler _ => DamagePrimitiveTypes.Explosion,
+            FirearmDamageHandler _ => DamagePrimitiveTypes.Gun,
+            JailbirdDamageHandler _ => DamagePrimitiveTypes.Jailbird,
+            MicroHidDamageHandler _ => DamagePrimitiveTypes.MicroHid,
+            RecontainmentDamageHandler _ => DamagePrimitiveTypes.Recontainment,
+            Scp018DamageHandler _ => DamagePrimitiveTypes.Scp018,
+            Scp049DamageHandler _ => DamagePrimitiveTypes.Scp049,
+            Scp096DamageHandler _ => DamagePrimitiveTypes.Scp096,
+            ScpDamageHandler _ => DamagePrimitiveTypes.ScpDamage,
+            UniversalDamageHandler _ => DamagePrimitiveTypes.Universal,
+            WarheadDamageHandler _ => DamagePrimitiveTypes.Warhead,
             //SnowballDamageHandler _ => LiteDamageTypes.Snowball,
-            _ => LiteDamageTypes.Unknown
+            _ => DamagePrimitiveTypes.Unknown
         };
     }
 
@@ -557,12 +561,7 @@ public static class Extensions
         return Prefabs.Doors.TryGetValue(prefab, out BreakableDoor? door) ? door : Prefabs.Doors.First().Value;
     }
 
-    public static GameObject GetPrefab(this TargetPrefabs prefab)
-    {
-        return Prefabs.Targets.TryGetValue(prefab, out GameObject? target) ? target : Prefabs.Targets.First().Value;
-    }
-
-    public static MapGeneration.Distributors.Locker GetPrefab(this LockerPrefabs prefab)
+    public static Locker GetPrefab(this LockerPrefabs prefab)
     {
         if (prefab is LockerPrefabs.Pedestal)
             prefab = Random.Range(0, 100) switch
@@ -574,7 +573,7 @@ public static class Extensions
                 _ => LockerPrefabs.Pedestal2176
             };
 
-        return Prefabs.Lockers.TryGetValue(prefab, out MapGeneration.Distributors.Locker? locker)
+        return Prefabs.Lockers.TryGetValue(prefab, out var locker)
             ? locker
             : Prefabs.Lockers.First().Value;
     }
@@ -619,28 +618,28 @@ public static class Extensions
         };
     }
 
-    internal static AmmoType GetAmmoType(this ItemType itemType)
+    internal static AmmoTypes GetAmmoType(this ItemType itemType)
     {
         return itemType switch
         {
-            ItemType.Ammo556x45 => AmmoType.Ammo556,
-            ItemType.Ammo762x39 => AmmoType.Ammo762,
-            ItemType.Ammo9x19 => AmmoType.Ammo9,
-            ItemType.Ammo12gauge => AmmoType.Ammo12Gauge,
-            ItemType.Ammo44cal => AmmoType.Ammo44Cal,
-            _ => AmmoType.None
+            ItemType.Ammo556x45 => AmmoTypes.Ammo556,
+            ItemType.Ammo762x39 => AmmoTypes.Ammo762,
+            ItemType.Ammo9x19 => AmmoTypes.Ammo9,
+            ItemType.Ammo12gauge => AmmoTypes.Ammo12Gauge,
+            ItemType.Ammo44cal => AmmoTypes.Ammo44Cal,
+            _ => AmmoTypes.None
         };
     }
 
-    internal static ItemType GetItemType(this AmmoType ammoType)
+    internal static ItemType GetItemType(this AmmoTypes ammoType)
     {
         return ammoType switch
         {
-            AmmoType.Ammo556 => ItemType.Ammo556x45,
-            AmmoType.Ammo762 => ItemType.Ammo762x39,
-            AmmoType.Ammo9 => ItemType.Ammo9x19,
-            AmmoType.Ammo12Gauge => ItemType.Ammo12gauge,
-            AmmoType.Ammo44Cal => ItemType.Ammo44cal,
+            AmmoTypes.Ammo556 => ItemType.Ammo556x45,
+            AmmoTypes.Ammo762 => ItemType.Ammo762x39,
+            AmmoTypes.Ammo9 => ItemType.Ammo9x19,
+            AmmoTypes.Ammo12Gauge => ItemType.Ammo12gauge,
+            AmmoTypes.Ammo44Cal => ItemType.Ammo44cal,
             _ => ItemType.None
         };
     }
@@ -847,4 +846,27 @@ public static class Extensions
         if (!gameObject) return null;
         return gameObject.TryGetComponent(out EntityLink entityLink) ? entityLink.Entity as T : null;
     }
+    
+    #region Ragdoll Data
+
+    public static RagdollData CopyWithReplace(this RagdollData ragdollData,
+        ReferenceHub? newHub = null,
+        DamageHandlerBase? newDamageHandler = null,
+        Vector3? newPosition = null,
+        Quaternion? newRotation = null,
+        string? newNickname = null,
+        RoleTypeId? newRole = null,
+        ushort? newSerial = null,
+        Vector3? curPosition = null,
+        Quaternion? curRotation = null)
+    {
+        return new RagdollData(
+            newHub ?? ragdollData.OwnerHub,
+            newDamageHandler ?? ragdollData.Handler,
+            newPosition ?? curPosition ?? ragdollData.StartPosition,
+            newRotation ?? curRotation ?? ragdollData.StartRotation,
+            newSerial ?? ragdollData.Serial);
+    }
+    
+    #endregion
 }
