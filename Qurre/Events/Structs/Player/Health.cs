@@ -32,7 +32,7 @@ public class DeadEvent : IBaseEvent
 }
 
 [PublicAPI]
-public class DiesEvent : IBaseEvent
+public class DiesEvent : ICancellableEvent
 {
     private const uint EventID = PlayerEvents.Dies;
     private DamagePrimitiveTypes _liteType = DamagePrimitiveTypes.Unknown;
@@ -44,13 +44,13 @@ public class DiesEvent : IBaseEvent
         Attacker = attacker;
         Target = target;
         DamageInfo = damageInfo;
-        Allowed = true;
+        IsAllowed = true;
     }
 
     public Player Attacker { get; }
     public Player Target { get; }
     public DamageHandlerBase DamageInfo { get; }
-    public bool Allowed { get; set; }
+    public bool IsAllowed { get; set; }
 
     public DamageTypes DamageType
     {
@@ -165,7 +165,7 @@ public class AttackEvent : IBaseEvent
 }
 
 [PublicAPI]
-public class HealEvent : IBaseEvent
+public class HealEvent : ICancellableEvent
 {
     private const uint EventID = PlayerEvents.Heal;
 
@@ -173,11 +173,11 @@ public class HealEvent : IBaseEvent
     {
         Player = player;
         Amount = amount;
-        Allowed = true;
+        IsAllowed = true;
     }
 
     public Player Player { get; }
     public float Amount { get; set; }
-    public bool Allowed { get; set; }
+    public bool IsAllowed { get; set; }
     public uint EventId { get; } = EventID;
 }

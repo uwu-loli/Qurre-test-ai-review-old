@@ -33,8 +33,8 @@ internal abstract class NetworkEntity : TransformEntity, INetworkEntity
     /// <inheritdoc />
     public void Spawn()
     {
-        if (!NetworkIdentity.IsAlive || IsSpawned) return;
         GameObject.Instance.SetActive(true);
+        if (!NetworkIdentity.IsAlive || IsSpawned) return;
         NetworkServer.Spawn(GameObject.Instance);
         Spawned?.Invoke();
     }
@@ -42,9 +42,9 @@ internal abstract class NetworkEntity : TransformEntity, INetworkEntity
     /// <inheritdoc />
     public void UnSpawn()
     {
+        GameObject.Instance.SetActive(false);
         if (!NetworkIdentity.IsAlive || !IsSpawned) return;
         NetworkServer.UnSpawn(GameObject.Instance);
-        GameObject.Instance.SetActive(false);
         UnSpawned?.Invoke();
     }
 

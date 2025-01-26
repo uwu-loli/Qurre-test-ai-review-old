@@ -6,5 +6,5 @@ public interface IEventCall
 {
     int Priority { get; }
     string Identifier { get; }
-    void Call(IBaseEvent @event);
+    void Call(IBaseEvent ev);
 }

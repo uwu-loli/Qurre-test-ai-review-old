@@ -57,28 +57,4 @@ internal static class Player
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
         ev.Player.RoleInformation.SetupRole();
     }
-
-    [EventMethod(PlayerEvents.ChangeRole, int.MinValue)]
-    private static void SetSpawnedTime(ChangeRoleEvent ev)
-    {
-        if (!ev.Allowed)
-            return;
-
-        if (ev.Role is RoleTypeId.Spectator or RoleTypeId.Overwatch or RoleTypeId.Filmmaker)
-            return;
-
-        ev.Player.SpawnedTime = DateTime.Now;
-    }
-
-    [EventMethod(PlayerEvents.Dead, int.MinValue)]
-    private static void Dead(DeadEvent ev)
-    {
-        ev.Target.StatsInformation.DeathsCount++;
-
-        if (ev.Target == ev.Attacker)
-            return;
-
-        ev.Attacker.StatsInformation.LocalKills.Add(
-            new KillElement(ev.Attacker, ev.Target, ev.DamageType, DateTime.Now));
-    }
 }

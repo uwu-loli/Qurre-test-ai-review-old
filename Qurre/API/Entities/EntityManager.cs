@@ -82,7 +82,10 @@ public static class EntityManager
         if (entityFactory is null)
             throw new InvalidOperationException($"No factory registered for type {baseType}");
 
+#if DEBUG
         //Log.Info($"EntitiesManager$$Create<{typeof(TEntity).Name}>({baseObject.GetType().Name})");
+#endif
+        
         typedEntity = (TEntity)entityFactory(baseObject);
         EntityMappings[baseObject] = typedEntity;
         typedEntity.Destroyed += () => EntityMappings.Remove(baseObject);

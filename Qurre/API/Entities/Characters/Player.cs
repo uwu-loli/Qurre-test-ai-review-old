@@ -5,9 +5,13 @@ using CentralAuth;
 using JetBrains.Annotations;
 using Mirror;
 using Mirror.LiteNetLib4Mirror;
+using PlayerRoles;
 using Qurre.API.Addons;
+using Qurre.API.Attributes;
 using Qurre.API.Controllers.Structs;
 using Qurre.API.Entities.Characters.Components;
+using Qurre.Events;
+using Qurre.Events.Structs;
 using RemoteAdmin;
 using UnityEngine;
 using Field = Qurre.Internal.Fields.Player;
@@ -87,7 +91,7 @@ public class Player
     public bool FriendlyFire { get; set; }
     public float LastSynced { get; internal set; }
     public DateTime JoinedTime { get; internal set; }
-    public DateTime SpawnedTime { get; internal set; }
+    public DateTime SpawnedTime { get; private set; }
     public VariableDictionary<object> Variables { get; }
 
     public BroadcastsList Broadcasts { get; }
@@ -152,5 +156,17 @@ public class Player
     {
         player = Get(args);
         return player is not null;
+    }
+    
+    [EventMethod(PlayerEvents.ChangeRole, int.MinValue)]
+    private static void SetSpawnedTime(ChangeRoleEvent ev)
+    {
+        if (!ev.Allowed)
+            return;
+
+        if (ev.Role is RoleTypeId.Spectator or RoleTypeId.Overwatch or RoleTypeId.Filmmaker)
+            return;
+
+        ev.Player.SpawnedTime = DateTime.Now;
     }
 }

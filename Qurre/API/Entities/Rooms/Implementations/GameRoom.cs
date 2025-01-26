@@ -6,6 +6,7 @@ using Qurre.API.Core.Implementations;
 using Qurre.API.Entities.Characters;
 using Qurre.API.Entities.Rooms.Lights;
 using Qurre.API.Enums;
+using Qurre.API.Utils;
 using Qurre.Internal.Attributes;
 using UnityEngine;
 
@@ -17,13 +18,13 @@ internal sealed class GameRoom : ReadOnlyTransformEntity, IGameRoom
     public GameRoom(RoomIdentifier roomBase) : base(roomBase.gameObject)
     {
         Base = roomBase;
+        Base.Instance.TryAssignId();
 
-        // TODO: fix
-        //WorldSubBounds = LocalSubBounds
-        //    .Select(bounds => BoundsHelper.CalculateWorldBoundsByRelative(bounds, GameObject.Instance.transform))
-        //    .ToArray();
+        WorldSubBounds = LocalSubBounds
+            .Select(bounds => BoundsHelper.CalculateWorldBoundsByRelative(bounds, GameObject.Instance.transform))
+            .ToArray();
 
-        //EntireBounds = BoundsHelper.CalculateRoomEntireBounds(Base.Instance);
+        EntireBounds = BoundsHelper.CalculateRoomEntireBounds(Base.Instance);
 
         Lights = new GameRoomLights(this);
         RoomType = GetRoomType();

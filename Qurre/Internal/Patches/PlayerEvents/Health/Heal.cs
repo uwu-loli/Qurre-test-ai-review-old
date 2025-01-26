@@ -40,7 +40,7 @@ internal static class Heal
             HealEvent ev = new(player, amount);
             ev.InvokeEvent();
 
-            if (!ev.Allowed)
+            if (!ev.IsAllowed)
                 return;
 
             instance.CurValue = Mathf.Min(instance.CurValue + Mathf.Abs(ev.Amount),

@@ -24,16 +24,15 @@ internal static class Dead
     {
         try
         {
-            Player attacker = handler.GetAttacker() ?? Server.Host;
-            Player? target = __instance.gameObject.GetPlayer();
+            var attacker = handler.GetAttacker() ?? Server.Host;
+            var target = __instance.gameObject.GetPlayer();
 
             if (target is null)
                 return true;
 
             DiesEvent ev = new(attacker, target, handler);
             ev.InvokeEvent();
-
-            return ev.Allowed;
+            return ev.IsAllowed;
         }
         catch (Exception e)
         {
@@ -48,11 +47,11 @@ internal static class Dead
     {
         try
         {
-            Player? attacker = handler.GetAttacker();
-            Player? target = __instance.gameObject.GetPlayer();
+            var attacker = handler.GetAttacker();
+            var target = __instance.gameObject.GetPlayer();
 
             attacker ??= target;
-
+            
             if (target is null || attacker is null)
                 return;
 
@@ -60,8 +59,8 @@ internal static class Dead
                 target.GamePlay.GodMode || target.IsHost)
                 return;
 
-            DamageTypes type = handler.GetDamageType();
-            DeadEvent ev = new(attacker, target, handler, type);
+            var type = handler.GetDamageType();
+            var ev = new DeadEvent(attacker, target, handler, type);
             ev.InvokeEvent();
         }
         catch (Exception e)

@@ -6,8 +6,10 @@ using JetBrains.Annotations;
 using Mirror;
 using Qurre.API;
 using Qurre.API.Attributes;
-using Qurre.API.Controllers;
-using Qurre.API.Objects;
+using Qurre.API.Entities;
+using Qurre.API.Entities.Doors;
+using Qurre.API.Entities.Rooms;
+using Qurre.API.Enums;
 using Qurre.Events;
 using Qurre.Events.Structs;
 using UnityEngine;
@@ -24,21 +26,23 @@ internal static class Tests
     {
         #region Rooms
 
+        var rooms = EntityManager.GetAll<IGameRoom>();
+
         Log.Info("----- ROOMS START -----");
 
-        foreach (var room in Room.List)
+        foreach (var room in rooms)
         {
-            if (room.Type != RoomType.Unknown)
-                Log.Debug($"{room.Name}: {room.Type}");
+            if (room.RoomType != RoomTypes.Unknown)
+                Log.Debug($"{room.Name}: {room.RoomType}");
             else
-                Log.Warn($"{room.Name}: {room.Type}");
+                Log.Warn($"{room.Name}: {room.RoomType}");
         }
 
         Log.Custom("----------------------------------------------");
 
-        foreach (var roomType in Enum.GetValues(typeof(RoomType)))
+        foreach (var roomType in Enum.GetValues(typeof(RoomTypes)))
         {
-            if (Room.List.Any(x => $"{x.Type}" == $"{roomType}"))
+            if (rooms.Any(x => $"{x.RoomType}" == $"{roomType}"))
             {
                 Log.Debug($"Room \"{roomType}\" exist");
                 continue;
@@ -54,19 +58,21 @@ internal static class Tests
 
         #region Doors
 
+        var doors = EntityManager.GetAll<IDoor>();
+
         Log.Info("----- DOORS START -----");
 
-        foreach (var door in Door.List)
-            if (door.Type != DoorType.Unknown)
-                Log.Debug(door.GetDebugString());
+        foreach (var door in doors)
+            if (door.DoorType != DoorTypes.Unknown)
+                Log.Debug(door);
             else
-                Log.Warn(door.GetDebugString());
+                Log.Warn(door);
 
         Log.Custom("----------------------------------------------");
 
-        foreach (var doorType in Enum.GetValues(typeof(DoorType)))
+        foreach (var doorType in Enum.GetValues(typeof(DoorTypes)))
         {
-            if (Door.List.Any(x => $"{x.Type}" == $"{doorType}"))
+            if (doors.Any(x => $"{x.DoorType}" == $"{doorType}"))
             {
                 Log.Debug($"Door \"{doorType}\" exist");
                 continue;
@@ -90,8 +96,11 @@ internal static class Tests
             {
                 var room = ev.Player.GamePlay.Room;
 
-                ev.Allowed = false;
-                ev.Reply = $"Name: {room.Name}; RoomName: {room.RoomName}; Type: {room.Type}";
+                if (room is IGameRoom gameRoom)
+                {
+                    ev.Allowed = false;
+                    ev.Reply = $"Name: {gameRoom.Name}; Type: {gameRoom.RoomType}";
+                }
 
                 break;
             }
@@ -101,7 +110,7 @@ internal static class Tests
                 ev.Allowed = false;
 
                 var roomName = string.Join(' ', ev.Args);
-                var room = Room.List.FirstOrDefault(x => x.Name == roomName);
+                var room = EntityManager.GetAll<IGameRoom>().FirstOrDefault(x => x.Name.ToString() == roomName);
 
                 if (room is null)
                 {

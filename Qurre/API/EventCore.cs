@@ -2,6 +2,7 @@
 using System.Reflection;
 using JetBrains.Annotations;
 using Qurre.API.Attributes;
+using Qurre.Events;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using EventLists = Qurre.Internal.EventsManager.Lists;
@@ -17,40 +18,46 @@ public static class EventCore
     public static void InjectEventMethod(MethodInfo method)
     {
         if (method.IsAbstract)
-            throw new Exception($"InjectEventMethod: '{method.Name}' is abstract");
+            throw new InvalidOperationException($"Cannot inject an abstract method: '{method.Name}'.");
 
-        var attrs = method.GetCustomAttributes<EventMethod>();
-
-        foreach (EventMethod? attr in attrs)
-            if (EventLists.CallMethods.TryGetValue(attr.Type, out var list))
-                list.Add(new EventCallMethod(method, attr.Priority));
-            else
-                EventLists.CallMethods.Add(attr.Type, [new EventCallMethod(method, attr.Priority)]);
+        foreach (var attribute in method.GetCustomAttributes<EventMethod>())
+        {
+            var callMethod = new EventCallMethod(method, attribute.Priority);
+            RegisterEventCall(attribute.Type, callMethod);
+        }
     }
 
     public static void ExtractEventMethod(MethodInfo method)
     {
         if (method.IsAbstract)
-            throw new Exception($"InjectEventMethod: '{method.Name}' is abstract");
+            throw new InvalidOperationException($"Cannot inject an abstract method: '{method.Name}'.");
 
-        var attrs = method.GetCustomAttributes<EventMethod>();
-
-        foreach (EventMethod? attr in attrs)
+        foreach (var attribute in method.GetCustomAttributes<EventMethod>())
         {
-            if (!EventLists.CallMethods.TryGetValue(attr.Type, out var list))
+            if (!EventLists.CallMethods.TryGetValue(attribute.Type, out var list))
                 continue;
 
-            list.RemoveAll(x => x is EventCallMethod call && call.Info == method);
+            list.RemoveAll(eventCall => eventCall is EventCallMethod callMethod && callMethod.Info == method);
         }
     }
 
 
     public static void InjectAction(uint eventId, int priority, Action<IBaseEvent> action)
     {
-        if (EventLists.CallMethods.TryGetValue(eventId, out var list))
-            list.Add(new EventCallAction(action, priority));
-        else
-            EventLists.CallMethods.Add(eventId, [new EventCallAction(action, priority)]);
+        var callAction = new EventCallAction(action, priority);
+        RegisterEventCall(eventId, callAction);
+    }
+
+    private static void RegisterEventCall(uint eventId, IEventCall eventCall)
+    {
+        if (!EventLists.CallMethods.TryGetValue(eventId, out var callList))
+        {
+            callList = [];
+            EventLists.CallMethods[eventId] = callList;
+        }
+        
+        Log.Info("Call Method added " + (eventId == PlayerEvents.Dead));
+        callList.Add(eventCall);
     }
 
     public static void ExtractAction(uint eventId, Action<IBaseEvent> action)
@@ -58,7 +65,7 @@ public static class EventCore
         if (!EventLists.CallMethods.TryGetValue(eventId, out var list))
             return;
 
-        list.RemoveAll(x => x is EventCallAction call && call.Action == action);
+        list.RemoveAll(eventCall => eventCall is EventCallAction callAction && callAction.Action == action);
     }
 
 
@@ -72,6 +79,6 @@ public static class EventCore
         if (!EventLists.CallMethods.TryGetValue(eventId, out var list))
             return;
 
-        list.Sort((x, y) => y.Priority.CompareTo(x.Priority));
+        list.Sort((eventCallA, eventCallB) => eventCallB.Priority.CompareTo(eventCallA.Priority));
     }
 }

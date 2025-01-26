@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Qurre.API.Addons;
+using Qurre.API.Attributes;
+using Qurre.Events;
+using Qurre.Events.Structs;
 
 namespace Qurre.API.Entities.Characters.Components;
 
@@ -9,7 +13,7 @@ public sealed class StatsInformation
 {
     private readonly Player _player;
 
-    internal List<KillElement> LocalKills = [];
+    private readonly List<KillRecord> _localKills = [];
 
     internal StatsInformation(Player pl)
     {
@@ -17,11 +21,22 @@ public sealed class StatsInformation
         DeathsCount = 0;
     }
 
-    public int DeathsCount { get; internal set; }
+    public int DeathsCount { get; private set; }
 
-    public IReadOnlyCollection<KillElement> Kills
-        => LocalKills.AsReadOnly();
+    public IReadOnlyList<KillRecord> Kills => _localKills;
 
-    public int KillsCount
-        => LocalKills.Count;
+    [EventMethod(PlayerEvents.Dead, int.MinValue)]
+    private static void OnPlayerDead(DeadEvent ev)
+    {
+        ev.Target.Broadcasts.Add(new Controllers.Broadcast(ev.Target, "You died", 10));
+        Log.Info("New death by " + ev.Target.UserInformation.Nickname);
+
+        ev.Target.StatsInformation.DeathsCount++;
+
+        if (ev.Target == ev.Attacker)
+            return;
+
+        ev.Attacker.StatsInformation._localKills.Add(
+            new KillRecord(ev.Attacker, ev.Target, ev.DamageType, DateTime.Now));
+    }
 }

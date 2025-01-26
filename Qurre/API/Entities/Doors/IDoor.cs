@@ -36,7 +36,7 @@ public interface IDoor : ILevelEntity
     bool IsCollisionDisabled { get; }
 
     /// <exception cref="ObjectDestroyedException" />
-    DoorVariant.CollisionsDisablingReasons CollisionDisabledReason { get; }
+    DoorBase.CollisionsDisablingReasons CollisionDisabledReason { get; }
 
     /// <exception cref="ObjectDestroyedException" />
     float OpenFraction { get; }
@@ -62,7 +62,7 @@ public interface IDoor : ILevelEntity
     /// <exception cref="ObjectDestroyedException" />
     bool IsRoomsRegistered { get; }
 
-    IReadOnlyCollection<IRoom> Rooms { get; }
+    IReadOnlyCollection<IGameRoom> Rooms { get; }
 
     #endregion
 }

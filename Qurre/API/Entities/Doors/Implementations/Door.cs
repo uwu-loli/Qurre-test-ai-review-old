@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Interactables.Interobjects.DoorUtils;
 using Mirror;
 using Qurre.API.Core;
@@ -20,8 +21,13 @@ internal class Door : LevelEntity, IDoor
     {
         Base = doorBase;
         UnsafeNetIdWaypoint = GameObject.Instance.GetComponent<NetIdWaypoint>();
-        // TODO: fix
-        //Rooms = Base.Instance.Rooms.Select(EntitiesManager.GetOrException<IGameRoom>).ToList();
+        
+        if (Base.Instance.Rooms is null)
+            Base.Instance.RegisterRooms();
+        
+        Rooms = Base.Instance.Rooms is null
+            ? []
+            : Base.Instance.Rooms.Select(EntityManager.GetOrException<IGameRoom>).ToList();
     }
 
     private NetIdWaypoint UnsafeNetIdWaypoint { get; }
@@ -94,7 +100,7 @@ internal class Door : LevelEntity, IDoor
     public bool IsRoomsRegistered => Base.Instance.RoomsAlreadyRegistered;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IRoom> Rooms { get; }
+    public IReadOnlyCollection<IGameRoom> Rooms { get; }
 
     /// <inheritdoc />
     public void SetLock(bool state, DoorLockReason reason = DoorLockReason.SpecialDoorFeature)

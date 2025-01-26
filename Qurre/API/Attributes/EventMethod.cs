@@ -6,6 +6,7 @@ namespace Qurre.API.Attributes;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+[MeansImplicitUse]
 public class EventMethod(uint type, int priority = 0) : Attribute
 {
     public uint Type { get; } = type;

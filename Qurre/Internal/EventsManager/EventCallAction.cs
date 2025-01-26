@@ -17,8 +17,8 @@ internal class EventCallAction : IEventCall
     public int Priority { get; }
     public string Identifier { get; }
 
-    public void Call(IBaseEvent @event)
+    public void Call(IBaseEvent ev)
     {
-        Action.Invoke(@event);
+        Action.Invoke(ev);
     }
 }

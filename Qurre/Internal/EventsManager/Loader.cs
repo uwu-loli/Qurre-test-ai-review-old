@@ -24,15 +24,16 @@ internal static class Loader
 
     internal static void PathQurreEvents()
     {
-        foreach (MethodInfo? method in Assembly.GetExecutingAssembly().GetTypes()
-                     .Where(x => x.IsClass && x.Namespace == "Qurre.Internal.EventsCalled")
+        foreach (var method in Assembly.GetExecutingAssembly().GetTypes()
+                     //.Where(x => x.IsClass && x.Namespace == "Qurre.Internal.EventsCalled")
+                     .Where(x => x.IsClass)
                      .SelectMany(x => x.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
                                                    BindingFlags.NonPublic)))
         {
             if (method.IsAbstract)
                 continue;
 
-            foreach (EventMethod? attr in method.GetCustomAttributes<EventMethod>())
+            foreach (var attr in method.GetCustomAttributes<EventMethod>())
                 if (Lists.QurreMethods.TryGetValue(attr.Type, out var list)) list.Add(method);
                 else Lists.QurreMethods.Add(attr.Type, [method]);
         }
@@ -40,7 +41,7 @@ internal static class Loader
 
     internal static void PluginPath(Assembly assembly)
     {
-        foreach (MethodInfo? method in assembly.GetTypes().Where(x => x.IsClass)
+        foreach (var method in assembly.GetTypes().Where(x => x.IsClass)
                      .SelectMany(x => x.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
                                                    BindingFlags.NonPublic)))
         {
@@ -61,41 +62,41 @@ internal static class Loader
                 continue;
             }
 
-            foreach (EventMethod? attr in attrs)
-                if (Lists.CallMethods.TryGetValue(attr.Type, out var list))
-                    list.Add(new EventCallMethod(method, attr.Priority));
-                else Lists.CallMethods.Add(attr.Type, [new EventCallMethod(method, attr.Priority)]);
+            foreach (var attributes in attrs)
+                if (Lists.CallMethods.TryGetValue(attributes.Type, out var list))
+                    list.Add(new EventCallMethod(method, attributes.Priority));
+                else Lists.CallMethods.Add(attributes.Type, [new EventCallMethod(method, attributes.Priority)]);
         }
     }
 
-    internal static void InvokeEvent(this IBaseEvent @event)
+    internal static void InvokeEvent(this IBaseEvent ev)
     {
-        if (Lists.QurreMethods.TryGetValue(@event.EventId, out var qurreList))
-            foreach (MethodInfo? method in qurreList)
+        if (Lists.QurreMethods.TryGetValue(ev.EventId, out var qurreList))
+            foreach (var method in qurreList)
                 try
                 {
                     if (!method.IsStatic) throw new Exception("Qurre event can not be non-static");
 
                     if (method.GetParameters().Length == 0) method.Invoke(null, []);
-                    else method.Invoke(null, [@event]);
+                    else method.Invoke(null, [ev]);
                 }
                 catch (Exception ex)
                 {
                     Log.Error(
-                        $"Method '{method.Name}' of class '{method.ReflectedType?.FullName}' threw an exception. Event ID: {@event.EventId}\n{ex}");
+                        $"Method '{method.Name}' of class '{method.ReflectedType?.FullName}' threw an exception. Event ID: {ev.EventId}\n{ex}");
                 }
 
-        if (!Lists.CallMethods.TryGetValue(@event.EventId, out var list))
+        if (!Lists.CallMethods.TryGetValue(ev.EventId, out var list))
             return;
 
-        foreach (IEventCall caller in list)
+        foreach (var eventCall in list)
             try
             {
-                caller.Call(@event);
+                eventCall.Call(ev);
             }
             catch (Exception ex)
             {
-                Log.Error($"{caller.Identifier} threw an exception. Event ID: {@event.EventId}\n{ex}");
+                Log.Error($"{eventCall.Identifier} threw an exception. Event ID: {ev.EventId}\n{ex}");
             }
     }
 }

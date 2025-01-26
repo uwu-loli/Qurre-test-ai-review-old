@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Qurre.API;
 using Qurre.Events.Structs;
 
 namespace Qurre.Internal.EventsManager;
@@ -17,27 +18,27 @@ internal class EventCallMethod : IEventCall
     public int Priority { get; }
     public string Identifier { get; }
 
-    public void Call(IBaseEvent @event)
+    public void Call(IBaseEvent ev)
     {
         if (Info.IsStatic)
         {
-            Invoke(@event, null);
+            Invoke(ev, null);
             return;
         }
 
-        if (Lists.ClassesOfNonStaticMethods.TryGetValue(Info, out object @class))
+        if (Lists.ClassesOfNonStaticMethods.TryGetValue(Info, out var instance))
         {
-            Invoke(@event, @class);
+            Invoke(ev, instance);
             return;
         }
 
-        Type? type = Info.DeclaringType;
-        ConstructorInfo? constructor = type?.GetConstructor(Type.EmptyTypes);
+        var type = Info.DeclaringType;
+        var constructor = type?.GetConstructor(Type.EmptyTypes);
 
-        @class = constructor?.Invoke([]) ?? throw new NullReferenceException(nameof(constructor));
-        Lists.ClassesOfNonStaticMethods.Add(Info, @class);
+        instance = constructor?.Invoke([]) ?? throw new NullReferenceException(nameof(constructor));
+        Lists.ClassesOfNonStaticMethods.Add(Info, instance);
 
-        Invoke(@event, @class);
+        Invoke(ev, instance);
     }
 
     private void Invoke(IBaseEvent @event, object? root)
