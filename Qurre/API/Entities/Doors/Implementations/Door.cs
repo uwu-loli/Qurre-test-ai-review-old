@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Interactables.Interobjects.DoorUtils;
 using Mirror;
+using Qurre.API.Addons;
 using Qurre.API.Core;
 using Qurre.API.Core.Implementations;
 using Qurre.API.Entities.Rooms;
 using Qurre.API.Enums;
+using Qurre.API.Exceptions;
+using Qurre.API.Utils.Entities;
 using Qurre.Internal.Attributes;
 using RelativePositioning;
 using UnityEngine;
@@ -20,28 +23,42 @@ internal class Door : LevelEntity, IDoor
     public Door(DoorBase doorBase) : base(doorBase.gameObject)
     {
         Base = doorBase;
-        UnsafeNetIdWaypoint = GameObject.Instance.GetComponent<NetIdWaypoint>();
-        
+        NetIdWaypoint = GameObject.Instance.GetComponent<NetIdWaypoint>();
+
         if (Base.Instance.Rooms is null)
             Base.Instance.RegisterRooms();
-        
+
         Rooms = Base.Instance.Rooms is null
             ? []
             : Base.Instance.Rooms.Select(EntityManager.GetOrException<IGameRoom>).ToList();
+
+        DoorType = DoorHelper.GetDoorType(Base.Instance);
+
+        PrefabType = NetworkIdentity.Instance.assetId switch
+        {
+            Prefabs.AssetIdDoorLCZ => DoorPrefabs.DoorLCZ,
+            Prefabs.AssetIdDoorHCZ => DoorPrefabs.DoorHCZ,
+            Prefabs.AssetIdDoorEZ => DoorPrefabs.DoorEZ,
+            Prefabs.AssetIdDoorBulkHCZ => DoorPrefabs.BulkHCZ,
+            _ => DoorPrefabs.Unknown
+        };
     }
 
-    private NetIdWaypoint UnsafeNetIdWaypoint { get; }
+    /// <inheritdoc />
+    public DoorPrefabs PrefabType { get; }
 
-    private bool HasWaypoint => (bool)UnsafeNetIdWaypoint;
+    private UnityObjectWrapper<NetIdWaypoint> NetIdWaypoint { get; }
 
-    private Vector3 UnsafeWaypointWorldPosition => UnsafeNetIdWaypoint._pos;
+    /// <exception cref="ObjectDestroyedException" />
+    private Vector3 WaypointWorldPosition => NetIdWaypoint.Instance._pos;
 
-    private Vector3 UnsafeWaypointLocalPosition
+    /// <exception cref="ObjectDestroyedException" />
+    private Vector3 WaypointLocalPosition
     {
         get
         {
             var parentPosition = WorldPosition - LocalPosition;
-            return UnsafeWaypointWorldPosition - parentPosition;
+            return WaypointWorldPosition - parentPosition;
         }
     }
 
@@ -49,7 +66,7 @@ internal class Door : LevelEntity, IDoor
     public UnityObjectWrapper<DoorBase> Base { get; }
 
     /// <inheritdoc />
-    public DoorTypes DoorType => throw new NotImplementedException();
+    public DoorTypes DoorType { get; private set; }
 
     /// <inheritdoc />
     public byte DoorId => Base.Instance.DoorId;
@@ -100,7 +117,14 @@ internal class Door : LevelEntity, IDoor
     public bool IsRoomsRegistered => Base.Instance.RoomsAlreadyRegistered;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IGameRoom> Rooms { get; }
+    public IReadOnlyList<IGameRoom> Rooms { get; }
+
+    /// <inheritdoc />
+    public DoorPermissions RequiredPermissions
+    {
+        get => Base.Instance.RequiredPermissions;
+        set => Base.Instance.RequiredPermissions = value;
+    }
 
     /// <inheritdoc />
     public void SetLock(bool state, DoorLockReason reason = DoorLockReason.SpecialDoorFeature)
@@ -113,21 +137,21 @@ internal class Door : LevelEntity, IDoor
     {
         return base.GetSpawnMessage(conn); // TODO: waypoint based spawn message
         var spawnMessage = base.GetSpawnMessage(conn);
-        if (!HasWaypoint) return spawnMessage;
-        spawnMessage.position = IsLevelGenerated ? UnsafeWaypointLocalPosition : UnsafeWaypointWorldPosition;
+        if (!NetIdWaypoint.IsAlive) return spawnMessage;
+        spawnMessage.position = IsLevelGenerated ? WaypointLocalPosition : WaypointWorldPosition;
         return spawnMessage;
     }
 
     /// <inheritdoc />
     protected override void OnPositionChanged()
     {
-        if (!HasWaypoint)
+        if (!NetIdWaypoint.IsAlive)
         {
             base.OnPositionChanged();
             return;
         }
 
-        if (Vector3.Distance(WorldPosition, UnsafeWaypointWorldPosition) < 120.0F)
+        if (Vector3.Distance(WorldPosition, WaypointWorldPosition) < 120.0F)
         {
             base.OnPositionChanged();
             return;
@@ -135,6 +159,6 @@ internal class Door : LevelEntity, IDoor
 
         UnSpawn();
         Spawn();
-        UnsafeNetIdWaypoint._pos = WorldPosition;
+        NetIdWaypoint.Instance._pos = WorldPosition;
     }
 }

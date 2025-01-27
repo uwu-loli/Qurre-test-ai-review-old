@@ -1,6 +1,7 @@
 using Interactables.Interobjects.DoorUtils;
 using JetBrains.Annotations;
 using Qurre.API.Core;
+using Qurre.API.Enums;
 using Qurre.API.Exceptions;
 using BreakableDoorBase = Interactables.Interobjects.BreakableDoor;
 
@@ -37,7 +38,7 @@ public interface IBreakableDoor : IDoor
 
     /// <exception cref="ObjectDestroyedException" />
     float MaxHealth { get; set; }
-
+    
     #endregion
 
     #region Methods

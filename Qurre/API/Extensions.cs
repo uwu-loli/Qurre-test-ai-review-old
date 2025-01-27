@@ -556,9 +556,9 @@ public static class Extensions
 
     #region Prefabs
 
-    public static BreakableDoor GetPrefab(this DoorPrefabs prefab)
+    public static DoorVariant GetPrefab(this DoorPrefabs prefab)
     {
-        return Prefabs.Doors.TryGetValue(prefab, out BreakableDoor? door) ? door : Prefabs.Doors.First().Value;
+        return Prefabs.Doors.TryGetValue(prefab, out DoorVariant? door) ? door : Prefabs.Doors.First().Value;
     }
 
     public static Locker GetPrefab(this LockerPrefabs prefab)

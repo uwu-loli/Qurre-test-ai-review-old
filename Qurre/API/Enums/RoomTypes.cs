@@ -44,11 +44,11 @@ public enum RoomTypes : byte
     HczTest,
     HczWater,
 
-    HczChkpA,
-    HczChkpB,
+    HczCheckpointA,
+    HczCheckpointB,
 
-    EzChkpA,
-    EzChkpB,
+    EzCheckpointA,
+    EzCheckpointB,
 
     EzThreeWay,
     EzCrossing,

@@ -110,7 +110,7 @@ internal static class Tests
                 ev.Allowed = false;
 
                 var roomName = string.Join(' ', ev.Args);
-                var room = EntityManager.GetAll<IGameRoom>().FirstOrDefault(x => x.Name.ToString() == roomName);
+                var room = EntityManager.GetAll<IGameRoom>().FirstOrDefault(gr => gr.Name.ToString() == roomName);
 
                 if (room is null)
                 {
@@ -126,7 +126,7 @@ internal static class Tests
             case "spawn_lift":
             {
                 ev.Allowed = false;
-                var prefabGameObject = NetworkClient.prefabs.First(x => x.Key == 2588580243).Value;
+                var prefabGameObject = NetworkClient.prefabs.First(kvp => kvp.Key == 2588580243).Value;
                 var instanceGameObject = Object.Instantiate(prefabGameObject);
                 instanceGameObject.transform.position = ev.Player.MovementState.Position;
                 NetworkServer.Spawn(instanceGameObject);

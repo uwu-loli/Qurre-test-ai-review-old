@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
@@ -26,3 +27,4 @@ internal static class Room
         }
     }
 }
+*/

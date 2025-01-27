@@ -62,7 +62,7 @@ public enum DoorTypes : byte
     EzIntercom, // INTERCOM
 
     EzCheckpointA, // CHECKPOINT_EZ_HCZ_A
-    EzCheckpointB, // CHECKPOINT_EZ_HCZ_B
+    EzCheckpointB, // CHECKPOINT_EZ_HCZ_A
     EzCheckpointArmoryA, // Intercom BreakableDoor (n)
     EzCheckpointArmoryB, // Intercom BreakableDoor (n)
     EzCheckpointGate, // Unsecured...

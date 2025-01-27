@@ -8,6 +8,7 @@ namespace Qurre.API.Enums;
 [PublicAPI]
 public enum DoorPrefabs : byte
 {
+    Unknown,
     DoorLCZ,
     DoorHCZ,
     DoorEZ,

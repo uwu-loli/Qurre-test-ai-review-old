@@ -1,15 +1,22 @@
 using Interactables.Interobjects.DoorUtils;
+using Qurre.API.Addons;
 using Qurre.API.Core;
+using Qurre.API.Enums;
 using Qurre.Internal.Attributes;
 using BreakableDoorBase = Interactables.Interobjects.BreakableDoor;
 
 namespace Qurre.API.Entities.Doors.Implementations;
 
 [EntityWrapBindForFactory(typeof(BreakableDoorBase))]
-internal sealed class BreakableDoor(BreakableDoorBase breakableDoorBase) : Door(breakableDoorBase), IBreakableDoor
+internal sealed class BreakableDoor : Door, IBreakableDoor
 {
-    /// <inheritdoc />
-    public new UnityObjectWrapper<BreakableDoorBase> Base { get; } = breakableDoorBase;
+    public BreakableDoor(BreakableDoorBase breakableDoorBase) : base(breakableDoorBase)
+    {
+        Base = breakableDoorBase;
+    }
+
+/// <inheritdoc />
+    public new UnityObjectWrapper<BreakableDoorBase> Base { get; }
 
     #region Game Object API
 

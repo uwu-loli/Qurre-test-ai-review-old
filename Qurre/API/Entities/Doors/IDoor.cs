@@ -21,6 +21,8 @@ public interface IDoor : ILevelEntity
 
     #region Properties
 
+    DoorPrefabs PrefabType { get; }
+
     UnityObjectWrapper<DoorBase> Base { get; }
 
     /// <exception cref="ObjectDestroyedException" />
@@ -62,7 +64,9 @@ public interface IDoor : ILevelEntity
     /// <exception cref="ObjectDestroyedException" />
     bool IsRoomsRegistered { get; }
 
-    IReadOnlyCollection<IGameRoom> Rooms { get; }
+    IReadOnlyList<IGameRoom> Rooms { get; }
 
-    #endregion
+    DoorPermissions RequiredPermissions { get; set; }
+
+#endregion
 }

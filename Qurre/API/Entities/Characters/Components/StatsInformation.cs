@@ -29,7 +29,6 @@ public sealed class StatsInformation
     private static void OnPlayerDead(DeadEvent ev)
     {
         ev.Target.Broadcasts.Add(new Controllers.Broadcast(ev.Target, "You died", 10));
-        Log.Info("New death by " + ev.Target.UserInformation.Nickname);
 
         ev.Target.StatsInformation.DeathsCount++;
 
