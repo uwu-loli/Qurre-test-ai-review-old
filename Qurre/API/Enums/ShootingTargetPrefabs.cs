@@ -5,7 +5,8 @@ namespace Qurre.API.Enums;
 [PublicAPI]
 public enum ShootingTargetPrefabs : byte
 {
-    Sport,
-    Dboy,
-    Binary
+    Unknown = 0,
+    Sport = 1,
+    Dboy = 2,
+    Binary = 3
 }

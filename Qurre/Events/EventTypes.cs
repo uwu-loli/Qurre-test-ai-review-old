@@ -136,6 +136,7 @@ public static class RoundEvents //4xxx
     public const uint End = 4004;
     public const uint Check = 4005;
     public const uint ForceStart = 4006;
+    public const uint RestartTriggered = 4007;
 }
 
 public static class AlphaEvents //5xxx

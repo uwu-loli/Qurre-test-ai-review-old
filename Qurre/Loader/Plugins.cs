@@ -206,7 +206,7 @@ internal static class Plugins
 
     private static void EnablePlugins()
     {
-        foreach (MethodStruct method in PluginsList.SelectMany(x => x.EnableMethods).OrderByDescending(x => x.Priority))
+        foreach (var method in PluginsList.SelectMany(ps => ps.EnableMethods).OrderByDescending(ms => ms.Priority))
             try
             {
                 method.MethodInfo.Invoke(null, []);
@@ -222,7 +222,7 @@ internal static class Plugins
 
     private static void Disable()
     {
-        foreach (MethodStruct method in PluginsList.SelectMany(x => x.DisableMethods))
+        foreach (var method in PluginsList.SelectMany(ps => ps.DisableMethods))
             try
             {
                 method.MethodInfo.Invoke(null, []);

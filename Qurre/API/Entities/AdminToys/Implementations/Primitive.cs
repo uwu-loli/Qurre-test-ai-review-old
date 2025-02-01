@@ -13,10 +13,18 @@ internal sealed class Primitive(PrimitiveBase primitiveBase) : AdminToy(primitiv
     public new UnityObjectWrapper<PrimitiveBase> Base { get; } = primitiveBase;
 
     /// <inheritdoc />
-    public PrimitiveType PrimitiveType { get; set; }
+    public PrimitiveType PrimitiveType
+    {
+        get => Base.Instance.NetworkPrimitiveType;
+        set => Base.Instance.NetworkPrimitiveType = value;
+    }
 
     /// <inheritdoc />
-    public Color MaterialColor { get; set; }
+    public Color MaterialColor
+    {
+        get => Base.Instance.NetworkMaterialColor;
+        set => Base.Instance.NetworkMaterialColor = value;
+    }
 
     /// <inheritdoc />
     public PrimitiveFlags PrimitiveFlags

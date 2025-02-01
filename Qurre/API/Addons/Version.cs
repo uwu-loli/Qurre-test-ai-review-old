@@ -8,7 +8,7 @@ public class Version
     private const string SMajor = "3";
     private const string SMinor = "0";
     private const string SBuild = "0";
-    private const string SRevision = "5";
+    private const string SRevision = "6";
 
     private const string STesting = "alpha";
 

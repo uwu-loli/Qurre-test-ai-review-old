@@ -21,6 +21,10 @@ public static class Prefabs
     public const uint AssetIdDoorHCZ = 2295511789;
     public const uint AssetIdDoorEZ = 1883254029;
     public const uint AssetIdDoorBulkHCZ = 2176035362;
+    
+    public const uint AssetIdShootingTargetSport = 1704345398;
+    public const uint AssetIdShootingTargetDBoy = 858699872;
+    public const uint AssetIdShootingTargetBinary = 3613149668;
 
 private static readonly Dictionary<DoorPrefabs, DoorVariant> LocalDoors = [];
     private static readonly Dictionary<LockerPrefabs, Locker> LocalLockers = [];
@@ -158,13 +162,13 @@ private static readonly Dictionary<DoorPrefabs, DoorVariant> LocalDoors = [];
                         LocalDoors[DoorPrefabs.BulkHCZ] = door;
                         break;
 
-                    case 1704345398 when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
+                    case AssetIdShootingTargetSport when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
                         LocalShootingTargets[ShootingTargetPrefabs.Sport] = shootingTarget;
                         break;
-                    case 858699872 when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
+                    case AssetIdShootingTargetDBoy when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
                         LocalShootingTargets[ShootingTargetPrefabs.Dboy] = shootingTarget;
                         break;
-                    case 3613149668 when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
+                    case AssetIdShootingTargetBinary when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
                         LocalShootingTargets[ShootingTargetPrefabs.Binary] = shootingTarget;
                         break;
 
