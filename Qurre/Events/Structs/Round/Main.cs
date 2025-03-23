@@ -59,7 +59,7 @@ public class RoundRestartTriggeredEvent : IBaseEvent
     internal RoundRestartTriggeredEvent()
     {
     }
-    
+
     public uint EventId { get; } = EventID;
 }
 
@@ -68,14 +68,14 @@ public class RoundCheckEvent : IBaseEvent
 {
     private const uint EventID = RoundEvents.Check;
 
-    internal RoundCheckEvent(LeadingTeam winner, RoundSummary.SumInfo_ClassList info, bool end)
+    internal RoundCheckEvent(RoundSummary.LeadingTeam winner, RoundSummary.SumInfo_ClassList info, bool end)
     {
         Winner = winner;
         Info = info;
         End = end;
     }
 
-    public LeadingTeam Winner { get; set; }
+    public RoundSummary.LeadingTeam Winner { get; set; }
     public RoundSummary.SumInfo_ClassList Info { get; set; }
     public bool End { get; set; }
     public uint EventId { get; } = EventID;
@@ -86,14 +86,14 @@ public class RoundEndEvent : IBaseEvent
 {
     private const uint EventID = RoundEvents.End;
 
-    internal RoundEndEvent(LeadingTeam winner, RoundSummary.SumInfo_ClassList info, int toRestart)
+    internal RoundEndEvent(RoundSummary.LeadingTeam winner, RoundSummary.SumInfo_ClassList info, int toRestart)
     {
         Winner = winner;
         Info = info;
         ToRestart = toRestart;
     }
 
-    public LeadingTeam Winner { get; }
+    public RoundSummary.LeadingTeam Winner { get; }
     public RoundSummary.SumInfo_ClassList Info { get; set; }
     public int ToRestart { get; set; }
     public uint EventId { get; } = EventID;

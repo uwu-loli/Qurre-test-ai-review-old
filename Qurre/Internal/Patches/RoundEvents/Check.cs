@@ -11,10 +11,7 @@ using PlayerRoles;
 using Qurre.API;
 using Qurre.API.Core;
 using Qurre.API.Entities;
-using Qurre.API.Entities.AdminToys;
-using Qurre.API.Entities.AdminToys.Implementations;
 using Qurre.API.Entities.Characters;
-using Qurre.API.Entities.Characters.Implementations;
 using Qurre.API.World;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
@@ -134,7 +131,7 @@ internal static class Check
             }
 
             // real winner of the round
-            LeadingTeam winner;
+            RoundSummary.LeadingTeam winner;
 
             if (dBoys > scientists) chaosCf++;
             else if (dBoys < scientists) mtfCf++;
@@ -146,19 +143,19 @@ internal static class Check
 
             if (chaosCf > mtfCf)
             {
-                if (chaosCf > scpCf) winner = LeadingTeam.ChaosInsurgency;
-                else if (mtfCf < scpCf) winner = LeadingTeam.Anomalies;
-                else winner = LeadingTeam.Draw;
+                if (chaosCf > scpCf) winner = RoundSummary.LeadingTeam.ChaosInsurgency;
+                else if (mtfCf < scpCf) winner = RoundSummary.LeadingTeam.Anomalies;
+                else winner = RoundSummary.LeadingTeam.Draw;
             }
             else if (mtfCf > chaosCf)
             {
-                if (mtfCf > scpCf) winner = LeadingTeam.FacilityForces;
-                else if (chaosCf < scpCf) winner = LeadingTeam.Anomalies;
-                else winner = LeadingTeam.Draw;
+                if (mtfCf > scpCf) winner = RoundSummary.LeadingTeam.FacilityForces;
+                else if (chaosCf < scpCf) winner = RoundSummary.LeadingTeam.Anomalies;
+                else winner = RoundSummary.LeadingTeam.Draw;
             }
             else
             {
-                winner = LeadingTeam.Draw;
+                winner = RoundSummary.LeadingTeam.Draw;
             }
 
             RoundCheckEvent evCheck = new(winner, list, end);
@@ -229,7 +226,7 @@ internal static class Check
             {
                 // ignored
             }
-            
+
             EntityManager.GetAll<IEntity>().ForEach(entity => entity.Destroy());
 
             yield break;

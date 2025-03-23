@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
         <Title>Qurre SL</Title>
         <Authors>Qurre Team</Authors>
@@ -46,6 +46,9 @@
         </Reference>
         <Reference Include="CommandSystem.Core">
             <HintPath>..\depedencies\CommandSystem.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="LabApi">
+            <HintPath>..\depedencies\LabApi.dll</HintPath>
         </Reference>
         <Reference Include="Mirror">
             <HintPath>..\depedencies\Mirror_edit.dll</HintPath>

@@ -16,7 +16,7 @@ public static class Scp914
     public static Scp914Controller Controller { get; internal set; }
 
     public static GameObject GameObject => Controller.gameObject;
-    public static bool Working => Controller._isUpgrading;
+    public static bool Working => Controller.IsUpgrading;
     public static Vector3 MoveVector => Scp914Controller.MoveVector;
 
     public static Scp914KnobSetting KnobState
@@ -27,8 +27,8 @@ public static class Scp914
 
     public static ConfigEntry<Scp914Mode> Config
     {
-        get => Controller._configMode;
-        set => Controller._configMode = value;
+        get => Controller.ConfigMode;
+        set => Controller.ConfigMode = value;
     }
 
     public static Transform Intake

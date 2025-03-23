@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Linq;
+using JetBrains.Annotations;
 
 namespace Qurre.API.Addons;
 
@@ -8,49 +9,36 @@ public class Version
     private const string SMajor = "3";
     private const string SMinor = "0";
     private const string SBuild = "0";
-    private const string SRevision = "6";
+    private const string SRevision = "7";
 
-    private const string STesting = "alpha";
+    private const string SName = "alpha";
 
     internal const string AssemblyVersion = $"{SMajor}.{SMinor}.{SBuild}.{SRevision}";
-    internal const string AssemblyCustom = $"v3-{STesting}";
+    internal const string AssemblyCustom = $"v3-{SName}.{SBuild}";
 
     internal Version()
     {
     }
 
-    public static int Major { get; } = int.Parse(SMajor);
+    public static uint Major { get; } = uint.Parse(SMajor);
 
-    public static int Minor { get; } = int.Parse(SMinor);
+    public static uint Minor { get; } = uint.Parse(SMinor);
 
-    public static int Build { get; } = int.Parse(SBuild);
+    public static uint Build { get; } = uint.Parse(SBuild);
 
-    public static int Revision { get; } = int.Parse(SRevision);
+    public static uint Revision { get; } = uint.Parse(SRevision);
 
-    public static string Testing => STesting;
+    public static string Name => SName;
 
     public override string ToString()
     {
-        if (!string.IsNullOrEmpty(Testing)) return $"{Major}-{Testing} r-{Revision}";
+        string prefix = string.IsNullOrEmpty(Name) ? "" : $"v3-{Name}.{Build}";
 
-        // TODO: use StringBuilder
-        var version = $"{Major}";
+        var parts = new[] { Major, Minor, Build, Revision }
+            .TakeWhile(part => part > 0);
 
-        if (Minor <= 0)
-            return version;
+        string versionNumbers = string.Join(".", parts);
 
-        version += $".{Minor}";
-
-        if (Build <= 0)
-            return version;
-
-        version += $".{Build}";
-
-        if (Revision <= 0)
-            return version;
-
-        version += $".{Revision}";
-
-        return version;
+        return $"{prefix} ({versionNumbers})";
     }
 }

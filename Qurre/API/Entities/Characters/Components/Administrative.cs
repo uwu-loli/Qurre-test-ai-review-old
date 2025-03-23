@@ -26,20 +26,20 @@ public sealed class Administrative
 
     public string? GroupName
     {
-        get => ServerStatic.GetPermissionsHandler()._members.GetValueOrDefault(_player.UserInformation.UserId);
-        set => ServerStatic.GetPermissionsHandler()._members[_player.UserInformation.UserId] = value;
+        get => ServerStatic.PermissionsHandler.Members.GetValueOrDefault(_player.UserInformation.UserId);
+        set => ServerStatic.PermissionsHandler.Members[_player.UserInformation.UserId] = value;
     }
 
     public string RoleName
     {
         get => ServerRoles.Network_myText;
-        set => ServerRoles.Network_myText = value;
+        set => ServerRoles.SetText(value);
     }
 
     public string RoleColor
     {
         get => ServerRoles.Network_myColor;
-        set => ServerRoles.Network_myColor = value;
+        set => ServerRoles.SetColor(value);
     }
 
     public void RaLogin()

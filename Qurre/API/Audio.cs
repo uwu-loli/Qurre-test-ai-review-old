@@ -114,7 +114,7 @@ public static class Audio
         Timing.CallDelayed(0.2F, () =>
         {
             referenceHub.characterClassManager.GodMode = true;
-            referenceHub.TryOverridePosition(position, rotation);
+            referenceHub.TryOverridePosition(position);
         });
 
         // Creating a new player.

@@ -16,7 +16,7 @@ internal abstract class TemporaryHazard(TemporaryHazardBase temporaryHazardBase)
     public float RemainingLifetime => Mathf.Clamp(Lifetime - LifecycleDuration, 0, Lifetime);
 
     /// <inheritdoc />
-    public float LifecycleDuration => Base.Instance._elapsed;
+    public float LifecycleDuration => Base.Instance.Elapsed;
 
     /// <inheritdoc />
     public float Lifetime => Base.Instance.HazardDuration;

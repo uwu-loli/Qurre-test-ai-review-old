@@ -19,16 +19,18 @@ public sealed class MovementState
     public Transform CameraReference => _player.ReferenceHub.PlayerCameraReference;
     public Transform Transform => _player.ReferenceHub.transform;
 
+    public Vector3 Velocity => _player.ReferenceHub.GetVelocity();
+
     public Vector3 Position
     {
         get => _player.GameObject.transform.position;
-        set => _player.ReferenceHub.TryOverridePosition(value, Vector3.zero);
+        set => _player.ReferenceHub.TryOverridePosition(value);
     }
 
     public Vector3 Rotation
     {
         get => _player.GameObject.transform.eulerAngles;
-        set => _player.ReferenceHub.TryOverridePosition(Position, value);
+        set => _player.ReferenceHub.TryOverrideRotation(value);
     }
 
     public Vector3 Scale
@@ -53,6 +55,18 @@ public sealed class MovementState
             {
                 Log.Error($"Scale error: {ex}");
             }
+        }
+    }
+
+    public Vector3 Gravity
+    {
+        get => _player.ReferenceHub.roleManager.CurrentRole is IFpcRole role
+            ? role.FpcModule.Motor.GravityController.Gravity
+            : Vector3.zero;
+        set
+        {
+            if (_player.ReferenceHub.roleManager.CurrentRole is IFpcRole role)
+                role.FpcModule.Motor.GravityController.Gravity = value;
         }
     }
 }

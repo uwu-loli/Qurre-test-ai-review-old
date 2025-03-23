@@ -7,9 +7,7 @@ using InventorySystem.Items.Armor;
 using NorthwoodLib.Pools;
 using PlayerRoles.FirstPersonControl;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using Scp914;
@@ -63,7 +61,7 @@ internal static class UpgradePlayer
         if (!ev.Allowed)
             return;
 
-        ply.TryOverridePosition(ev.TargetPosition, Vector3.zero);
+        ply.TryOverridePosition(ev.TargetPosition);
 
         if (!ev.UpgradeInventory)
             return;
