@@ -11,7 +11,7 @@ public static class BoundsHelper
     {
         if (boundsArray.Length == 0)
             return new Bounds();
-        
+
         var combinedBounds = boundsArray[0];
         boundsArray.ForEach(bounds => combinedBounds.Encapsulate(bounds));
         return combinedBounds;
@@ -31,11 +31,11 @@ public static class BoundsHelper
     {
         var worldCenter = transformRelative.TransformPoint(srcBounds.center);
         var worldSize = transformRelative.rotation * srcBounds.size;
-        
+
         worldSize.x = Mathf.Abs(worldSize.x);
         worldSize.y = Mathf.Abs(worldSize.y);
         worldSize.z = Mathf.Abs(worldSize.z);
-        
+
         return new Bounds(worldCenter, worldSize);
     }
 
@@ -43,17 +43,17 @@ public static class BoundsHelper
     {
         if (!roomIdentifier)
             return new Bounds();
-        
+
         var bounds = new Bounds(roomIdentifier.transform.position, Vector3.zero);
         var gridScale = RoomIdentifier.GridScale;
-        
+
         foreach (var gridCoord in roomIdentifier.OccupiedCoords)
         {
             var localPoint = Vector3.Scale(gridCoord, gridCoord);
             var localBounds = new Bounds(localPoint, gridScale);
             bounds.Encapsulate(localBounds);
         }
-        
+
         return bounds;
     }
 

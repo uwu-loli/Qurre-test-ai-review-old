@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using AdminToys;
 using CustomPlayerEffects;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
@@ -32,7 +33,6 @@ using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using Qurre.Internal.Misc;
 using UnityEngine;
-using Corpse = Qurre.API.Entities.Characters.Implementations.Corpse;
 using Random = UnityEngine.Random;
 using Sinkhole = CustomPlayerEffects.Sinkhole;
 
@@ -130,9 +130,50 @@ public static class Extensions
 
     #region GetShootingTarget
 
-    public static IShootingTarget? GetShootingTarget(this AdminToys.ShootingTarget targetBase)
+    public static IShootingTarget? GetShootingTarget(this ShootingTarget targetBase)
     {
         return EntityManager.Get<IShootingTarget>(targetBase);
+    }
+
+    #endregion
+
+    #region Vector3
+
+    public static Vector3 SafeUnscale(this Vector3 vector, Vector3 scale)
+    {
+        return new Vector3(
+            x: vector.x / (scale.x == 0 ? 1 : scale.x),
+            y: vector.y / (scale.y == 0 ? 1 : scale.y),
+            z: vector.z / (scale.z == 0 ? 1 : scale.z));
+    }
+
+    #endregion
+
+    public static T? GetEntity<T>(this GameObject gameObject) where T : class, IEntity
+    {
+        if (!gameObject) return null;
+        return gameObject.TryGetComponent(out EntityLink entityLink) ? entityLink.Entity as T : null;
+    }
+
+    #region Ragdoll Data
+
+    public static RagdollData CopyWithReplace(this RagdollData ragdollData,
+        ReferenceHub? newHub = null,
+        DamageHandlerBase? newDamageHandler = null,
+        Vector3? newPosition = null,
+        Quaternion? newRotation = null,
+        string? newNickname = null,
+        RoleTypeId? newRole = null,
+        ushort? newSerial = null,
+        Vector3? curPosition = null,
+        Quaternion? curRotation = null)
+    {
+        return new RagdollData(
+            newHub ?? ragdollData.OwnerHub,
+            newDamageHandler ?? ragdollData.Handler,
+            newPosition ?? curPosition ?? ragdollData.StartPosition,
+            newRotation ?? curRotation ?? ragdollData.StartRotation,
+            newSerial ?? ragdollData.Serial);
     }
 
     #endregion
@@ -181,7 +222,7 @@ public static class Extensions
     {
         return EntityManager.Get<IGenerator>(generatorBase);
     }
-    
+
     public static IGenerator? GetGenerator(this GameObject gameObject)
     {
         return gameObject.TryGetComponent<Scp079Generator>(out var generator)
@@ -706,7 +747,7 @@ public static class Extensions
             EffectType.Snowed => typeof(Snowed),
             EffectType.Traumatized => typeof(Traumatized),
             EffectType.Vitality => typeof(Vitality),
-            
+
             _ => throw new InvalidOperationException("Invalid effect enum provided")
         };
     }
@@ -804,18 +845,6 @@ public static class Extensions
 
     #endregion
 
-    #region Vector3
-
-    public static Vector3 SafeUnscale(this Vector3 vector, Vector3 scale)
-    {
-        return new Vector3(
-            x: vector.x / (scale.x == 0 ? 1 : scale.x),
-            y: vector.y / (scale.y == 0 ? 1 : scale.y),
-            z: vector.z / (scale.z == 0 ? 1 : scale.z));
-    }
-
-    #endregion
-
     #region Transform
 
     public static Vector3 SafeGetParentPosition(this Transform transform)
@@ -839,34 +868,5 @@ public static class Extensions
         return parentScale;
     }
 
-    #endregion
-
-    public static T? GetEntity<T>(this GameObject gameObject) where T : class, IEntity
-    {
-        if (!gameObject) return null;
-        return gameObject.TryGetComponent(out EntityLink entityLink) ? entityLink.Entity as T : null;
-    }
-    
-    #region Ragdoll Data
-
-    public static RagdollData CopyWithReplace(this RagdollData ragdollData,
-        ReferenceHub? newHub = null,
-        DamageHandlerBase? newDamageHandler = null,
-        Vector3? newPosition = null,
-        Quaternion? newRotation = null,
-        string? newNickname = null,
-        RoleTypeId? newRole = null,
-        ushort? newSerial = null,
-        Vector3? curPosition = null,
-        Quaternion? curRotation = null)
-    {
-        return new RagdollData(
-            newHub ?? ragdollData.OwnerHub,
-            newDamageHandler ?? ragdollData.Handler,
-            newPosition ?? curPosition ?? ragdollData.StartPosition,
-            newRotation ?? curRotation ?? ragdollData.StartRotation,
-            newSerial ?? ragdollData.Serial);
-    }
-    
     #endregion
 }

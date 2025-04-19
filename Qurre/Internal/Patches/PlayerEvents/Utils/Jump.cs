@@ -5,9 +5,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using PlayerRoles.FirstPersonControl.NetworkMessages;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -21,7 +19,7 @@ internal static class Jump
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Call(IEnumerable<CodeInstruction> instructions)
     {
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
 
         list.InsertRange(list.Count - 1, [
             new CodeInstruction(OpCodes.Ldloc_0),

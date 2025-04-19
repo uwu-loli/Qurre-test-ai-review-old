@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using PlayerRoles.PlayableScps.Scp106;
 using PlayerRoles.Subroutines;
 using Qurre.API.Core;

@@ -13,6 +13,43 @@ namespace Qurre.API.Entities.AdminToys;
 [PublicAPI]
 public class AdminToyFactory
 {
+    #region Speaker Factory
+
+    public ISpeaker CreateSpeaker(Vector3 position,
+        byte controllerId = 0,
+        bool isSpatial = true,
+        float volume = 1.0F,
+        float minDistance = 1.0F,
+        float maxDistance = 15.0F,
+        byte smoothing = 0,
+        bool isStatic = false,
+        Footprint? ownerFootprint = null,
+        bool doSpawn = true)
+    {
+        if (Prefabs.Speaker == null)
+            throw new NullReferenceException("Prefabs.Speaker is null.");
+
+        var toyInstance = Object.Instantiate(Prefabs.Speaker, position, Quaternion.identity);
+
+        toyInstance.SpawnerFootprint = ownerFootprint ?? new Footprint(Server.Host.ReferenceHub);
+        toyInstance.NetworkPosition = position;
+        toyInstance.NetworkMovementSmoothing = smoothing;
+        toyInstance.NetworkIsStatic = isStatic;
+
+        toyInstance.NetworkControllerId = controllerId;
+        toyInstance.NetworkIsSpatial = isSpatial;
+        toyInstance.NetworkVolume = volume;
+        toyInstance.NetworkMinDistance = minDistance;
+        toyInstance.NetworkMaxDistance = maxDistance;
+
+        var speaker = EntityManager.GetOrException<ISpeaker>(toyInstance);
+        if (doSpawn) speaker.Spawn();
+        else speaker.UnSpawn();
+        return speaker;
+    }
+
+    #endregion
+
     #region Light Point Factory
 
     public ILightPoint CreateLightPoint(Vector3 position,
@@ -41,7 +78,7 @@ public class AdminToyFactory
         toyInstance.NetworkRotation = spawnRotation;
         toyInstance.NetworkMovementSmoothing = smoothing;
         toyInstance.NetworkIsStatic = isStatic;
-        
+
         toyInstance.NetworkLightColor = color ?? Color.white;
         toyInstance.NetworkLightType = lightType;
         toyInstance.NetworkLightRange = range;
@@ -108,7 +145,7 @@ public class AdminToyFactory
         toyInstance.NetworkScale = spawnScale;
         toyInstance.NetworkMovementSmoothing = smoothing;
         toyInstance.NetworkIsStatic = isStatic;
-        
+
         toyInstance.NetworkPrimitiveType = primitiveType;
         toyInstance.NetworkMaterialColor = materialColor ?? Color.white;
         toyInstance.NetworkPrimitiveFlags = primitiveFlags;
@@ -182,43 +219,6 @@ public class AdminToyFactory
         var rotationQuaternion = Quaternion.Euler(eulerAngles);
         return CreateShootingTarget(prefab, position, rotationQuaternion, scale, smoothing, isStatic,
             ownerFootprint, doSpawn);
-    }
-
-    #endregion
-    
-    #region Speaker Factory
-
-    public ISpeaker CreateSpeaker(Vector3 position,
-        byte controllerId = 0,
-        bool isSpatial = true,
-        float volume = 1.0F,
-        float minDistance = 1.0F,
-        float maxDistance = 15.0F,
-        byte smoothing = 0,
-        bool isStatic = false,
-        Footprint? ownerFootprint = null,
-        bool doSpawn = true)
-    {
-        if (Prefabs.Speaker == null)
-            throw new NullReferenceException("Prefabs.Speaker is null.");
-
-        var toyInstance = Object.Instantiate(Prefabs.Speaker, position, Quaternion.identity);
-
-        toyInstance.SpawnerFootprint = ownerFootprint ?? new Footprint(Server.Host.ReferenceHub);
-        toyInstance.NetworkPosition = position;
-        toyInstance.NetworkMovementSmoothing = smoothing;
-        toyInstance.NetworkIsStatic = isStatic;
-        
-        toyInstance.NetworkControllerId = controllerId;
-        toyInstance.NetworkIsSpatial = isSpatial;
-        toyInstance.NetworkVolume = volume;
-        toyInstance.NetworkMinDistance = minDistance;
-        toyInstance.NetworkMaxDistance = maxDistance;
-
-        var speaker = EntityManager.GetOrException<ISpeaker>(toyInstance);
-        if (doSpawn) speaker.Spawn();
-        else speaker.UnSpawn();
-        return speaker;
     }
 
     #endregion

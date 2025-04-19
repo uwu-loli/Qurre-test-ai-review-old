@@ -1,19 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
-using InventorySystem.Items.Pickups;
 using InventorySystem.Searching;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities;
 using Qurre.API.Entities.Characters;
 using Qurre.API.Entities.Items;
-using Qurre.API.Entities.Items.Implementations;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -29,7 +25,7 @@ internal static class PickupArmor
     {
         Label retLabel = generator.DefineLabel();
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
         list.Last().labels.Add(retLabel);
 
         int delIndex = list.FindIndex(ins => ins.opcode == OpCodes.Call &&

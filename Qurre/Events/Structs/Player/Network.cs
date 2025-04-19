@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Net;
 using JetBrains.Annotations;
 using LiteNetLib;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;

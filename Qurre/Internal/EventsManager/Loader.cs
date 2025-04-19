@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -51,7 +51,7 @@ internal static class Loader
                 continue;
             }
 
-            List<EventMethod> attrs = [..method.GetCustomAttributes<EventMethod>()];
+            List<EventMethod> attrs = [.. method.GetCustomAttributes<EventMethod>()];
 
             if (!attrs.Any())
                 continue;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using InventorySystem.Items.Radio;
 using Qurre.API.Core;
 using Qurre.API.Enums;

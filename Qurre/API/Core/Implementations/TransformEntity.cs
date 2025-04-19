@@ -9,6 +9,8 @@ internal abstract class TransformEntity(GameObject gameObject) : Entity(gameObje
 {
     private UnityObjectWrapper<Transform> Transform { get; } = gameObject.transform;
 
+    protected virtual bool CanModifyTransform { get; } = true;
+
     /// <inheritdoc />
     public event Action? PositionChanged;
 
@@ -18,8 +20,6 @@ internal abstract class TransformEntity(GameObject gameObject) : Entity(gameObje
     /// <inheritdoc />
     public event Action? ScaleChanged;
 
-    protected virtual bool CanModifyTransform { get; } = true;
-
     /// <inheritdoc cref="ITransformEntity.WorldPosition" />
     public Vector3 WorldPosition
     {
@@ -27,7 +27,7 @@ internal abstract class TransformEntity(GameObject gameObject) : Entity(gameObje
         set
         {
             if (!CanModifyTransform) return;
-            Transform.Instance.position = value; 
+            Transform.Instance.position = value;
             PositionChanged?.Invoke();
         }
     }
@@ -39,7 +39,7 @@ internal abstract class TransformEntity(GameObject gameObject) : Entity(gameObje
         set
         {
             if (!CanModifyTransform) return;
-            Transform.Instance.rotation = value; 
+            Transform.Instance.rotation = value;
             RotationChanged?.Invoke();
         }
     }

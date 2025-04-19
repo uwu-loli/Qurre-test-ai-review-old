@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -21,7 +21,7 @@ internal static class Waiting
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
 
         int index = list.FindLastIndex(ins => ins.opcode == OpCodes.Callvirt &&
                                               ins.operand is MethodInfo { Name: nameof(Stopwatch.Restart) }) + 1;

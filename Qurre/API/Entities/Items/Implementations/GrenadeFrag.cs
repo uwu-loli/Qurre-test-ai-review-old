@@ -1,4 +1,4 @@
-﻿using Footprinting;
+using Footprinting;
 using InventorySystem.Items.ThrowableProjectiles;
 using Mirror;
 using Qurre.API.Entities.Characters;

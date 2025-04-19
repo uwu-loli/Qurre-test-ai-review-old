@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items.Firearms.Ammo;
+using InventorySystem.Items.Firearms.Ammo;
 using Qurre.API.Core;
 using Qurre.Internal.Attributes;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using InventorySystem.Items.Armor;
 using Qurre.API.Core;
 using Qurre.Internal.Attributes;

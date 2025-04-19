@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AdminToys;
 using Hazards;
@@ -10,7 +10,6 @@ using MapGeneration.Distributors;
 using Mirror;
 using PlayerRoles.PlayableScps.Scp939;
 using Qurre.API.Enums;
-using UnityEngine;
 
 namespace Qurre.API.Addons;
 
@@ -21,12 +20,12 @@ public static class Prefabs
     public const uint AssetIdDoorHCZ = 2295511789;
     public const uint AssetIdDoorEZ = 1883254029;
     public const uint AssetIdDoorBulkHCZ = 2176035362;
-    
+
     public const uint AssetIdShootingTargetSport = 1704345398;
     public const uint AssetIdShootingTargetDBoy = 858699872;
     public const uint AssetIdShootingTargetBinary = 3613149668;
 
-private static readonly Dictionary<DoorPrefabs, DoorVariant> LocalDoors = [];
+    private static readonly Dictionary<DoorPrefabs, DoorVariant> LocalDoors = [];
     private static readonly Dictionary<LockerPrefabs, Locker> LocalLockers = [];
     private static readonly Dictionary<ShootingTargetPrefabs, ShootingTarget> LocalShootingTargets = [];
 
@@ -162,13 +161,15 @@ private static readonly Dictionary<DoorPrefabs, DoorVariant> LocalDoors = [];
                         LocalDoors[DoorPrefabs.BulkHCZ] = door;
                         break;
 
-                    case AssetIdShootingTargetSport when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
+                    case AssetIdShootingTargetSport
+                        when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
                         LocalShootingTargets[ShootingTargetPrefabs.Sport] = shootingTarget;
                         break;
                     case AssetIdShootingTargetDBoy when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
                         LocalShootingTargets[ShootingTargetPrefabs.Dboy] = shootingTarget;
                         break;
-                    case AssetIdShootingTargetBinary when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
+                    case AssetIdShootingTargetBinary
+                        when prefab.Value.TryGetComponent(out ShootingTarget shootingTarget):
                         LocalShootingTargets[ShootingTargetPrefabs.Binary] = shootingTarget;
                         break;
 
@@ -178,7 +179,8 @@ private static readonly Dictionary<DoorPrefabs, DoorVariant> LocalDoors = [];
                     case 3956448839 when prefab.Value.TryGetComponent(out LightSourceToy lightSourceToy):
                         Light = lightSourceToy;
                         break;
-                    case 825024811 when prefab.Value.TryGetComponent(out Scp939AmnesticCloudInstance scp939AmnesticCloud):
+                    case 825024811
+                        when prefab.Value.TryGetComponent(out Scp939AmnesticCloudInstance scp939AmnesticCloud):
                         Scp939AmnesticCloud = scp939AmnesticCloud;
                         break;
                     case 712426663 when prefab.Value.TryGetComponent(out SpeakerToy speakerToy):

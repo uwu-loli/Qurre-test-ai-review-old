@@ -11,12 +11,12 @@ namespace Qurre.API.Entities.Environment;
 public class EnvironmentFactory
 {
     #region Lift Factory
-    
+
     // TODO: нужно реализовать создание ElevatorChamber с отвязкой от базового ElevatorGroup
     // если это невозможно, нужно удалить регион
-    
+
     #endregion
-    
+
     #region WorkStation Factory
 
     public IWorkStation CreateWorkStation(Vector3 position,
@@ -26,7 +26,7 @@ public class EnvironmentFactory
     {
         if (Prefabs.WorkStation is null)
             throw new NullReferenceException("Prefab.WorkStation is null.");
-        
+
         var spawnRotation = rotation ?? Quaternion.identity;
         var spawnScale = scale ?? Vector3.one;
 
@@ -47,6 +47,6 @@ public class EnvironmentFactory
         var rotationQuaternion = Quaternion.Euler(eulerAngles);
         return CreateWorkStation(position, rotationQuaternion, scale, doSpawn);
     }
-    
+
     #endregion
 }

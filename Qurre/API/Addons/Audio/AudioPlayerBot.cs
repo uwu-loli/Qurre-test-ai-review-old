@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using JetBrains.Annotations;
-
 using Mirror;
-
 using VoiceChat;
 using VoiceChat.Networking;
 

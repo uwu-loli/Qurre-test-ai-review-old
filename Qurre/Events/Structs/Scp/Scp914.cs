@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using InventorySystem.Items;
 using InventorySystem.Items.Pickups;
 using JetBrains.Annotations;
 using NorthwoodLib.Pools;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 using Scp914;
 using UnityEngine;
 

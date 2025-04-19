@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Emit;
@@ -6,7 +6,6 @@ using HarmonyLib;
 using InventorySystem.Items.Pickups;
 using InventorySystem.Searching;
 using Qurre.API;
-using Qurre.API.Entities.Items.Implementations;
 using Qurre.API.Utils.Entities;
 using Qurre.Events.Structs;
 
@@ -24,7 +23,7 @@ internal static class PrePickupItem
 
         LocalBuilder @event = generator.DeclareLocal(typeof(PrePickupItemEvent));
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
         list.Last().labels.Add(retLabel);
 
         Label label = generator.DefineLabel();
@@ -41,7 +40,8 @@ internal static class PrePickupItem
             new CodeInstruction(OpCodes.Ldarg_0),
             new CodeInstruction(OpCodes.Ldfld,
                 AccessTools.Field(typeof(SearchCompletor), nameof(SearchCompletor.TargetPickup))),
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetPickupByBase), [typeof(ItemPickupBase)])),
+            new CodeInstruction(OpCodes.Call,
+                AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetPickupByBase), [typeof(ItemPickupBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(PrePickupItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, @event.LocalIndex), // var @event = ...;

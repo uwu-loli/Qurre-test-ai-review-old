@@ -1,8 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using InventorySystem.Items.Firearms.Attachments;
-using Mirror;
-using Qurre.API;
 using Qurre.API.Entities;
 using Qurre.API.Entities.Environment;
 using Qurre.Events.Structs;

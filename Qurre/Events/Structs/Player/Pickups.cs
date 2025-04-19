@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using InventorySystem.Items.Firearms.Ammo;
 using InventorySystem.Items.Jailbird;
 using InventorySystem.Items.ThrowableProjectiles;
@@ -189,7 +189,7 @@ public class DropAmmoEvent : IBaseEvent
 public class JailbirdTriggerEvent : IBaseEvent
 {
     private const uint EventID = PlayerEvents.JailbirdTrigger;
-    
+
     internal JailbirdTriggerEvent(Player player, JailbirdItem jailbirdBase, JailbirdMessageType message)
     {
         Player = player;
@@ -199,12 +199,12 @@ public class JailbirdTriggerEvent : IBaseEvent
         IsAllowed = true;
     }
 
-    public uint EventId { get; } = EventID;
-    
     public Player Player { get; }
     public IItem Item { get; }
 
     public JailbirdItem JailbirdBase { get; }
     public JailbirdMessageType Message { get; set; }
     public bool IsAllowed { get; set; }
+
+    public uint EventId { get; } = EventID;
 }

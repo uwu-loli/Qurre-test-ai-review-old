@@ -1,4 +1,4 @@
-﻿using InventorySystem.Disarming;
+using InventorySystem.Disarming;
 using JetBrains.Annotations;
 using MapGeneration;
 using Qurre.API.Entities.Environment;

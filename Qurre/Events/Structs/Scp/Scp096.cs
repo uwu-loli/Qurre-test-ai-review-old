@@ -1,10 +1,8 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using PlayerRoles.PlayableScps.Scp096;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
 using Qurre.API.Enums;
-using Qurre.API.World.Entities.Player;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;

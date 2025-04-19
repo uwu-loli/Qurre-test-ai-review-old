@@ -1,8 +1,7 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using MEC;
 using Qurre.API.Controllers.Structs;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 
 namespace Qurre.API.Controllers;
 

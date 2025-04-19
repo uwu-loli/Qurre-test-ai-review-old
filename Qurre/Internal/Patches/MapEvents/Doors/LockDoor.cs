@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
-using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using Qurre.API;
 using Qurre.API.Entities;
 using Qurre.API.Entities.Doors;
-using Qurre.API.Entities.Structures;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 

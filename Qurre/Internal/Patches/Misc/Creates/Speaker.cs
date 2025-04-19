@@ -18,7 +18,7 @@ internal static class Speaker
     private static void Call(NetworkBehaviour __instance)
     {
         if (__instance is not SpeakerToy speakerToy) return;
-        
+
         try
         {
             _ = EntityManager.Get<ISpeaker>(speakerToy);

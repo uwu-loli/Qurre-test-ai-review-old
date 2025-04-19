@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CustomPlayerEffects;
 using InventorySystem;
 using JetBrains.Annotations;
 using PlayerStatsSystem;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 using RoundRestarting;
 using UnityEngine;
 using Object = UnityEngine.Object;

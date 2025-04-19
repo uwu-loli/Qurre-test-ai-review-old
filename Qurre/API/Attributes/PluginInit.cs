@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Linq;
-
 using JetBrains.Annotations;
 
 namespace Qurre.API.Attributes;
@@ -10,10 +9,6 @@ namespace Qurre.API.Attributes;
 [MeansImplicitUse]
 public class PluginInit : Attribute
 {
-    public string Name { get; }
-    public string Developer { get; }
-    public Version Version { get; }
-    
     public PluginInit(string name, string developer = "", string version = "")
     {
         Name = name;
@@ -36,7 +31,11 @@ public class PluginInit : Attribute
             };
         }
     }
-    
+
+    public string Name { get; }
+    public string Developer { get; }
+    public Version Version { get; }
+
     private static int SafeParse(string numberString)
     {
         return int.TryParse(numberString, out var result) ? result : 0;

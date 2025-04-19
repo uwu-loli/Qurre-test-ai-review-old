@@ -1,7 +1,5 @@
 using Interactables.Interobjects.DoorUtils;
-using Qurre.API.Addons;
 using Qurre.API.Core;
-using Qurre.API.Enums;
 using Qurre.Internal.Attributes;
 using BreakableDoorBase = Interactables.Interobjects.BreakableDoor;
 
@@ -15,7 +13,7 @@ internal sealed class BreakableDoor : Door, IBreakableDoor
         Base = breakableDoorBase;
     }
 
-/// <inheritdoc />
+    /// <inheritdoc />
     public new UnityObjectWrapper<BreakableDoorBase> Base { get; }
 
     #region Game Object API

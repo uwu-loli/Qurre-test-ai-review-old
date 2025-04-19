@@ -1,4 +1,4 @@
-﻿using Interactables.Interobjects.DoorUtils;
+using Interactables.Interobjects.DoorUtils;
 using InventorySystem.Items.Keycards;
 using Qurre.API.Core;
 using Qurre.Internal.Attributes;

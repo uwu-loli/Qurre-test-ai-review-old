@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Emit;
@@ -20,7 +20,7 @@ internal static class Stop
 
         LocalBuilder @event = generator.DeclareLocal(typeof(AlphaStopEvent));
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
         list.Last().labels.Add(retLabel);
 
         int index = list.FindIndex(ins =>

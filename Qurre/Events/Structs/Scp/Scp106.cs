@@ -1,7 +1,5 @@
-﻿using JetBrains.Annotations;
-using Qurre.API.Controllers;
+using JetBrains.Annotations;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;

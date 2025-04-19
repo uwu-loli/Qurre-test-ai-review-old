@@ -20,7 +20,7 @@ public class StructureFactory
     {
         if (Prefabs.Generator == null)
             throw new NullReferenceException("Prefabs.Generator is null.");
-        
+
         var spawnRotation = rotation ?? Quaternion.identity;
         var spawnScale = scale ?? Vector3.one;
 
@@ -44,7 +44,7 @@ public class StructureFactory
     }
 
     #endregion
-    
+
     #region Generator Factory
 
     public ILocker CreateLocker(LockerPrefabs prefab,
@@ -55,7 +55,7 @@ public class StructureFactory
     {
         if (!Prefabs.Lockers.TryGetValue(prefab, out var lockerPrefab))
             throw new KeyNotFoundException($"Prefabs.Lockers[{prefab}] not found.");
-        
+
         var spawnRotation = rotation ?? Quaternion.identity;
         var spawnScale = scale ?? Vector3.one;
 

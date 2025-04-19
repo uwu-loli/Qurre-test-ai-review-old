@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items.Radio;
+using InventorySystem.Items.Radio;
 using JetBrains.Annotations;
 using Qurre.API.Entities;
 using Qurre.API.Entities.Characters;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +7,6 @@ using HarmonyLib;
 using InventorySystem.Items;
 using InventorySystem.Items.Usables;
 using Qurre.API;
-using Qurre.API.Entities.Items.Implementations;
 using Qurre.API.Utils.Entities;
 using Qurre.Events.Structs;
 
@@ -26,7 +25,7 @@ internal static class UseItem
         LocalBuilder cancelUseEvent = generator.DeclareLocal(typeof(CancelUseItemEvent));
         LocalBuilder useEvent = generator.DeclareLocal(typeof(UseItemEvent));
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
         list.Last().labels.Add(retLabel);
 
         int cancelIndex = list.FindLastIndex(ins =>
@@ -56,7 +55,8 @@ internal static class UseItem
                 AccessTools.Field(typeof(PlayerHandler), nameof(PlayerHandler.CurrentUsable))), // CurrentUsable
             new CodeInstruction(OpCodes.Ldfld,
                 AccessTools.Field(typeof(CurrentlyUsedItem), nameof(CurrentlyUsedItem.Item))), // Item [UsableItem]
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
+            new CodeInstruction(OpCodes.Call,
+                AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(CancelUseItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, cancelUseEvent.LocalIndex), // var cancelUseEvent = ...;
@@ -96,7 +96,8 @@ internal static class UseItem
 
             // Item
             new CodeInstruction(OpCodes.Ldloc_1), // usableItem
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
+            new CodeInstruction(OpCodes.Call,
+                AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(UseItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, useEvent.LocalIndex), // var UseEvent = ...;

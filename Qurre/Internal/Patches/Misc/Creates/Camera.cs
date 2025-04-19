@@ -18,7 +18,7 @@ internal static class Camera
     private static void Call(Scp079InteractableBase __instance)
     {
         if (__instance is not Scp079Camera cameraBase) return;
-        
+
         try
         {
             _ = EntityManager.Get<IScp079Camera>(cameraBase);

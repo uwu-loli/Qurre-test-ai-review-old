@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using MEC;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 
 namespace Qurre.API.Controllers;
 

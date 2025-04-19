@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,9 +7,7 @@ using System.Reflection.Emit;
 using CustomPlayerEffects;
 using HarmonyLib;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -25,7 +23,7 @@ internal static class ChangeIntensity
     {
         Label retLabel = generator.DefineLabel();
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
         list.Last().labels.Add(retLabel);
 
         int index = list.FindIndex(ins => ins.opcode == OpCodes.Call &&

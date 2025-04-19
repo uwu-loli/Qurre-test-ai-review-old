@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Emit;
@@ -6,7 +6,6 @@ using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp079;
 using PlayerRoles.PlayableScps.Scp079.Rewards;
 using Qurre.API;
-using Qurre.API.Entities.Characters;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using RoleScp079 = Qurre.API.Entities.Characters.Components.Roles.Scp079;
@@ -43,7 +42,7 @@ internal static class GetExp
 
             if (!ev.IsAllowed) return;
             if (ev.Player.RoleInformation.CurrentRole is not RoleScp079 roleScp079) return;
-            
+
             roleScp079.TierManager.Instance.ServerGrantExperience(ev.Amount, ev.Type);
         }
         catch (Exception e)

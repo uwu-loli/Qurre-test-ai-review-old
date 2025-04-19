@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -6,9 +6,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp173;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -22,7 +20,7 @@ internal static class RemovedObserver1
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Call(IEnumerable<CodeInstruction> instructions)
     {
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
 
         int index = list.FindIndex(ins => ins.opcode == OpCodes.Call &&
                                           ins.operand is MethodBase methodBase &&

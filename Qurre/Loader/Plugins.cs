@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -92,7 +92,7 @@ internal static class Plugins
         if (!Directory.Exists(Paths.Depends))
             Directory.CreateDirectory(Paths.Depends);
 
-        List<string> files = [..Directory.GetFiles(Paths.Depends)];
+        List<string> files = [.. Directory.GetFiles(Paths.Depends)];
 
         if (Paths.CustomDepends != Paths.Depends &&
             Directory.Exists(Paths.CustomDepends))
@@ -116,7 +116,7 @@ internal static class Plugins
 
     private static void LoadPlugins()
     {
-        List<string> files = [..Directory.GetFiles(Paths.Plugins)];
+        List<string> files = [.. Directory.GetFiles(Paths.Plugins)];
 
         if (Paths.CustomPlugins != Paths.Plugins &&
             Directory.Exists(Paths.CustomPlugins))

@@ -16,7 +16,7 @@ public static class DoorHelper
         if (doorVariant.TryGetComponent(out DoorNametagExtension nameTagExtension))
         {
             var nameTag = nameTagExtension.GetName;
-            
+
             if (!string.IsNullOrEmpty(nameTag))
             {
                 return nameTag switch
@@ -59,7 +59,8 @@ public static class DoorHelper
                     "ESCAPE_PRIMARY" => DoorTypes.SurfaceEscapeFirst,
                     "ESCAPE_SECONDARY" => DoorTypes.SurfaceEscapeSecond,
                     "ESCAPE_FINAL" => DoorTypes.SurfaceEscapeFinal,
-                    "CHECKPOINT_EZ_HCZ_A" when doorVariant is CheckpointDoor checkpointDoor => GetEzCheckpointDoorType(checkpointDoor),
+                    "CHECKPOINT_EZ_HCZ_A" when doorVariant is CheckpointDoor checkpointDoor => GetEzCheckpointDoorType(
+                        checkpointDoor),
 
                     _ => DoorTypes.Unknown
                 };
@@ -69,7 +70,7 @@ public static class DoorHelper
         // by Prefix
         var gameObjectName = doorVariant.gameObject.name;
         var namePrefix = gameObjectName.Split(' ')[0];
-        
+
         return namePrefix switch
         {
             // Room-less
@@ -82,7 +83,7 @@ public static class DoorHelper
                 ? DoorTypes.HczBulk
                 : DoorTypes.HczStandard,
             "EZ" => DoorTypes.EzStandard,
-            
+
             // Room-ness
             "Unsecured" => doorVariant.Rooms.Select(ri => ri.Name switch
                 {
@@ -98,31 +99,31 @@ public static class DoorHelper
                 ? DoorTypes.EzCheckpointArmoryA
                 : DoorTypes.EzCheckpointArmoryB,
             "Elevator" or "Nuke" => doorVariant.Rooms.Select(ri => ri.Name switch
-                {
-                    RoomName.LczCheckpointA => DoorTypes.ElevatorLczChkpA,
-                    RoomName.LczCheckpointB => DoorTypes.ElevatorLczChkpB,
+            {
+                RoomName.LczCheckpointA => DoorTypes.ElevatorLczChkpA,
+                RoomName.LczCheckpointB => DoorTypes.ElevatorLczChkpB,
 
-                    RoomName.HczCheckpointA => DoorTypes.ElevatorHczChkpA,
-                    RoomName.HczCheckpointB => DoorTypes.ElevatorHczChkpB,
+                RoomName.HczCheckpointA => DoorTypes.ElevatorHczChkpA,
+                RoomName.HczCheckpointB => DoorTypes.ElevatorHczChkpB,
 
-                    RoomName.Hcz049 => DoorTypes.Elevator049,
+                RoomName.Hcz049 => DoorTypes.Elevator049,
 
-                    RoomName.HczWarhead => DoorTypes.ElevatorNuke,
+                RoomName.HczWarhead => DoorTypes.ElevatorNuke,
 
-                    RoomName.EzGateA => DoorTypes.ElevatorGateA,
-                    RoomName.EzGateB => DoorTypes.ElevatorGateB,
+                RoomName.EzGateA => DoorTypes.ElevatorGateA,
+                RoomName.EzGateB => DoorTypes.ElevatorGateB,
 
-                    RoomName.Outside => doorVariant is not ElevatorDoor elevatorDoor
-                        ? DoorTypes.Unknown
-                        : elevatorDoor.Group switch
-                        {
-                            ElevatorGroup.GateA => DoorTypes.EzGateA,
-                            ElevatorGroup.GateB => DoorTypes.EzGateB,
-                            _ => DoorTypes.Unknown
-                        },
+                RoomName.Outside => doorVariant is not ElevatorDoor elevatorDoor
+                    ? DoorTypes.Unknown
+                    : elevatorDoor.Group switch
+                    {
+                        ElevatorGroup.GateA => DoorTypes.EzGateA,
+                        ElevatorGroup.GateB => DoorTypes.EzGateB,
+                        _ => DoorTypes.Unknown
+                    },
 
-                    _ => DoorTypes.Unknown
-                }).FirstOrDefault(dt => dt != DoorTypes.Unknown),
+                _ => DoorTypes.Unknown
+            }).FirstOrDefault(dt => dt != DoorTypes.Unknown),
 
             _ => DoorTypes.Unknown
         };

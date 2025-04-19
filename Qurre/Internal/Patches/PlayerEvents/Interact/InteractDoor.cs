@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -20,7 +20,7 @@ internal static class InteractDoor
     {
         LocalBuilder @event = generator.DeclareLocal(typeof(InteractDoorEvent));
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
 
         int index = list.FindIndex(ins => ins.opcode == OpCodes.Stloc_0) + 1;
 

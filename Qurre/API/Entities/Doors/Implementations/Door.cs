@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Interactables.Interobjects.DoorUtils;
@@ -44,9 +43,6 @@ internal class Door : LevelEntity, IDoor
         };
     }
 
-    /// <inheritdoc />
-    public DoorPrefabs PrefabType { get; }
-
     private UnityObjectWrapper<NetIdWaypoint> NetIdWaypoint { get; }
 
     /// <exception cref="ObjectDestroyedException" />
@@ -61,6 +57,9 @@ internal class Door : LevelEntity, IDoor
             return WaypointWorldPosition - parentPosition;
         }
     }
+
+    /// <inheritdoc />
+    public DoorPrefabs PrefabType { get; }
 
     /// <inheritdoc />
     public UnityObjectWrapper<DoorBase> Base { get; }

@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using PlayerRoles;
-using Qurre.API.Addons;
 using Qurre.API.Attributes;
 using Qurre.API.Entities.Characters.Components.Roles;
 using Qurre.Events;

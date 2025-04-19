@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -42,7 +42,7 @@ internal static class TriggerTesla
                 return;
             }
 
-            List<Player> players = [..Player.List.Where(x => !x.IsHost && x.RoleInformation.IsAlive)];
+            List<Player> players = [.. Player.List.Where(x => !x.IsHost && x.RoleInformation.IsAlive)];
 
             // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
             foreach (var teslaGate in TeslaGate.AllGates)

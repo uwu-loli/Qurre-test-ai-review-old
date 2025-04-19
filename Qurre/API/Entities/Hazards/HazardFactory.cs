@@ -19,7 +19,7 @@ public class HazardFactory
     {
         if (Prefabs.Tantrum is null)
             throw new NullReferenceException("Prefab.Tantrum is null.");
-        
+
         var spawnRotation = rotation ?? Quaternion.identity;
         var spawnScale = scale ?? Vector3.one;
 

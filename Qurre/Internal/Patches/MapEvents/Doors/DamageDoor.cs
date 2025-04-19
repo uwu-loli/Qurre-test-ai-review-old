@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using Interactables.Interobjects;
@@ -23,10 +23,10 @@ internal static class DamageDoor
         try
         {
             if (!EntityManager.TryGet(__instance, out IBreakableDoor? breakableDoor)) return true;
-            
+
             var ev = new DamageDoorEvent(breakableDoor, type, hp);
             ev.InvokeEvent();
-            
+
             hp = ev.Damage;
             return ev.IsAllowed;
         }

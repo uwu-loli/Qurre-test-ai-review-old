@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items.ThrowableProjectiles;
+using InventorySystem.Items.ThrowableProjectiles;
 using PlayerRoles.FirstPersonControl;
 using Qurre.API.Core;
 using Qurre.Internal.Attributes;

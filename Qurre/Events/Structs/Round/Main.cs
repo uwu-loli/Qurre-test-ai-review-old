@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;

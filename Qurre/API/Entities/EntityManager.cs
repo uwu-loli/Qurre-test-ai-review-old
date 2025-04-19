@@ -85,7 +85,7 @@ public static class EntityManager
 #if DEBUG
         //Log.Info($"EntitiesManager$$Create<{typeof(TEntity).Name}>({baseObject.GetType().Name})");
 #endif
-        
+
         typedEntity = (TEntity)entityFactory(baseObject);
         EntityMappings[baseObject] = typedEntity;
         typedEntity.Destroyed += () => EntityMappings.Remove(baseObject);

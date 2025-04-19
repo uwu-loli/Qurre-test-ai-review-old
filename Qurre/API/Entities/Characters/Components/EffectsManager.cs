@@ -1,4 +1,4 @@
-﻿using CustomPlayerEffects;
+using CustomPlayerEffects;
 using CustomRendering;
 using JetBrains.Annotations;
 using Qurre.API.Enums;

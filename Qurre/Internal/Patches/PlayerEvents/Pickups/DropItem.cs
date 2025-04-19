@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +7,6 @@ using HarmonyLib;
 using InventorySystem;
 using InventorySystem.Items;
 using Qurre.API;
-using Qurre.API.Entities.Items.Implementations;
 using Qurre.API.Utils.Entities;
 using Qurre.Events.Structs;
 
@@ -25,7 +24,7 @@ internal static class DropItem
 
         LocalBuilder @event = generator.DeclareLocal(typeof(DropItemEvent));
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
         list.Last().labels.Add(retLabel);
 
         int index = list.FindIndex(ins => ins.opcode == OpCodes.Call && ins.operand is MethodBase
@@ -47,7 +46,8 @@ internal static class DropItem
                 AccessTools.Method(typeof(Extensions), nameof(Extensions.GetPlayer), [typeof(ReferenceHub)])),
 
             new CodeInstruction(OpCodes.Ldloc_0),
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
+            new CodeInstruction(OpCodes.Call,
+                AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(DropItemEvent))[0]),
             new CodeInstruction(OpCodes.Stloc, @event.LocalIndex), // var @event = ...;

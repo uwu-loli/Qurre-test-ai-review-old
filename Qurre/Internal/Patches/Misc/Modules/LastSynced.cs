@@ -1,11 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using Mirror;
 using PlayerRoles.FirstPersonControl.NetworkMessages;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 using UnityEngine;
 
 namespace Qurre.Internal.Patches.Misc.Modules;

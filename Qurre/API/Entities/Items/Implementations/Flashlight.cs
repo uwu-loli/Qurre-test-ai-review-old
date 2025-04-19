@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items.ToggleableLights;
+using InventorySystem.Items.ToggleableLights;
 using InventorySystem.Items.ToggleableLights.Flashlight;
 using Qurre.API.Core;
 using Qurre.Internal.Attributes;

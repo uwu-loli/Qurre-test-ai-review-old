@@ -38,7 +38,7 @@ public interface IDoor : ILevelEntity
     bool IsCollisionDisabled { get; }
 
     /// <exception cref="ObjectDestroyedException" />
-    DoorBase.CollisionsDisablingReasons CollisionDisabledReason { get; }
+    DoorVariant.CollisionsDisablingReasons CollisionDisabledReason { get; }
 
     /// <exception cref="ObjectDestroyedException" />
     float OpenFraction { get; }
@@ -68,5 +68,5 @@ public interface IDoor : ILevelEntity
 
     DoorPermissions RequiredPermissions { get; set; }
 
-#endregion
+    #endregion
 }

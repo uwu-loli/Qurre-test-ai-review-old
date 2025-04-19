@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Qurre.API.Addons;
@@ -11,9 +11,8 @@ namespace Qurre.API.Entities.Characters.Components;
 [PublicAPI]
 public sealed class StatsInformation
 {
-    private readonly Player _player;
-
     private readonly List<KillRecord> _localKills = [];
+    private readonly Player _player;
 
     internal StatsInformation(Player pl)
     {

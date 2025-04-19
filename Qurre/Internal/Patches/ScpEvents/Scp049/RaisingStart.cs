@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Emit;
 using HarmonyLib;
 using PlayerRoles.PlayableScps.Scp049;
 using Qurre.API;
-using Qurre.API.Controllers;
-using Qurre.API.Entities.Characters;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -40,7 +37,8 @@ internal static class RaisingStart
 
         var ev = new Scp049RaisingStartEvent(issuer, target, instance.CurRagdoll)
         {
-            IsAllowed = instance.IsCloseEnough(instance.CastRole.FpcModule.Position, instance._ragdollTransform.position) &&
+            IsAllowed = instance.IsCloseEnough(instance.CastRole.FpcModule.Position,
+                            instance._ragdollTransform.position) &&
                         IsSpawnableSpectator(target.ReferenceHub) &&
                         instance.CheckMaxResurrections(target.ReferenceHub) == ResurrectError.None &&
                         !instance.AnyConflicts(instance.CurRagdoll)

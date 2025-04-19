@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +7,6 @@ using HarmonyLib;
 using InventorySystem.Items;
 using InventorySystem.Items.Usables;
 using Qurre.API;
-using Qurre.API.Entities.Items.Implementations;
 using Qurre.API.Utils.Entities;
 using Qurre.Events.Structs;
 
@@ -21,7 +20,7 @@ internal static class UsedItem
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Call(IEnumerable<CodeInstruction> instructions)
     {
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
 
         int index = list.FindLastIndex(ins =>
             ins.opcode == OpCodes.Callvirt && ins.operand is MethodBase
@@ -51,7 +50,8 @@ internal static class UsedItem
             new CodeInstruction(OpCodes.Ldloc_2), // currentUsable [CurrentlyUsedItem]
             new CodeInstruction(OpCodes.Ldfld,
                 AccessTools.Field(typeof(CurrentlyUsedItem), nameof(CurrentlyUsedItem.Item))), // Item [UsableItem]
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
+            new CodeInstruction(OpCodes.Call,
+                AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Newobj, AccessTools.GetDeclaredConstructors(typeof(UsedItemEvent))[0]),
             new CodeInstruction(OpCodes.Call,

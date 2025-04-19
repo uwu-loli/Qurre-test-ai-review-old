@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using JetBrains.Annotations;
 using Qurre.API.Attributes;
@@ -55,7 +55,7 @@ public static class EventCore
             callList = [];
             EventLists.CallMethods[eventId] = callList;
         }
-        
+
         Log.Info("Call Method added " + (eventId == PlayerEvents.Dead));
         callList.Add(eventCall);
     }

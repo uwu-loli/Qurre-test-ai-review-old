@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using Qurre.API.Core;
 
 namespace Qurre.Internal.Attributes;
 

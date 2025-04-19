@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using MapGeneration;
 using Qurre.API;
@@ -6,7 +6,6 @@ using Qurre.API.Addons;
 using Qurre.API.Addons.Audio;
 using Qurre.API.Attributes;
 using Qurre.API.Controllers.Structs;
-using Qurre.API.Core;
 using Qurre.API.Core.Implementations;
 using Qurre.API.Entities;
 using Qurre.API.Entities.Rooms;

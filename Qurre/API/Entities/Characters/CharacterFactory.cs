@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Mirror;
@@ -14,7 +13,7 @@ namespace Qurre.API.Entities.Characters;
 public class CharacterFactory
 {
     #region Corpse Factory
-    
+
     public ICorpse CreateCorpse(RoleTypeId roleType,
         Vector3 position,
         Quaternion? rotation = null,
@@ -33,10 +32,10 @@ public class CharacterFactory
 
         var spawnRotation = rotation ?? Quaternion.identity;
         var spawnScale = scale ?? Vector3.one;
-        
+
         var ragdollInstance = Object.Instantiate(ragdollRole.Ragdoll, position, spawnRotation);
         ragdollInstance.transform.localScale = spawnScale;
-        
+
         var referenceHub = owner?.ReferenceHub ?? Server.Host.ReferenceHub;
         var corpse = EntityManager.GetOrException<ICorpse>(ragdollInstance);
         corpse.Base.Instance.NetworkInfo = new RagdollData(referenceHub,

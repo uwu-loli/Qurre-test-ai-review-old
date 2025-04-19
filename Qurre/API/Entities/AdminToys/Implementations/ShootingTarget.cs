@@ -1,4 +1,3 @@
-using System;
 using Qurre.API.Addons;
 using Qurre.API.Core;
 using Qurre.API.Enums;
@@ -10,16 +9,10 @@ namespace Qurre.API.Entities.AdminToys.Implementations;
 [EntityWrapBindForFactory(typeof(ShootingTargetBase))]
 internal sealed class ShootingTarget : AdminToy, IShootingTarget
 {
-    /// <inheritdoc />
-    public new UnityObjectWrapper<ShootingTargetBase> Base { get; }
-
-    /// <inheritdoc />
-    public ShootingTargetPrefabs PrefabType { get; }
-
     public ShootingTarget(ShootingTargetBase shootingTargetBase) : base(shootingTargetBase)
     {
         Base = shootingTargetBase;
-        
+
         PrefabType = NetworkIdentity.Instance.assetId switch
         {
             Prefabs.AssetIdShootingTargetSport => ShootingTargetPrefabs.Sport,
@@ -28,6 +21,12 @@ internal sealed class ShootingTarget : AdminToy, IShootingTarget
             _ => ShootingTargetPrefabs.Unknown
         };
     }
+
+    /// <inheritdoc />
+    public new UnityObjectWrapper<ShootingTargetBase> Base { get; }
+
+    /// <inheritdoc />
+    public ShootingTargetPrefabs PrefabType { get; }
 
     /// <inheritdoc />
     public void Clear()

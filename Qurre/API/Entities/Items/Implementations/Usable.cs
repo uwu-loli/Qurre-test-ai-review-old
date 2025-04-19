@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items.Usables;
+using InventorySystem.Items.Usables;
 using Qurre.API.Core;
 using Qurre.Internal.Attributes;
 

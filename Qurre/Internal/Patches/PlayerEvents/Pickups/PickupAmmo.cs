@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -6,15 +6,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using InventorySystem.Items.Firearms.Ammo;
-using InventorySystem.Items.Pickups;
 using InventorySystem.Searching;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities;
 using Qurre.API.Entities.Characters;
 using Qurre.API.Entities.Items;
-using Qurre.API.Entities.Items.Implementations;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -30,7 +26,7 @@ internal static class PickupAmmo
     {
         Label retLabel = generator.DefineLabel();
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
         list.Last().labels.Add(retLabel);
 
         int index = list.FindIndex(ins => ins.opcode == OpCodes.Call &&
@@ -65,7 +61,7 @@ internal static class PickupAmmo
 
             if (!Player.TryGet(instance.Hub, out var player))
                 return true;
-            
+
             PickupAmmoEvent ev = new(player, pickup, ammo);
             ev.InvokeEvent();
 

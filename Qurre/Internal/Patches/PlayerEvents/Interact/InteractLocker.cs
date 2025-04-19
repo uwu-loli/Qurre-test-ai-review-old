@@ -1,16 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
 using MapGeneration.Distributors;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities;
-using Qurre.API.Entities.Characters;
 using Qurre.API.Entities.Structures;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 using Locker = MapGeneration.Distributors.Locker;

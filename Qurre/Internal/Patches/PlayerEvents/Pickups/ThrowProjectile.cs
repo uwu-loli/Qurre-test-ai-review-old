@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +7,6 @@ using HarmonyLib;
 using InventorySystem.Items;
 using InventorySystem.Items.ThrowableProjectiles;
 using Qurre.API;
-using Qurre.API.Entities.Items.Implementations;
 using Qurre.API.Utils.Entities;
 using Qurre.Events.Structs;
 
@@ -25,7 +24,7 @@ internal static class ThrowProjectile
 
         LocalBuilder @event = generator.DeclareLocal(typeof(ThrowProjectileEvent));
 
-        List<CodeInstruction> list = [..instructions];
+        List<CodeInstruction> list = [.. instructions];
         list.Last().labels.Add(retLabel);
 
         int index = list.FindIndex(ins =>
@@ -49,7 +48,8 @@ internal static class ThrowProjectile
                 AccessTools.Method(typeof(Extensions), nameof(Extensions.GetPlayer), [typeof(ReferenceHub)])),
 
             new CodeInstruction(OpCodes.Ldarg_0),
-            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
+            new CodeInstruction(OpCodes.Call,
+                AccessTools.Method(typeof(ItemsHelper), nameof(ItemsHelper.GetItemByBase), [typeof(ItemBase)])),
 
             new CodeInstruction(OpCodes.Ldloc_S, 4), // ProjectileSettings
             new CodeInstruction(OpCodes.Ldarg_1), // fullForce [bool]

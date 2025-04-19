@@ -6,7 +6,6 @@ using JetBrains.Annotations;
 using Qurre.API;
 using Qurre.API.Entities;
 using Qurre.API.Entities.Doors;
-using Qurre.API.World.Entities;
 
 namespace Qurre.Internal.Patches.Misc.Creates;
 

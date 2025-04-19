@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Reflection;
-using Qurre.API;
 using Qurre.Events.Structs;
 
 namespace Qurre.Internal.EventsManager;

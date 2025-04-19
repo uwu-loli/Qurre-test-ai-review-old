@@ -1,13 +1,9 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 using PlayerRoles;
 using PlayerStatsSystem;
 using Qurre.API;
-using Qurre.API.Controllers;
-using Qurre.API.Entities.Characters;
-using Qurre.API.Enums;
-using Qurre.API.World.Entities.Player;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
 
@@ -51,7 +47,7 @@ internal static class Dead
             var target = __instance.gameObject.GetPlayer();
 
             attacker ??= target;
-            
+
             if (target is null || attacker is null)
                 return;
 

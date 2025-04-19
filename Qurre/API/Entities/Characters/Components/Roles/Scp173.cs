@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using PlayerRoles.PlayableScps.Scp173;
 using PlayerRoles.Subroutines;

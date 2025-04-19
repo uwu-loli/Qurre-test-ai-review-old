@@ -1,10 +1,8 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using PlayerStatsSystem;
 using Qurre.API;
-using Qurre.API.Controllers;
 using Qurre.API.Entities.Characters;
 using Qurre.API.Enums;
-using Qurre.API.World.Entities.Player;
 
 // ReSharper disable once CheckNamespace
 namespace Qurre.Events.Structs;
@@ -50,7 +48,6 @@ public class DiesEvent : ICancellableEvent
     public Player Attacker { get; }
     public Player Target { get; }
     public DamageHandlerBase DamageInfo { get; }
-    public bool IsAllowed { get; set; }
 
     public DamageTypes DamageType
     {
@@ -69,6 +66,8 @@ public class DiesEvent : ICancellableEvent
             return _liteType;
         }
     }
+
+    public bool IsAllowed { get; set; }
 
     public uint EventId { get; } = EventID;
 }

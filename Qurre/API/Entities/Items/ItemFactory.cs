@@ -11,7 +11,7 @@ namespace Qurre.API.Entities.Items;
 public class ItemFactory
 {
     #region Pickup Factory
-    
+
     public IPickup CreatePickup(ItemType itemType,
         Vector3 position,
         Quaternion? rotation = null,
@@ -28,10 +28,10 @@ public class ItemFactory
 
         var spawnRotation = rotation ?? Quaternion.identity;
         var spawnScale = scale ?? Vector3.one;
-        
+
         var pickupInstance = Object.Instantiate(itemBase.PickupDropModel, position, spawnRotation);
         pickupInstance.transform.localScale = spawnScale;
-        
+
         pickupInstance.NetworkInfo = new PickupSyncInfo
         {
             ItemId = itemType,
@@ -65,7 +65,8 @@ public class ItemFactory
         bool doSpawn = true)
     {
         var rotationQuaternion = Quaternion.Euler(eulerAngles);
-        return CreatePickup(itemType, position, rotationQuaternion, scale, isKinematic, useGravity, serial, inUse, isLocked, doSpawn);
+        return CreatePickup(itemType, position, rotationQuaternion, scale, isKinematic, useGravity, serial, inUse,
+            isLocked, doSpawn);
     }
 
     #endregion

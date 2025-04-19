@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using CentralAuth;
@@ -157,7 +157,7 @@ public class Player
         player = Get(args);
         return player is not null;
     }
-    
+
     [EventMethod(PlayerEvents.ChangeRole, int.MinValue)]
     private static void SetSpawnedTime(ChangeRoleEvent ev)
     {

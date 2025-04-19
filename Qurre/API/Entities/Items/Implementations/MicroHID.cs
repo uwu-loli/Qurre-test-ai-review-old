@@ -1,4 +1,4 @@
-﻿using InventorySystem.Items.MicroHID;
+using InventorySystem.Items.MicroHID;
 using Qurre.API.Core;
 using Qurre.Internal.Attributes;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using JetBrains.Annotations;
 using MapGeneration;
@@ -13,8 +13,9 @@ public static class GlobalLights
 {
     private static void ApplyToRooms(Action<IRoom> action, bool includeCustom = true, FacilityZone? zoneType = null)
     {
-        var roomList = EntityManager.GetAll<IGameRoom>().Where(room => zoneType is null || room.Zone == zoneType).Cast<IRoom>().ToList();
-        
+        var roomList = EntityManager.GetAll<IGameRoom>().Where(room => zoneType is null || room.Zone == zoneType)
+            .Cast<IRoom>().ToList();
+
         // if include custom, then add range to list
         // TODO: include custom rooms
         //RoomManager.AllRooms.ForEach(action);

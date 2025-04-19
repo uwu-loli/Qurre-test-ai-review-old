@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Qurre.API.Addons;
@@ -12,7 +11,7 @@ namespace Qurre.API.Entities.Doors;
 public class DoorFactory
 {
     #region Breakable Door Factory
-    
+
     public IBreakableDoor CreateDoor(DoorPrefabs prefab,
         Vector3 position,
         Quaternion? rotation = null,
@@ -24,7 +23,7 @@ public class DoorFactory
 
         var spawnRotation = rotation ?? Quaternion.identity;
         var spawnScale = scale ?? Vector3.one;
-        
+
         var doorInstance = Object.Instantiate(doorPrefab, position, spawnRotation);
         doorInstance.transform.localScale = spawnScale;
 
@@ -43,6 +42,6 @@ public class DoorFactory
         var rotationQuaternion = Quaternion.Euler(eulerAngles);
         return CreateDoor(prefab, position, rotationQuaternion, scale, doSpawn);
     }
-    
+
     #endregion
 }
