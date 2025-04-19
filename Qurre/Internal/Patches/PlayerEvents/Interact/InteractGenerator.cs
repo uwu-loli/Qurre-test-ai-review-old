@@ -51,49 +51,49 @@ internal static class InteractGenerator
             switch (colliderId)
             {
                 case 0: // Open, Close, Unlock
-                {
-                    if (instance.HasFlag(instance._flags, Scp079Generator.GeneratorFlags.Unlocked))
                     {
-                        bool opened = instance.HasFlag(instance._flags, Scp079Generator.GeneratorFlags.Open);
-
-                        InteractGeneratorEvent ev = new(pl, instance.GetGenerator(),
-                            opened ? GeneratorStatus.CloseDoor : GeneratorStatus.OpenDoor);
-                        ev.InvokeEvent();
-
-                        if (ev.Allowed)
-                            instance.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, !opened);
-                        else
-                            instance.RpcDenied();
-
-                        instance._targetCooldown = instance._doorToggleCooldownTime;
-                    }
-                    else
-                    {
-                        InteractGeneratorEvent ev = new(pl, instance.GetGenerator(), GeneratorStatus.Unlock);
-
-                        if (ply.serverRoles.BypassMode ||
-                            (ply.inventory.CurInstance is KeycardItem card
-                             && card.Permissions.HasFlagFast(
-                                 instance._requiredPermission)))
-                            ev.Allowed = true;
-                        else
-                            ev.Allowed = false;
-
-                        ev.InvokeEvent();
-
-                        if (ev.Allowed)
+                        if (instance.HasFlag(instance._flags, Scp079Generator.GeneratorFlags.Unlocked))
                         {
-                            instance.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, true);
+                            bool opened = instance.HasFlag(instance._flags, Scp079Generator.GeneratorFlags.Open);
+
+                            InteractGeneratorEvent ev = new(pl, instance.GetGenerator(),
+                                opened ? GeneratorStatus.CloseDoor : GeneratorStatus.OpenDoor);
+                            ev.InvokeEvent();
+
+                            if (ev.Allowed)
+                                instance.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, !opened);
+                            else
+                                instance.RpcDenied();
+
+                            instance._targetCooldown = instance._doorToggleCooldownTime;
                         }
                         else
                         {
-                            instance._targetCooldown = instance._unlockCooldownTime;
-                            instance.RpcDenied();
-                        }
-                    }
+                            InteractGeneratorEvent ev = new(pl, instance.GetGenerator(), GeneratorStatus.Unlock);
 
-                    break;
-                }
+                            if (ply.serverRoles.BypassMode ||
+                                (ply.inventory.CurInstance is KeycardItem card
+                                 && card.Permissions.HasFlagFast(
+                                     instance._requiredPermission)))
+                                ev.Allowed = true;
+                            else
+                                ev.Allowed = false;
+
+                            ev.InvokeEvent();
+
+                            if (ev.Allowed)
+                            {
+                                instance.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, true);
+                            }
+                            else
+                            {
+                                instance._targetCooldown = instance._unlockCooldownTime;
+                                instance.RpcDenied();
+                            }
+                        }
+
+                        break;
+                    }
                 case 1: // Activate / Disable
                     if ((ply.IsHuman() || instance.Activating) && !instance.Engaged)
                     {

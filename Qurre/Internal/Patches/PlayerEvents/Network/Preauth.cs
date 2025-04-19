@@ -92,26 +92,26 @@ internal static class Preauth
                 switch (ev.RejectionReason)
                 {
                     case RejectionReason.Banned:
-                    {
-                        netDataWriter.Put(ev.RejectionExpiration);
-                        netDataWriter.Put(ev.RejectionCustomReason);
-                        break;
-                    }
+                        {
+                            netDataWriter.Put(ev.RejectionExpiration);
+                            netDataWriter.Put(ev.RejectionCustomReason);
+                            break;
+                        }
                     case RejectionReason.Custom:
-                    {
-                        netDataWriter.Put(ev.RejectionCustomReason);
-                        break;
-                    }
+                        {
+                            netDataWriter.Put(ev.RejectionCustomReason);
+                            break;
+                        }
                     case RejectionReason.Redirect:
-                    {
-                        netDataWriter.Put(ev.RejectionRedirectPort);
-                        break;
-                    }
+                        {
+                            netDataWriter.Put(ev.RejectionRedirectPort);
+                            break;
+                        }
                     case RejectionReason.Delay:
-                    {
-                        netDataWriter.Put(ev.RejectionDelay);
-                        break;
-                    }
+                        {
+                            netDataWriter.Put(ev.RejectionDelay);
+                            break;
+                        }
                 }
 
                 return netDataWriter;

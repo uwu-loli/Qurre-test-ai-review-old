@@ -70,7 +70,7 @@ internal static class JailbirdTrigger
                 @base._chargeAnyDetected = false;
                 @base._chargeResetTime = NetworkTime.time;
                 @base.SendRpc(JailbirdMessageType.ChargeStarted,
-                    delegate(NetworkWriter wr) { wr.WriteDouble(@base._chargeResetTime); });
+                    delegate (NetworkWriter wr) { wr.WriteDouble(@base._chargeResetTime); });
                 @base.SendRpc(JailbirdMessageType.ChargeFailed);
                 break;
             case JailbirdMessageType.ChargeFailed:
