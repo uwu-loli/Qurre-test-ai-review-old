@@ -103,10 +103,9 @@ internal static class Plugins
 
         foreach (string dll in files)
         {
-            if (!dll.EndsWith(".dll") || LoaderManager.Loaded(dll)) continue;
+            if (!dll.EndsWith(".dll") || Manager.Loaded(dll)) continue;
 
-            Assembly assembly = Assembly.Load(LoaderManager.ReadFile(dll));
-            LoaderManager.LocalLoaded.Add(new AssemblyDep(assembly, dll));
+            Assembly assembly = Manager.LoadAssembly(dll);
 
             Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
         }
@@ -126,7 +125,7 @@ internal static class Plugins
             try
             {
                 Log.Debug($"Loading {plugin}");
-                Assembly assembly = Assembly.Load(LoaderManager.ReadFile(plugin));
+                Assembly assembly = Manager.LoadAssembly(plugin);
                 bool loaded = LoadPlugin(assembly);
                 if (loaded) Internal.EventsManager.Loader.PluginPath(assembly);
             }

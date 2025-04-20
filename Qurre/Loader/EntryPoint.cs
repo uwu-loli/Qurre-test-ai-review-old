@@ -1,16 +1,18 @@
 using System;
 using System.Linq;
-using JetBrains.Annotations;
 using MEC;
 using Qurre.API;
 using Qurre.API.Addons;
 
 namespace Qurre.Loader;
 
-[PublicAPI]
 internal class EntryPoint : ICharacterLoader
 {
-    public void Init()
+    public void Disable()
+    {
+    }
+
+    public void Enable()
     {
         if (StartupArgs.Args.Any(arg => string.Equals(arg, "-disableAnsiColors", StringComparison.OrdinalIgnoreCase)))
             BetterColors.Enabled = false;
