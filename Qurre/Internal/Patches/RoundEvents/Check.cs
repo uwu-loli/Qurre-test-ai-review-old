@@ -79,13 +79,13 @@ internal static class Check
                             list.mtf_and_guards++;
                             break;
                         case Team.SCPs:
-                        {
-                            if (pl.RoleInformation.RoleType is RoleTypeId.Scp0492)
-                                list.zombies++;
-                            else
-                                list.scps_except_zombies++;
-                            break;
-                        }
+                            {
+                                if (pl.RoleInformation.RoleType is RoleTypeId.Scp0492)
+                                    list.zombies++;
+                                else
+                                    list.scps_except_zombies++;
+                                break;
+                            }
                     }
                 }
                 catch

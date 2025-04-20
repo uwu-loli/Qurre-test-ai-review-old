@@ -66,7 +66,8 @@ public class Scp914UpgradePickupEvent : IBaseEvent
     {
         get => Pickup.Position + Move;
         // todo: update later
-        [Obsolete("Outdated in v14")] set => Move = value - Pickup.Position;
+        [Obsolete("Outdated in v14")]
+        set => Move = value - Pickup.Position;
     }
 
     public bool Allowed { get; set; }
@@ -111,7 +112,8 @@ public class Scp914UpgradePlayerEvent : IBaseEvent
     {
         get => Player.MovementState.Position + Move;
         // todo: update later
-        [Obsolete("Outdated in v14")] set => Move = value - Player.MovementState.Position;
+        [Obsolete("Outdated in v14")]
+        set => Move = value - Player.MovementState.Position;
     }
 
     public bool Allowed { get; set; }

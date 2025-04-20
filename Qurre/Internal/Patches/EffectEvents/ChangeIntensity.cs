@@ -61,19 +61,19 @@ internal static class ChangeIntensity
             switch (instance._intensity)
             {
                 case 0 when value > 0:
-                {
-                    EffectEnabledEvent ev = new(pl, instance);
-                    ev.InvokeEvent();
+                    {
+                        EffectEnabledEvent ev = new(pl, instance);
+                        ev.InvokeEvent();
 
-                    return ev.Allowed;
-                }
+                        return ev.Allowed;
+                    }
                 case > 0 when value == 0:
-                {
-                    EffectDisabledEvent ev = new(pl, instance);
-                    ev.InvokeEvent();
+                    {
+                        EffectDisabledEvent ev = new(pl, instance);
+                        ev.InvokeEvent();
 
-                    return ev.Allowed;
-                }
+                        return ev.Allowed;
+                    }
             }
         }
         catch (Exception e)

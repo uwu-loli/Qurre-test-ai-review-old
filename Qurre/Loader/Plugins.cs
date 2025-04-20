@@ -65,7 +65,7 @@ internal static class Plugins
             }
 
             Assembly assembly = reflectedType.Assembly;
-            AccessTools.GetTypesFromAssembly(assembly).Do(delegate(Type type)
+            AccessTools.GetTypesFromAssembly(assembly).Do(delegate (Type type)
             {
                 try
                 {
