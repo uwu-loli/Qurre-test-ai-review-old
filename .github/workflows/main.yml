@@ -79,6 +79,9 @@ jobs:
         with:
           dotnet-version: '3.1.x'
 
+      - name: Add .NET global tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Set up projects for analysis
         uses: security-code-scan/security-code-scan-add-action@v1.2
 
