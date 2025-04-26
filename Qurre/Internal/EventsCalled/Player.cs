@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using PlayerRoles;
 using Qurre.API.Attributes;
 using Qurre.API.Entities.Characters.Components.Roles;
@@ -8,8 +7,6 @@ using Qurre.Events.Structs;
 
 namespace Qurre.Internal.EventsCalled;
 
-[SuppressMessage("ReSharper", "UnusedMember.Local")]
-[SuppressMessage("ReSharper", "UnusedType.Global")]
 internal static class Player
 {
     [EventMethod(PlayerEvents.Join)]

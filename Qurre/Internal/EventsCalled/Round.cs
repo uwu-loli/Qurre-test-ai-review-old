@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using MapGeneration;
 using Qurre.API;
@@ -18,8 +17,6 @@ using UnityEngine.SceneManagement;
 
 namespace Qurre.Internal.EventsCalled;
 
-[SuppressMessage("ReSharper", "UnusedMember.Local")]
-[SuppressMessage("ReSharper", "UnusedType.Global")]
 internal static class Round
 {
     static Round()

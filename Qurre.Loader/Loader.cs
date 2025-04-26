@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using JetBrains.Annotations;
 using LabApi.Features;
 using LabApi.Features.Console;
 using LabApi.Loader.Features.Plugins;
@@ -7,6 +8,7 @@ using LabApi.Loader.Features.Plugins.Enums;
 
 namespace Qurre.Loader;
 
+[PublicAPI]
 public class Loader : Plugin
 {
     public override string Name => "Qurre.Loader";

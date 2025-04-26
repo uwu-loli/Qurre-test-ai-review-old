@@ -17,8 +17,6 @@ using Object = UnityEngine.Object;
 
 namespace Qurre.Internal.EventsCalled;
 
-[SuppressMessage("ReSharper", "UnusedMember.Local")]
-[SuppressMessage("ReSharper", "UnusedType.Global")]
 internal static class Tests
 {
     [EventMethod(RoundEvents.Waiting), UsedImplicitly]

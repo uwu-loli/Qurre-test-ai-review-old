@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <!--<TargetFramework>net48</TargetFramework>-->
         <TargetFramework>netstandard2.1</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
@@ -29,6 +30,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <NoWarn>$(NoWarn);MSB3277</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
         <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
         <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
@@ -51,7 +56,7 @@
             <HintPath>..\depedencies\LabApi.dll</HintPath>
         </Reference>
         <Reference Include="Mirror">
-            <HintPath>..\depedencies\Mirror_edit.dll</HintPath>
+            <HintPath>..\depedencies\Mirror_public.dll</HintPath>
         </Reference>
         <Reference Include="Mirror.Components">
             <HintPath>..\depedencies\Mirror.Components.dll</HintPath>

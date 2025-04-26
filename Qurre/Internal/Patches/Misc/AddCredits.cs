@@ -1,20 +1,18 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
+using JetBrains.Annotations;
 using Qurre.API;
 using Qurre.Loader;
 
 namespace Qurre.Internal.Patches.Misc;
 
-// don't remove pls
 [HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.RefreshServerNameSafe))]
-[SuppressMessage("ReSharper", "UnusedMember.Local")]
-[SuppressMessage("ReSharper", "UnusedType.Global")]
 internal static class AddCredits
 {
     [HarmonyTranspiler]
+    [UsedImplicitly]
     private static IEnumerable<CodeInstruction> Call(IEnumerable<CodeInstruction> instructions)
     {
         List<CodeInstruction> list = [.. instructions];
@@ -35,7 +33,7 @@ internal static class AddCredits
 
         list.InsertRange(index,
         [
-            new CodeInstruction(OpCodes.Ldstr, $"<color=#00000000><size=1> Qurre v{EventCore.Version}</size></color>"),
+            new CodeInstruction(OpCodes.Ldstr, $"<color=#00000000><size=1> Qurre {EventCore.Version}</size></color>"),
             new CodeInstruction(OpCodes.Call,
                 AccessTools.Method(typeof(string), nameof(string.Concat), [typeof(object), typeof(object)]))
         ]);

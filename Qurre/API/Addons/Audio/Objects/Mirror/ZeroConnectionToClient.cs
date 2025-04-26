@@ -19,7 +19,7 @@ public sealed class ZeroConnectionToClient : NetworkConnectionToClient
     public override string address => "127.0.0.1";
 
     /// <inheritdoc />
-    protected override void UpdatePing()
+    public override void UpdatePing()
     {
     }
 

@@ -1,5 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
+using JetBrains.Annotations;
 using Mirror;
 using PlayerRoles.FirstPersonControl.NetworkMessages;
 using Qurre.API;
@@ -9,11 +9,10 @@ using UnityEngine;
 namespace Qurre.Internal.Patches.Misc.Modules;
 
 [HarmonyPatch(typeof(FpcFromClientMessage), nameof(FpcFromClientMessage.ProcessMessage))]
-[SuppressMessage("ReSharper", "UnusedMember.Local")]
-[SuppressMessage("ReSharper", "UnusedType.Global")]
 internal static class LastSynced
 {
     [HarmonyPrefix]
+    [UsedImplicitly]
     private static void Call(NetworkConnection sender)
     {
         if (!ReferenceHub.TryGetHubNetID(sender.identity.netId, out ReferenceHub? hub))
