@@ -80,7 +80,7 @@ jobs:
           dotnet-version: '3.1.x'
 
       - name: Set up projects for analysis
-        uses: security-code-scan/security-code-scan-add-action@v1.3
+        uses: security-code-scan/security-code-scan-add-action@v1.2
 
       - name: Restore dependencies
         run: dotnet restore
@@ -89,7 +89,7 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Convert sarif for uploading to GitHub
-        uses: security-code-scan/security-code-scan-results-action@v1.3
+        uses: security-code-scan/security-code-scan-results-action@v1
 
       - name: Upload sarif
         uses: github/codeql-action/upload-sarif@v3
