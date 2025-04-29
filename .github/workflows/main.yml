@@ -72,10 +72,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET Core 3.1
+      - name: Setup .NET Core 8.0
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '3.1.x'
+          dotnet-version: '8.0.x'
 
       - name: Set up projects for analysis
         uses: security-code-scan/security-code-scan-add-action@v1.2
