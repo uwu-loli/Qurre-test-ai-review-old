@@ -72,19 +72,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET Core 8.0
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: | 
+            3.1.x
+            9.0.x
+          cache: true
 
       - name: Set up projects for analysis
         uses: security-code-scan/security-code-scan-add-action@v1.2
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore Qurre
 
       - name: Build
-        run: dotnet build --no-restore
+        run: dotnet build Qurre --no-restore
 
       - name: Upload sarif
         uses: github/codeql-action/upload-sarif@v3
