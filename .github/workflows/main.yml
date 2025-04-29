@@ -78,7 +78,6 @@ jobs:
           dotnet-version: | 
             3.1.x
             9.0.x
-          cache: true
 
       - name: Set up projects for analysis
         uses: security-code-scan/security-code-scan-add-action@v1.2
