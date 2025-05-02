@@ -34,7 +34,7 @@ public static class Round
         {
             try
             {
-                return RoundStart.RoundStarted;
+                return LabApi.Features.Wrappers.Round.IsRoundStarted;
             }
             catch
             {
@@ -44,7 +44,7 @@ public static class Round
     }
 
     public static bool Ended
-        => RoundSummary.singleton._roundEnded;
+        => LabApi.Features.Wrappers.Round.IsRoundEnded;
 
     public static bool Waiting
     {

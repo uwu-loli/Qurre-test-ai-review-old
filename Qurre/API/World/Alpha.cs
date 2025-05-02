@@ -1,81 +1,71 @@
 using JetBrains.Annotations;
-using Mirror;
-using UnityEngine;
+using LabApi.Features.Wrappers;
 
 namespace Qurre.API.World;
 
 [PublicAPI]
 public static class Alpha
 {
-    public static AlphaWarheadController Controller => AlphaWarheadController.Singleton;
-    public static AlphaWarheadNukesitePanel InnerPanel => Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
-    public static AlphaWarheadOutsitePanel OutsidePanel => Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
-    public static GameObject InnerPanelLever => InnerPanel.lever.gameObject;
-    public static bool Detonated => Controller.AlreadyDetonated;
-    public static bool Active => Controller.Info.InProgress;
+    public static AlphaWarheadController? Controller => Warhead.BaseController;
+    public static AlphaWarheadNukesitePanel? InnerPanel => Warhead.BaseNukesitePanel;
+    public static AlphaWarheadOutsitePanel? OutsidePanel => Warhead.BaseOutsidePanel;
 
-    public static bool InnerPanelEnabled
-    {
-        get => InnerPanel.Networkenabled;
-        set => InnerPanel.Networkenabled = value;
-    }
+    public static bool Detonated => Warhead.IsDetonated;
+    public static bool Active => Warhead.IsDetonationInProgress;
+    public static bool DeadManAllow { get; set; } = true; // TODO
 
-    public static bool OutsidePanelEnabled
+    public static bool Authorized
     {
-        get => OutsidePanel.keycardEntered;
-        set => OutsidePanel.NetworkkeycardEntered = value;
-    }
-
-    public static float TimeToDetonation
-    {
-        get => AlphaWarheadController.TimeUntilDetonation;
-        set
-        {
-            Controller.Info.StartTime = NetworkTime.time;
-            Controller.ForceTime(value);
-        }
+        get => Warhead.IsAuthorized;
+        set => Warhead.IsAuthorized = value;
     }
 
     public static bool Locked
     {
-        get => Controller.IsLocked;
-        set => Controller.IsLocked = value;
+        get => Warhead.IsLocked;
+        set => Warhead.IsLocked = value;
     }
 
-    public static int Cooldown
+    public static bool InnerPanelEnabled
     {
-        get => (int)Controller.CooldownEndTime;
-        set => Controller.NetworkCooldownEndTime = value;
+        get => Warhead.LeverStatus;
+        set => Warhead.LeverStatus = value;
+    }
+
+    public static float TimeToDetonation
+    {
+        get => Warhead.DetonationTime;
+        set => Warhead.DetonationTime = value;
+    }
+
+    public static double Cooldown
+    {
+        get => Warhead.CooldownTime;
+        set => Warhead.CooldownTime = value;
     }
 
     public static void Start(bool isAutomatic = false, bool suppressSubtitles = false)
     {
-        Controller.InstantPrepare();
-        Controller.StartDetonation(isAutomatic, suppressSubtitles);
+        Warhead.Start(isAutomatic, suppressSubtitles);
     }
 
     public static void InstantPrepare()
     {
-        Controller.InstantPrepare();
-    }
-
-    public static void CancelDetonation()
-    {
-        Controller.CancelDetonation();
+        Controller?.InstantPrepare();
     }
 
     public static void Stop()
     {
-        Controller.CancelDetonation();
+        Warhead.Stop();
     }
 
     public static void Detonate()
     {
-        Controller.Detonate();
+        Warhead.Detonate();
     }
 
     public static void Shake()
     {
-        Controller.RpcShake(false);
+        Warhead.Shake();
     }
 }
