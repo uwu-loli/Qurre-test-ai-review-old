@@ -16,6 +16,21 @@ public class WaitingEvent : IBaseEvent
 }
 
 [PublicAPI]
+public class RoundStartingEvent : IBaseEvent
+{
+    private const uint EventID = RoundEvents.Starting;
+
+    internal RoundStartingEvent(bool allow = true)
+    {
+        Allow = allow;
+    }
+
+    public bool Allow { get; set; }
+
+    public uint EventId { get; } = EventID;
+}
+
+[PublicAPI]
 public class RoundStartedEvent : IBaseEvent
 {
     private const uint EventID = RoundEvents.Start;
@@ -91,10 +106,12 @@ public class RoundEndEvent : IBaseEvent
         Winner = winner;
         Info = info;
         ToRestart = toRestart;
+        ShowSummary = true;
     }
 
     public RoundSummary.LeadingTeam Winner { get; }
     public RoundSummary.SumInfo_ClassList Info { get; set; }
     public int ToRestart { get; set; }
+    public bool ShowSummary { get; set; }
     public uint EventId { get; } = EventID;
 }

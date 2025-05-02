@@ -287,6 +287,16 @@ public static class Extensions
     }
 
 
+    public static Player? GetPlayer(this LabApi.Features.Wrappers.Player? labPlayer)
+    {
+        if (labPlayer == null)
+            return null;
+
+        Internal.Fields.Player.Hubs.TryGetValue(labPlayer.ReferenceHub, out Player player);
+
+        return player;
+    }
+
     public static Player? GetPlayer(this ReferenceHub? referenceHub)
     {
         if (referenceHub == null)

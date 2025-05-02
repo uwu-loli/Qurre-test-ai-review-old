@@ -1,7 +1,7 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using HarmonyLib;
+using JetBrains.Annotations;
 using Qurre.API;
 using Qurre.Events.Structs;
 using Qurre.Internal.EventsManager;
@@ -10,11 +10,10 @@ using RemoteAdmin;
 namespace Qurre.Internal.Patches.ServerEvents;
 
 [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
-[SuppressMessage("ReSharper", "UnusedMember.Local")]
-[SuppressMessage("ReSharper", "UnusedType.Global")]
 internal static class RemoteAdmin
 {
     [HarmonyPrefix]
+    [UsedImplicitly]
     private static bool Call(string q, CommandSender sender)
     {
         try
@@ -32,6 +31,9 @@ internal static class RemoteAdmin
 
                 return req.Allowed;
             }
+
+            if (q.StartsWith("$"))
+                return true;
 
             string[] arr = q.Split(' ');
             string name = arr[0].ToLower();

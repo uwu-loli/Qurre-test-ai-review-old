@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using GameCore;
 using HarmonyLib;
+using LabApi.Events.Arguments.ServerEvents;
 using MEC;
 using PlayerRoles;
 using Qurre.API;
@@ -47,14 +48,14 @@ internal static class Check
         float time = Time.unscaledTime;
 
         if (instance != null)
-            instance._roundEnded = false;
+            instance.IsRoundEnded = false;
 
         while (instance != null)
         {
             yield return Timing.WaitForSeconds(2.5f);
 
             while (RoundSummary.RoundLock || !Round.Started || Time.unscaledTime - time < 15f ||
-                   (instance.KeepRoundOnOne && Player.List.Count() < 2) || Round.ElapsedTime.TotalSeconds < 15f)
+                   (instance.KeepRoundOnOne && Player.List.Count < 2) || Round.ElapsedTime.TotalSeconds < 15f)
                 yield return Timing.WaitForSeconds(1);
 
             RoundSummary.SumInfo_ClassList list = default;
@@ -79,13 +80,13 @@ internal static class Check
                             list.mtf_and_guards++;
                             break;
                         case Team.SCPs:
-                            {
-                                if (pl.RoleInformation.RoleType is RoleTypeId.Scp0492)
-                                    list.zombies++;
-                                else
-                                    list.scps_except_zombies++;
-                                break;
-                            }
+                        {
+                            if (pl.RoleInformation.RoleType is RoleTypeId.Scp0492)
+                                list.zombies++;
+                            else
+                                list.scps_except_zombies++;
+                            break;
+                        }
                     }
                 }
                 catch
@@ -162,10 +163,16 @@ internal static class Check
             evCheck.InvokeEvent();
 
             list = evCheck.Info;
-            instance._roundEnded = evCheck.End || Round.ForceEnd;
+            instance.IsRoundEnded = evCheck.End || Round.ForceEnd;
             winner = evCheck.Winner;
 
-            if (!instance._roundEnded)
+            if (!instance.IsRoundEnded)
+                continue;
+
+            RoundEndingEventArgs labEv1 = new(winner);
+            LabApi.Events.Handlers.ServerEvents.OnRoundEnding(labEv1);
+
+            if (!labEv1.IsAllowed)
                 continue;
 
             FriendlyFireConfig.PauseDetector = true;
@@ -185,9 +192,14 @@ internal static class Check
             winner = evEnd.Winner;
             wait = Mathf.Clamp(evEnd.ToRestart, 5, 1000);
 
-            instance.RpcShowRoundSummary(instance.classlistStart, list, winner, RoundSummary.EscapedClassD,
-                RoundSummary.EscapedScientists, RoundSummary.KilledBySCPs, wait,
-                (int)RoundStart.RoundLength.TotalSeconds);
+            RoundEndedEventArgs labEv2 = new(winner);
+            labEv2.ShowSummary = evEnd.ShowSummary;
+            LabApi.Events.Handlers.ServerEvents.OnRoundEnded(labEv2);
+
+            if (labEv2.ShowSummary)
+                instance.RpcShowRoundSummary(instance.classlistStart, list, winner, RoundSummary.EscapedClassD,
+                    RoundSummary.EscapedScientists, RoundSummary.KilledBySCPs, wait,
+                    (int)RoundStart.RoundLength.TotalSeconds);
 
             yield return Timing.WaitForSeconds(wait - 1);
 
