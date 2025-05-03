@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  security-events: write
 
 jobs:
   format-code:
@@ -66,31 +67,24 @@ jobs:
       #     # Использовать force-with-lease безопаснее, чем просто force
       #     git push --force-with-lease origin HEAD:${{ github.head_ref || github.ref_name }}
 
-  secutity-scan:
+  analyze:
+    name: CodeQL – ${{ matrix.language }}
     needs: ["format-code"]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
     steps:
-      - uses: actions/checkout@v4
-
-      # - name: Setup .NET Core
-      #   uses: actions/setup-dotnet@v4
-      #   with:
-      #     dotnet-version: | 
-      #       3.1.x
-      #       9.0.x
-
-      - name: Set up projects for analysis
-        uses: security-code-scan/security-code-scan-add-action@v1
-
-      - name: Restore dependencies
-        run: dotnet restore Qurre
-
-      - name: Build
-        run: dotnet build --no-restore
-        
-      - name: Convert sarif for uploading to GitHub
-        uses: security-code-scan/security-code-scan-results-action@v1
-
-      - name: Upload sarif
-        uses: github/codeql-action/upload-sarif@v1
-
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
