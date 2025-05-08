@@ -53,7 +53,7 @@ jobs:
 
           # customization
           OCO_TOKENS_MAX_INPUT: 9999999
-          OCO_TOKENS_MAX_OUTPUT: 9999999
+          OCO_TOKENS_MAX_OUTPUT: 500
           OCO_API_URL: 'https://integrate.api.nvidia.com/v1'
           OCO_OMIT_SCOPE: true
           OCO_DESCRIPTION: true
@@ -71,7 +71,7 @@ jobs:
           # здесь ваши альтернативные переменные окружения
           OPENAI_API_KEY: ${{ secrets.AI_GEMINI_API_KEY }}
           OCO_TOKENS_MAX_INPUT: 20000
-          OCO_TOKENS_MAX_OUTPUT: 1000
+          OCO_TOKENS_MAX_OUTPUT: 500
           OCO_API_URL: 'https://generativelanguage.googleapis.com/v1beta/openai/'
           OCO_OMIT_SCOPE: true
           OCO_DESCRIPTION: true
