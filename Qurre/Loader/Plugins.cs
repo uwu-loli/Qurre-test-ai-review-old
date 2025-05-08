@@ -40,7 +40,7 @@ internal static class Plugins
 
         Internal.EventsManager.Loader.SortMethods();
         EnablePlugins();
-        
+
         // TODO: не имеет смысла, потому что Timing.RunCoroutine
         // выполняет код в этом же потоке, просто в следующем кадре
         //Timing.RunCoroutine(EnablePluginsInThread());

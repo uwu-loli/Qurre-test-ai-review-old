@@ -11,7 +11,7 @@ namespace Qurre.Loader;
 internal class EntryPoint : ICharacterLoader
 {
     internal static event Action? Init;
-    
+
     public void Disable()
     {
     }
@@ -32,7 +32,7 @@ internal class EntryPoint : ICharacterLoader
             Internal.EventsManager.Loader.PathQurreEvents();
 
             Init?.Invoke();
-            
+
             Plugins.Init();
 
             Log.Custom(BetterColors.Bold($"Qurre {BetterColors.BrightRed($"v{EventCore.Version}")} enabled"), "Loader",

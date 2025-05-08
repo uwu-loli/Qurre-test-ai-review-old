@@ -34,11 +34,11 @@ internal static class RemoteAdmin
 
             if (q.StartsWith("$"))
                 return true;
-            
+
             var arr = q.Split(' ');
             var commandName = arr[0].ToLower();
             var commandArgs = arr.Skip(1).ToArray();
-            
+
             var ev = new RemoteAdminCommandEvent(sender, sender.GetPlayer(), q, commandName, commandArgs);
             ev.InvokeEvent();
 

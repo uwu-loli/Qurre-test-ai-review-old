@@ -16,7 +16,7 @@ public static class BetterColors
     public static string Inverse(object text) => Apply(text, Style.Inverse);
     public static string Hidden(object text) => Apply(text, Style.Hidden);
     public static string Strikethrough(object text) => Apply(text, Style.Strikethrough);
-    
+
     public static string Black(object text) => Apply(text, Style.Black);
     public static string Red(object text) => Apply(text, Style.Red);
     public static string Green(object text) => Apply(text, Style.Green);
@@ -26,7 +26,7 @@ public static class BetterColors
     public static string Cyan(object text) => Apply(text, Style.Cyan);
     public static string White(object text) => Apply(text, Style.White);
     public static string Grey(object text) => Apply(text, Style.Grey);
-    
+
     public static string BrightRed(object text) => Apply(text, Style.BrightRed);
     public static string BrightGreen(object text) => Apply(text, Style.BrightGreen);
     public static string BrightYellow(object text) => Apply(text, Style.BrightYellow);
@@ -34,7 +34,7 @@ public static class BetterColors
     public static string BrightMagenta(object text) => Apply(text, Style.BrightMagenta);
     public static string BrightCyan(object text) => Apply(text, Style.BrightCyan);
     public static string BrightWhite(object text) => Apply(text, Style.BrightWhite);
-    
+
     public static string BgBlack(object text) => Apply(text, Style.BgBlack);
     public static string BgRed(object text) => Apply(text, Style.BgRed);
     public static string BgGreen(object text) => Apply(text, Style.BgGreen);
@@ -44,7 +44,7 @@ public static class BetterColors
     public static string BgCyan(object text) => Apply(text, Style.BgCyan);
     public static string BgWhite(object text) => Apply(text, Style.BgWhite);
     public static string BgGrey(object text) => Apply(text, Style.BgGrey);
-    
+
     public static string BgBrightRed(object text) => Apply(text, Style.BgBrightRed);
     public static string BgBrightGreen(object text) => Apply(text, Style.BgBrightGreen);
     public static string BgBrightYellow(object text) => Apply(text, Style.BgBrightYellow);
@@ -59,13 +59,13 @@ public static class BetterColors
     }
 
     private static string ParseCode(int code) => $"\e[{code}m";
-    
+
     [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
     public readonly struct Style(int begin, int end)
     {
         public int Begin { get; } = begin;
         public int End { get; } = end;
-    
+
         public static readonly Style Reset = new(0, 0);
 
         public static readonly Style Bold = new(1, 22);

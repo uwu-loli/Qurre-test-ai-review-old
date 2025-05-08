@@ -10,7 +10,7 @@ namespace Qurre.API;
 public static class Network
 {
     private static readonly ConcurrentDictionary<(Type, string), MethodInfo> StaticMethodCache = new();
-    
+
     public static void SendSpawnMessage(NetworkIdentity identity, NetworkConnection connection)
     {
         NetworkServer.SendSpawnMessage(identity, connection);
@@ -19,14 +19,14 @@ public static class Network
     public static void InvokeStaticMethod(this Type type, string methodName, object[] param)
     {
         const BindingFlags staticMethodFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-        
+
         if (!StaticMethodCache.TryGetValue((type, methodName), out var methodInfo))
         {
             methodInfo = type.GetMethod(methodName, staticMethodFlags);
             if (methodInfo == null) throw new MissingMethodException(type.Name, methodName);
             StaticMethodCache.TryAdd((type, methodName), methodInfo);
         }
-        
+
         methodInfo.Invoke(null, param);
     }
 

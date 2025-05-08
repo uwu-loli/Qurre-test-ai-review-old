@@ -27,7 +27,7 @@ public abstract class BaseAudioPlayer : IEquatable<BaseAudioPlayer>
     {
         Players.Clear();
     }
-    
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="BaseAudioPlayer" /> class.
     /// </summary>

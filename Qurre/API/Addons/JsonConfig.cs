@@ -57,7 +57,7 @@ public class JsonConfig(string name)
         var valueToken = JToken.FromObject(value);
         SetToken(path, valueToken);
     }
-    
+
     public JToken SafeGetTokenValue(string name, JToken toValue, string desc = "", JToken? source = null)
     {
         try
@@ -269,31 +269,31 @@ public static class JsonExtensions
         {
             var part = parts[i];
             var childToken = current[part];
-            
+
             if (childToken != null && childToken.Type != JTokenType.Null && childToken.Type != JTokenType.Object)
                 throw new InvalidOperationException($"Token at '{string.Join(".", parts.Take(i + 1))}' is not an object.");
-            
+
             if (childToken is not JObject next)
             {
                 next = new JObject();
                 current[part] = next;
             }
-            
+
             current = next;
         }
-        
+
         var key = parts[^1];
         var existing = current[key];
-        
+
         if (existing != null)
             return existing;
-        
+
         if (!string.IsNullOrWhiteSpace(description))
             current[$"{key}_desc"] = description.Trim();
 
         var placeholder = JValue.CreateNull();
         current[key] = placeholder;
-        
+
         return placeholder;
     }
 
@@ -309,7 +309,7 @@ public static class JsonExtensions
         {
             var part = parts[i];
             var childToken = current[part];
-            
+
             if (childToken != null && childToken.Type != JTokenType.Null && childToken.Type != JTokenType.Object)
                 throw new InvalidOperationException($"Token at '{string.Join(".", parts.Take(i + 1))}' is not an object.");
 
@@ -318,19 +318,19 @@ public static class JsonExtensions
                 next = new JObject();
                 current[part] = next;
             }
-            
+
             current = next;
         }
 
         var key = parts[^1];
-        
+
         if (!string.IsNullOrWhiteSpace(description))
             current[$"{key}_desc"] = description.Trim();
-        
+
         current[key] = value;
     }
-    
-    
+
+
     public static T GetValue<T>(this JToken root, string path, T defaultValue = default!, string description = "") where T : notnull
     {
         var token = root.GetToken(path, description);
@@ -352,7 +352,7 @@ public static class JsonExtensions
         root.SetValue(path, defaultValue);
         return defaultValue;
     }
-    
+
     public static void SetValue<T>(this JToken root, string path, T value) where T : notnull
     {
         var valueToken = JToken.FromObject(value);
