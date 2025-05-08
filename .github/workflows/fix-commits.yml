@@ -52,8 +52,8 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.AI_API_KEY }}
 
           # customization
-          OCO_TOKENS_MAX_INPUT: 90000
-          OCO_TOKENS_MAX_OUTPUT: 90000
+          OCO_TOKENS_MAX_INPUT: 9999999
+          OCO_TOKENS_MAX_OUTPUT: 9999999
           OCO_API_URL: 'https://integrate.api.nvidia.com/v1'
           OCO_OMIT_SCOPE: true
           OCO_DESCRIPTION: true
