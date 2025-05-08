@@ -17,20 +17,20 @@ internal static class CassieController
     [HarmonyPrefix]
     private static bool Call(string words, bool makeHold, bool makeNoise)
     {
-        if (Cassie.Lock)
+        if (Cassie.IsLocked)
             return false;
 
         try
         {
-            foreach (Cassie _ in Map.Cassies)
+            foreach (Cassie _ in Map.CassieList)
                 if (_.Message == words && _.Hold == makeHold && _.Noise == makeNoise)
                 {
-                    Map.Cassies.Remove(_);
-                    Timing.CallDelayed(NineTailedFoxAnnouncer.singleton.CalculateDuration(words), Cassie.End);
+                    Map.CassieList.Remove(_);
+                    Timing.CallDelayed(NineTailedFoxAnnouncer.singleton.CalculateDuration(words), Cassie.ForceEnd);
                     return true;
                 }
 
-            Map.Cassies.Add(new Cassie(words, makeHold, makeNoise), true);
+            Map.CassieList.Add(new Cassie(words, makeHold, makeNoise), true);
             return false;
         }
         catch (Exception e)

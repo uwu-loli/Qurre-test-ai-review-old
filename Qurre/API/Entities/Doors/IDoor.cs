@@ -66,7 +66,7 @@ public interface IDoor : ILevelEntity
 
     IReadOnlyList<IGameRoom> Rooms { get; }
 
-    DoorPermissions RequiredPermissions { get; set; }
+    DoorPermissionsPolicy RequiredPermissions { get; set; }
 
     #endregion
 }

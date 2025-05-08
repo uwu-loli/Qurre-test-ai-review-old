@@ -41,20 +41,22 @@ public static class BoundsHelper
 
     public static Bounds CalculateRoomEntireBounds(RoomIdentifier roomIdentifier)
     {
-        if (!roomIdentifier)
-            return new Bounds();
-
-        var bounds = new Bounds(roomIdentifier.transform.position, Vector3.zero);
-        var gridScale = RoomIdentifier.GridScale;
-
-        foreach (var gridCoord in roomIdentifier.OccupiedCoords)
-        {
-            var localPoint = Vector3.Scale(gridCoord, gridCoord);
-            var localBounds = new Bounds(localPoint, gridScale);
-            bounds.Encapsulate(localBounds);
-        }
-
-        return bounds;
+        return roomIdentifier.WorldspaceBounds;
+        // TODO: check is it work or no.
+        //if (!roomIdentifier)
+        //    return new Bounds();
+        //
+        //var bounds = new Bounds(roomIdentifier.transform.position, Vector3.zero);
+        //var gridScale = RoomIdentifier.GridScale;
+        //
+        //foreach (var gridCoord in roomIdentifier.OccupiedCoords)
+        //{
+        //    var localPoint = Vector3.Scale(gridCoord, gridCoord);
+        //    var localBounds = new Bounds(localPoint, gridScale);
+        //    bounds.Encapsulate(localBounds);
+        //}
+        //
+        //return bounds;
     }
 
     public static bool IsBoundsFullyContainedInOther(Bounds outer, Bounds inner)

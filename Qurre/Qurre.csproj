@@ -86,7 +86,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="API\Extensions\" />
       <Folder Include="Internal\Patches\Unity\" />
     </ItemGroup>
 

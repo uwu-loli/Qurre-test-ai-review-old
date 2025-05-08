@@ -36,7 +36,7 @@ public static class GlobalLights
         ApplyToRooms(room => room.Lights.Color = color, includeCustom, zoneType);
     }
 
-    public static void Intensivity(float intensity, bool includeCustom = true, FacilityZone? zoneType = null)
+    public static void Intensity(float intensity, bool includeCustom = true, FacilityZone? zoneType = null)
     {
         ApplyToRooms(room => room.Lights.Intensity = intensity, includeCustom, zoneType);
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MapGeneration;
@@ -19,7 +20,7 @@ internal sealed class GameRoom : ReadOnlyTransformEntity, IGameRoom
     public GameRoom(RoomIdentifier roomBase) : base(roomBase.gameObject)
     {
         Base = roomBase;
-        Base.Instance.TryAssignId();
+        //Base.Instance.TryAssignId(); // TODO: check
 
         WorldSubBounds = LocalSubBounds
             .Select(bounds => BoundsHelper.CalculateWorldBoundsByRelative(bounds, GameObject.Instance.transform))
@@ -32,7 +33,7 @@ internal sealed class GameRoom : ReadOnlyTransformEntity, IGameRoom
     }
 
     /// <inheritdoc />
-    public Bounds[] LocalSubBounds => Base.Instance.SubBounds;
+    public Bounds[] LocalSubBounds => throw new NotImplementedException("Removed in 14.1"); // TODO: check ; Base.Instance.SubBounds);
 
     /// <inheritdoc />
     public Bounds[] WorldSubBounds { get; }

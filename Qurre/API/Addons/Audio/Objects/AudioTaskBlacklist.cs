@@ -11,7 +11,7 @@ namespace Qurre.API.Addons.Audio.Objects;
 ///     Initializes a new instance of the <see cref="AudioTaskBlacklist" /> class.
 /// </remarks>
 [PublicAPI]
-public class AudioTaskBlacklist(List<IAccessConditions>? accessConditions = null)
+public class AudioTaskBlacklist(List<IAccessConditions>? accessConditions = null) : IAccessConditions
 {
     /// <summary>
     ///     A collection of required conditions to define a player as blacklisted.
@@ -23,7 +23,7 @@ public class AudioTaskBlacklist(List<IAccessConditions>? accessConditions = null
     /// </summary>
     /// <param name="referenceHub"><see cref="ReferenceHub" /> to check</param>
     /// <returns>Is <see cref="ReferenceHub" /> blacklisted?</returns>
-    public virtual bool Contains(ReferenceHub referenceHub)
+    public virtual bool CheckRequirements(ReferenceHub referenceHub)
     {
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (referenceHub == null)

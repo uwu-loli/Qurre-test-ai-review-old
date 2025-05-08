@@ -88,7 +88,11 @@ public class Player
     public int Ping => LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
     public bool IsHost => ReferenceHub.isLocalPlayer;
     public bool Disconnected { get; internal set; }
-    public bool FriendlyFire { get; set; }
+    
+    /// <summary>
+    /// Опредяет то, может ли игрок наносить урон своим союзникам.
+    /// </summary>
+    public bool AllowFriendlyDamage { get; set; }
     public float LastSynced { get; internal set; }
     public DateTime JoinedTime { get; internal set; }
     public DateTime SpawnedTime { get; private set; }

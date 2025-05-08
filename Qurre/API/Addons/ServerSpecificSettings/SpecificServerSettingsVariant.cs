@@ -5,7 +5,7 @@ using UserSettings.ServerSpecific;
 namespace Qurre.API.Addons.ServerSpecificSettings;
 
 [PublicAPI]
-public abstract class BaseSSSVariant(Player owner)
+public abstract class SpecificServerSettingsVariant(Player owner)
 {
     public Player Owner { get; } = owner;
 

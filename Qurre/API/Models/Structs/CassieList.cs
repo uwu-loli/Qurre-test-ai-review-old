@@ -29,7 +29,7 @@ public class CassieList
         else
         {
             _list.Add(cassie);
-            if (!_list[0].Active)
+            if (!_list[0].IsActive)
                 _list[0].Send();
         }
     }

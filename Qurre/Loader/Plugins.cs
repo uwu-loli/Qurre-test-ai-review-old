@@ -39,8 +39,11 @@ internal static class Plugins
         LoadPlugins();
 
         Internal.EventsManager.Loader.SortMethods();
-
-        Timing.RunCoroutine(EnablePluginsInThread());
+        EnablePlugins();
+        
+        // TODO: не имеет смысла, потому что Timing.RunCoroutine
+        // выполняет код в этом же потоке, просто в следующем кадре
+        //Timing.RunCoroutine(EnablePluginsInThread());
         return;
 
         static IEnumerator<float> EnablePluginsInThread()

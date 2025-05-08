@@ -14,8 +14,7 @@ internal readonly struct PluginStruct(PluginInit info)
 internal readonly struct MethodStruct(
     MethodInfo method,
     PluginInit info,
-    int priority
-)
+    int priority)
 {
     internal MethodInfo MethodInfo { get; } = method;
     internal PluginInit Info { get; } = info;

@@ -33,7 +33,7 @@ public sealed class ServerSpecificSettings
     /// <summary>
     ///     Gets the currently active settings variant.
     /// </summary>
-    public BaseSSSVariant? ActiveVariant { get; private set; }
+    public SpecificServerSettingsVariant? ActiveVariant { get; private set; }
 
     public void Update(bool preserveVersion = false)
     {
@@ -46,14 +46,14 @@ public sealed class ServerSpecificSettings
         );
     }
 
-    public void Apply(BaseSSSVariant? variant)
+    public void Apply(SpecificServerSettingsVariant? variant)
     {
         ActiveVariant?.OnDisabled();
         ActiveVariant = variant;
         Update();
     }
 
-    public void Apply<TPerOwnerVariant>() where TPerOwnerVariant : BaseSSSVariant
+    public void Apply<TPerOwnerVariant>() where TPerOwnerVariant : SpecificServerSettingsVariant
     {
         Apply(Activator.CreateInstance(typeof(TPerOwnerVariant), _player) as TPerOwnerVariant);
         ActiveVariant?.OnEnabled();

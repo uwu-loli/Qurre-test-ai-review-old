@@ -35,11 +35,6 @@ internal static class Round
     private static void DestroyAudio()
     {
         API.Audio.LocalHostAudioPlayer = null;
-
-        foreach (var audioPlayer in AudioPlayerBot.Players.ToList())
-            audioPlayer.DestroySelf();
-
-        BaseAudioPlayer.Players.Clear();
     }
 
     [EventMethod(RoundEvents.Waiting)]
@@ -56,9 +51,6 @@ internal static class Round
 
         Extensions.DamagesCached.Clear();
         Banned.Cached.Clear();
-
-        if (API.World.Round.CurrentRound == 0)
-            Prefabs.InitLate();
 
         API.World.Round.CurrentRound++;
 
@@ -82,7 +74,7 @@ internal static class Round
 
     private static void MapClearLists()
     {
-        Map.Cassies.Clear();
+        Map.CassieList.Clear();
         Banned.Cached.Clear();
         Extensions.DamagesCached.Clear();
     }

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CustomPlayerEffects;
 using InventorySystem;
 using JetBrains.Annotations;
-using PlayerStatsSystem;
 using Qurre.API.Entities.Characters;
 using RoundRestarting;
 using UnityEngine;
@@ -17,14 +17,11 @@ public static class Server
     private static Player? _host;
     private static Inventory? _hostInv;
 
-    public static ushort Port
-        => ServerStatic.ServerPort;
+    public static ushort Port => ServerStatic.ServerPort;
 
-    public static string Ip
-        => ServerConsole.Ip;
+    public static string Ip => ServerConsole.Ip;
 
-    public static double Tps
-        => Math.Round(1f / Time.smoothDeltaTime);
+    public static double Tps => Math.Round(1f / Time.smoothDeltaTime);
 
     public static Player Host
     {
@@ -41,30 +38,22 @@ public static class Server
         }
     }
 
-    public static Inventory InventoryHost
-    {
-        get
-        {
-            _hostInv ??= Host.ReferenceHub.inventory;
-            return _hostInv;
-        }
-    }
+    public static Inventory InventoryHost => _hostInv ??= Host.ReferenceHub.inventory;
 
     public static bool FriendlyFire
     {
         get => ServerConsole.FriendlyFire;
         set
         {
-            if (FriendlyFire == value)
-                return;
+            if (FriendlyFire == value) return;
 
             ServerConsole.FriendlyFire = value;
             ServerConfigSynchronizer.Singleton.RefreshMainBools();
             ServerConfigSynchronizer.OnRefreshed?.Invoke();
-            AttackerDamageHandler.RefreshConfigs();
+            //AttackerDamageHandler.RefreshConfigs(); // подписан на ServerConfigSynchronizer
 
             foreach (var player in Player.List)
-                player.FriendlyFire = value;
+                player.AllowFriendlyDamage = value;
         }
     }
 
@@ -76,7 +65,7 @@ public static class Server
 
     public static List<TObject> GetObjectsOf<TObject>() where TObject : Object
     {
-        return [.. Object.FindObjectsOfType<TObject>()];
+        return Object.FindObjectsOfType<TObject>().ToList();
     }
 
     public static TObject GetObjectOf<TObject>() where TObject : Object

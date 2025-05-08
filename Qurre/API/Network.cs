@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using JetBrains.Annotations;
 using Mirror;
@@ -8,27 +9,26 @@ namespace Qurre.API;
 [PublicAPI]
 public static class Network
 {
-    private static MethodInfo? _sendSpawnMessage;
-
-    public static MethodInfo? SendSpawnMessage
+    private static readonly ConcurrentDictionary<(Type, string), MethodInfo> StaticMethodCache = new();
+    
+    public static void SendSpawnMessage(NetworkIdentity identity, NetworkConnection connection)
     {
-        get
-        {
-            _sendSpawnMessage ??= typeof(NetworkServer).GetMethod("SendSpawnMessage", BindingFlags.Instance |
-                BindingFlags.InvokeMethod |
-                BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public);
-            return _sendSpawnMessage;
-        }
+        NetworkServer.SendSpawnMessage(identity, connection);
     }
 
     public static void InvokeStaticMethod(this Type type, string methodName, object[] param)
     {
-        const BindingFlags flags = BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic |
-                                   BindingFlags.Static | BindingFlags.Public;
-        MethodInfo? info = type.GetMethod(methodName, flags);
-        info?.Invoke(null, param);
+        const BindingFlags staticMethodFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+        
+        if (!StaticMethodCache.TryGetValue((type, methodName), out var methodInfo))
+        {
+            methodInfo = type.GetMethod(methodName, staticMethodFlags);
+            if (methodInfo == null) throw new MissingMethodException(type.Name, methodName);
+            StaticMethodCache.TryAdd((type, methodName), methodInfo);
+        }
+        
+        methodInfo.Invoke(null, param);
     }
-
 
     public static void SendDataToClient<T>(this NetworkConnectionToClient connection, T message)
         where T : struct, NetworkMessage

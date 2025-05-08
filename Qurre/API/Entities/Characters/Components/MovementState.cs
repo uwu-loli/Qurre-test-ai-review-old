@@ -49,7 +49,7 @@ public sealed class MovementState
 
                 _player.ReferenceHub.transform.localScale = value;
                 foreach (var player in Player.List)
-                    Network.SendSpawnMessage?.Invoke(null, [_player.ClassManager.netIdentity, player.Connection]);
+                    Network.SendSpawnMessage(_player.ClassManager.netIdentity, player.Connection);
             }
             catch (Exception ex)
             {

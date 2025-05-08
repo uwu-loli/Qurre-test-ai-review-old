@@ -1,13 +1,17 @@
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using MEC;
 using Qurre.API;
 using Qurre.API.Addons;
 
 namespace Qurre.Loader;
 
+[UsedImplicitly]
 internal class EntryPoint : ICharacterLoader
 {
+    internal static event Action? Init;
+    
     public void Disable()
     {
     }
@@ -15,7 +19,7 @@ internal class EntryPoint : ICharacterLoader
     public void Enable()
     {
         if (StartupArgs.Args.Any(arg => string.Equals(arg, "-disableAnsiColors", StringComparison.OrdinalIgnoreCase)))
-            BetterColors.Enabled = false;
+            BetterColors.IsEnabled = false;
 
         Log.Info("Initializing Qurre...");
 
@@ -27,9 +31,9 @@ internal class EntryPoint : ICharacterLoader
 
             Internal.EventsManager.Loader.PathQurreEvents();
 
+            Init?.Invoke();
+            
             Plugins.Init();
-
-            Prefabs.Init();
 
             Log.Custom(BetterColors.Bold($"Qurre {BetterColors.BrightRed($"v{EventCore.Version}")} enabled"), "Loader",
                 ConsoleColor.Red);

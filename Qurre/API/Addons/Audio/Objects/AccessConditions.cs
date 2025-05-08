@@ -6,6 +6,8 @@ using Qurre.API.Entities.Characters;
 
 namespace Qurre.API.Addons.Audio.Objects;
 
+// TODO: раздробить класс на несколько
+
 /// <summary>
 ///     Conditions to determine player access.
 /// </summary>

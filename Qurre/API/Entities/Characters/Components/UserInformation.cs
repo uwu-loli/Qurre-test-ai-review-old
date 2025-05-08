@@ -81,11 +81,7 @@ public sealed class UserInformation
             NicknameSync.Network_myNickSync = value;
 
             foreach (var player in Player.List)
-                Network.SendSpawnMessage?.Invoke(null,
-                [
-                    _player.ClassManager.netIdentity,
-                    player.Connection
-                ]);
+                Network.SendSpawnMessage(_player.ClassManager.netIdentity, player.Connection);
         }
     }
 }

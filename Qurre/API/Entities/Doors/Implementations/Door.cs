@@ -35,10 +35,10 @@ internal class Door : LevelEntity, IDoor
 
         PrefabType = NetworkIdentity.Instance.assetId switch
         {
-            Prefabs.AssetIdDoorLCZ => DoorPrefabs.DoorLCZ,
-            Prefabs.AssetIdDoorHCZ => DoorPrefabs.DoorHCZ,
-            Prefabs.AssetIdDoorEZ => DoorPrefabs.DoorEZ,
-            Prefabs.AssetIdDoorBulkHCZ => DoorPrefabs.BulkHCZ,
+            Prefabs.AssetIdDoorLcz => DoorPrefabs.DoorLCZ,
+            Prefabs.AssetIdDoorHcz => DoorPrefabs.DoorHCZ,
+            Prefabs.AssetIdDoorEz => DoorPrefabs.DoorEZ,
+            Prefabs.AssetIdDoorBulkHcz => DoorPrefabs.BulkHCZ,
             _ => DoorPrefabs.Unknown
         };
     }
@@ -119,7 +119,7 @@ internal class Door : LevelEntity, IDoor
     public IReadOnlyList<IGameRoom> Rooms { get; }
 
     /// <inheritdoc />
-    public DoorPermissions RequiredPermissions
+    public DoorPermissionsPolicy RequiredPermissions
     {
         get => Base.Instance.RequiredPermissions;
         set => Base.Instance.RequiredPermissions = value;
@@ -150,6 +150,7 @@ internal class Door : LevelEntity, IDoor
             return;
         }
 
+        // TODO: check is it work or no
         if (Vector3.Distance(WorldPosition, WaypointWorldPosition) < 120.0F)
         {
             base.OnPositionChanged();

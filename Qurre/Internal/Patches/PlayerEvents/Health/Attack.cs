@@ -119,7 +119,7 @@ internal static class Attack
             if (attacker is null || target is null)
                 return;
 
-            if (attacker.FriendlyFire)
+            if (attacker.AllowFriendlyDamage)
                 handler.IsFriendlyFire = false;
 
             AttackEvent ev = new(attacker, target, handler, handler.Damage, handler.IsFriendlyFire,

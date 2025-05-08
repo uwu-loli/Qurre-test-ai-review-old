@@ -7,7 +7,7 @@ namespace Qurre.API.World;
 [PublicAPI]
 public static class Map
 {
-    public static CassieList Cassies { get; internal set; } = new();
+    public static CassieList CassieList { get; internal set; } = new();
 
     public static AmbientSoundPlayer? AmbientSoundPlayer { get; internal set; }
 

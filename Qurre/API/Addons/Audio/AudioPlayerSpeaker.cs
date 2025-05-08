@@ -39,7 +39,7 @@ public class AudioPlayerSpeaker : BaseAudioPlayer
         int channelId = 0)
     {
         using var networkWriter = NetworkWriterPool.Get();
-        AudioMessage message = new(
+        var message = new AudioMessage(
             SpeakerToy.ControllerId,
             dataBuffer,
             dataLength
