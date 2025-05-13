@@ -16,19 +16,6 @@ internal static class Plugins
 {
     private static readonly List<PluginStruct> PluginsList = [];
     private static Harmony? _harmony;
-
-    internal static void Init()
-    {
-        if (!Directory.Exists(Paths.Plugins))
-        {
-            Log.Warn($"Plugins directory not found. Creating: {Paths.Plugins}");
-            Directory.CreateDirectory(Paths.Plugins);
-        }
-
-        try
-        {
-            LoadDependencies();
-        }
         catch (Exception ex)
         {
             ServerConsole.AddLog(ex.ToString(), ConsoleColor.Red);
